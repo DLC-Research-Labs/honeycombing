@@ -39,6 +39,7 @@ import {
   getViewPresetTransition,
   getNamedSelectionsPacketUrl,
   getEnsembleRegistryUrl,
+  withBasePath,
   getEnsembleImportSchema,
   classifyEnsemblePercentile,
   getEnsembleOutlierGate,
@@ -825,5 +826,21 @@ test("expert review objectives define success criteria for each disciplined prom
 
     const serialized = JSON.stringify(objective);
     assert.doesNotMatch(serialized, /TBD|TODO|placeholder/i);
+  }
+});
+
+test("withBasePath prefixes absolute URLs with NEXT_PUBLIC_BASE_PATH and leaves others alone", () => {
+  const original = process.env.NEXT_PUBLIC_BASE_PATH;
+  try {
+    delete process.env.NEXT_PUBLIC_BASE_PATH;
+    assert.equal(withBasePath("/data/plans/registry.json"), "/data/plans/registry.json");
+
+    process.env.NEXT_PUBLIC_BASE_PATH = "/honeycombing";
+    assert.equal(withBasePath("/data/plans/registry.json"), "/honeycombing/data/plans/registry.json");
+    assert.equal(withBasePath(getEnsembleRegistryUrl()), "/honeycombing/data/ensembles/registry.json");
+    assert.equal(withBasePath("https://example.com/x.json"), "https://example.com/x.json");
+  } finally {
+    if (original === undefined) delete process.env.NEXT_PUBLIC_BASE_PATH;
+    else process.env.NEXT_PUBLIC_BASE_PATH = original;
   }
 });

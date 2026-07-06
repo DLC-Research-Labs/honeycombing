@@ -2,9 +2,9 @@
 
 Honeycombing is a civic mapping prototype that compares enacted district maps against a neutral hexagonal reference grid ([Uber's H3](https://h3geo.org/)). The grid predates any election and was drawn for logistics, not politics — the product makes the delta between that neutral baseline and real district lines visible. The current app defaults to a North Carolina case study and loads a Census block-derived H3 population layer first, with precinct and county views available as alternate lenses.
 
-**Live demo:** [honeycombing.dalovecompany.com](https://honeycombing.dalovecompany.com)
+**Live demo:** [dalovecompany.com/honeycombing](https://www.dalovecompany.com/honeycombing)
 
-**What this is not:** a diagnostic prototype, not legal evidence. Nothing here demonstrates illegal intent or legal injury, hex counts are not a seat measure, and the known methodological shortcuts are disclosed rather than hidden. Read [/limits](https://honeycombing.dalovecompany.com/limits) before citing any number, and the white paper at [/about](https://honeycombing.dalovecompany.com/about) for the full method.
+**What this is not:** a diagnostic prototype, not legal evidence. Nothing here demonstrates illegal intent or legal injury, hex counts are not a seat measure, and the known methodological shortcuts are disclosed rather than hidden. Read [/limits](https://www.dalovecompany.com/honeycombing/limits) before citing any number, and the white paper at [/about](https://www.dalovecompany.com/honeycombing/about) for the full method.
 
 ## Run the App
 

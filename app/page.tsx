@@ -31,6 +31,7 @@ import {
   getHoneycombMapInstanceKey,
   getViewPreset,
   getViewPresetTransition,
+  withBasePath,
   type CaseStudyId,
   type DatasetId,
   type ViewPreset,
@@ -202,7 +203,7 @@ export default function Home() {
 
   const fetchYear = useCallback((y: number, ds: DatasetId = DEFAULT_DATASET_ID, studyId: CaseStudyId = DEFAULT_CASE_STUDY_ID) => {
     const url = getDatasetUrl(ds, y, studyId);
-    fetch(url)
+    fetch(withBasePath(url))
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
         return r.json();
@@ -224,7 +225,7 @@ export default function Home() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(getCaseStudyPacketUrl(caseStudyId))
+    fetch(withBasePath(getCaseStudyPacketUrl(caseStudyId)))
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
@@ -236,7 +237,7 @@ export default function Home() {
         if (!cancelled) setCaseStudyPacket(null);
       });
 
-    fetch(getNamedSelectionsPacketUrl(caseStudyId))
+    fetch(withBasePath(getNamedSelectionsPacketUrl(caseStudyId)))
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
@@ -258,7 +259,7 @@ export default function Home() {
 
     let cancelled = false;
     const url = provenance.manifestUrl;
-    fetch(url)
+    fetch(withBasePath(url))
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();

@@ -27,6 +27,7 @@ import {
   type CoiRegistry,
   type CoiRegistryEntry,
   type CoiSummary,
+  withBasePath,
   type EnsembleRegistry,
   type EnsembleRegistryEntry,
   type EnsembleSummary,
@@ -701,7 +702,7 @@ export default function HoneycombMap({
     coiLayerRef.current = L.layerGroup().addTo(map);
     mapRef.current = map;
 
-    fetch("/data/congressional-districts-2022.json")
+    fetch(withBasePath("/data/congressional-districts-2022.json"))
       .then((r) => r.json())
       .then((data: GeoJSON.FeatureCollection) => {
         districtDataRef.current = data;
@@ -709,7 +710,7 @@ export default function HoneycombMap({
       })
       .catch(() => {});
 
-    fetch("/data/districts-votes-2020.json")
+    fetch(withBasePath("/data/districts-votes-2020.json"))
       .then((r) => r.json())
       .then((data: GeoJSON.FeatureCollection) => {
         const map = new Map<string, DistrictVoteProps>();
@@ -722,7 +723,7 @@ export default function HoneycombMap({
       })
       .catch(() => {});
 
-    fetch(getPlanRegistryUrl())
+    fetch(withBasePath(getPlanRegistryUrl()))
       .then((r) => {
         if (!r.ok) throw new Error(`Unable to load plan registry: ${r.status}`);
         return r.json();
@@ -803,7 +804,7 @@ export default function HoneycombMap({
       missingPlanIds.map(async (planId) => {
         const entry = planRegistryById.get(planId);
         if (!entry) return null;
-        const response = await fetch(entry.url);
+        const response = await fetch(withBasePath(entry.url));
         if (!response.ok) throw new Error(`Unable to load plan ${planId}: ${response.status}`);
         const data = await response.json() as GeoJSON.FeatureCollection;
         return [planId, data] as const;
@@ -836,13 +837,13 @@ export default function HoneycombMap({
 
     (async () => {
       try {
-        const registryResponse = await fetch(getEnsembleRegistryUrl());
+        const registryResponse = await fetch(withBasePath(getEnsembleRegistryUrl()));
         if (!registryResponse.ok) throw new Error(`HTTP ${registryResponse.status}`);
         const registry = await registryResponse.json() as EnsembleRegistry;
         const entry = registry.ensembles[0];
         if (!entry) throw new Error("Ensemble registry is empty");
 
-        const summaryResponse = await fetch(entry.url);
+        const summaryResponse = await fetch(withBasePath(entry.url));
         if (!summaryResponse.ok) throw new Error(`HTTP ${summaryResponse.status}`);
         const summary = await summaryResponse.json() as EnsembleSummary;
 
@@ -875,7 +876,7 @@ export default function HoneycombMap({
 
     let cancelled = false;
 
-    fetch(entry.url)
+    fetch(withBasePath(entry.url))
       .then((response) => {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         return response.json() as Promise<GeoJSON.FeatureCollection>;
@@ -991,13 +992,13 @@ export default function HoneycombMap({
 
     (async () => {
       try {
-        const registryResponse = await fetch(getCoiRegistryUrl());
+        const registryResponse = await fetch(withBasePath(getCoiRegistryUrl()));
         if (!registryResponse.ok) throw new Error(`HTTP ${registryResponse.status}`);
         const registry = await registryResponse.json() as CoiRegistry;
 
         const summaries: Record<string, CoiSummary> = {};
         for (const entry of registry.cois) {
-          const summaryResponse = await fetch(entry.url);
+          const summaryResponse = await fetch(withBasePath(entry.url));
           if (!summaryResponse.ok) throw new Error(`HTTP ${summaryResponse.status} for ${entry.id}`);
           summaries[entry.id] = await summaryResponse.json() as CoiSummary;
         }

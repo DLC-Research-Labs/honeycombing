@@ -774,6 +774,11 @@ export function getDisplayYear(dataset: DatasetId, requestedYear: number): Elect
     : config.availableYears[0];
 }
 
+export function withBasePath(url: string): string {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  return url.startsWith("/") ? `${basePath}${url}` : url;
+}
+
 export function getDatasetUrl(
   dataset: DatasetId,
   requestedYear: number,
