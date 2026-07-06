@@ -1,0 +1,24 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+The Honeycombing white paper (WHITEPAPER.md), the research reports under
+docs/, and the derived data artifacts under public/data/ and
+public/derived-data/ are licensed under the Creative Commons Attribution
+4.0 International License.
+
+You are free to share and adapt this material for any purpose, provided
+you give appropriate credit, link to the license, and indicate if changes
+were made.
+
+Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Attribution: "Honeycombing (DLC Research Labs)" with a link to the source
+repository.
+
+Upstream data sources retain their own licenses and must be credited
+independently — see the Data Sources section of README.md. In particular:
+ALARM Project 50-State Redistricting Simulations (CC0), VEST 2020 precinct
+returns (Harvard Dataverse), MIT Election Data & Science Lab county returns,
+and U.S. Census Bureau PL 94-171 / TIGER-Line products (public domain).
+
+The application source code is separately licensed under Apache-2.0 (see
+LICENSE).

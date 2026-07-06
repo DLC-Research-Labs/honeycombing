@@ -1,0 +1,579 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-named-selections",
+  "title": "North Carolina named-selection case study",
+  "generatedAt": "2026-05-02T06:08:36.376Z",
+  "reviewStance": "Diagnostic review triage for redistricting experts. Descriptive only; not court-grade evidence, not a fairness score, not a VRA analysis.",
+  "caseStudy": {
+    "id": "nc",
+    "name": "North Carolina",
+    "stateFips": "37",
+    "year": 2020
+  },
+  "claimTags": {
+    "descriptive": "descriptive",
+    "centroid": "descriptive_with_centroid_caveat",
+    "assignment": "descriptive_with_assignment_caveat",
+    "expert": "requires_ensemble_and_expert_validation"
+  },
+  "centroidAudits": [
+    {
+      "county": "Alamance County",
+      "countyFips": "001",
+      "blocksClassification": "material_for_statistics",
+      "blocksMaxCellPopulationDelta": 505.62,
+      "precinctsClassification": "disqualifying_for_evidence_without_apportionment",
+      "precinctsMaxVoteShareDeltaPp": 9.16
+    },
+    {
+      "county": "Mecklenburg County",
+      "countyFips": "119",
+      "blocksClassification": "material_for_statistics",
+      "blocksMaxCellPopulationDelta": 1875.69,
+      "precinctsClassification": "disqualifying_for_evidence_without_apportionment",
+      "precinctsMaxVoteShareDeltaPp": 16.36
+    }
+  ],
+  "regions": [
+    {
+      "id": "charlotte-mecklenburg",
+      "name": "Charlotte / Mecklenburg",
+      "shortName": "Charlotte",
+      "description": "Charlotte, Mecklenburg County, and the immediate suburban edge.",
+      "legalFrame": "Urban/suburban concentration test: does either plan pack the metro core into fewer districts or crack the suburban edge across many? The Mecklenburg centroid audit makes this the region where assignment caveats are strongest.",
+      "reviewerPrompt": "Inspect whether the metro core and suburban edge are packed, cracked, or preserved across plans, and whether the boundary changes between the court and enacted plans track any lawful criterion.",
+      "bounds": {
+        "south": 34.9,
+        "west": -81.15,
+        "north": 35.55,
+        "east": -80.45
+      },
+      "center": {
+        "lat": 35.23,
+        "lng": -80.84
+      },
+      "zoom": 9,
+      "h3Resolution": 7,
+      "selectionCaveat": "Bounds are a rectangular review selection, not an official region or a legal community of interest.",
+      "populationLayer": {
+        "claimTag": "descriptive_with_assignment_caveat",
+        "h3Cells": 868,
+        "sourceBlockRecords": 23497,
+        "total": 1742306,
+        "votingAge": 1328017,
+        "black": 415562,
+        "blackPct": 23.9,
+        "hispanic": 239289,
+        "hispanicPct": 13.7,
+        "nonHispanicWhite": 917961,
+        "nonwhite": 824345,
+        "nonwhitePct": 47.3,
+        "assignmentCaveat": "Census block internal points are assigned to one H3 cell each. Bounded audits classify this shortcut as material_for_statistics: Alamance County max cell population delta 505.62; Mecklenburg County max cell population delta 1875.69. Statistical use of these totals should move to polygon apportionment."
+      },
+      "precinctSignal": {
+        "claimTag": "descriptive_with_centroid_caveat",
+        "precincts": 320,
+        "demVotes": 516308,
+        "repVotes": 395644,
+        "totalVotes": 911952,
+        "demPct": 56.6,
+        "repPct": 43.4,
+        "lean": "D",
+        "h3CellsWithVotes": 270,
+        "demLeaningCells": 154,
+        "repLeaningCells": 116,
+        "competitiveCells": 42,
+        "competitiveBandPp": 5,
+        "proxyCaveat": "2020 presidential returns are a partisan-lean proxy, not congressional performance.",
+        "centroidCaveat": "VEST precinct centroids are assigned to one H3 cell each. Bounded audits classify this shortcut as disqualifying_for_evidence_without_apportionment: Alamance County max cell vote-share delta 9.16pp; Mecklenburg County max cell vote-share delta 16.36pp."
+      },
+      "planAssignments": [
+        {
+          "claimTag": "descriptive_with_assignment_caveat",
+          "planId": "us-congress-118-enacted",
+          "name": "118th Congress enacted districts",
+          "status": "enacted",
+          "cycle": "2022",
+          "h3CentersAssigned": 858,
+          "h3CentersUnassigned": 10,
+          "districtsTouched": 4,
+          "districts": [
+            {
+              "districtId": "3708",
+              "h3Cells": 297,
+              "population": 275243
+            },
+            {
+              "districtId": "3710",
+              "h3Cells": 81,
+              "population": 58511
+            },
+            {
+              "districtId": "3712",
+              "h3Cells": 261,
+              "population": 737888
+            },
+            {
+              "districtId": "3714",
+              "h3Cells": 219,
+              "population": 667291
+            }
+          ]
+        },
+        {
+          "claimTag": "descriptive_with_assignment_caveat",
+          "planId": "nc-2022-court-interim-congressional",
+          "name": "NC 2022 court-ordered congressional plan",
+          "status": "court",
+          "cycle": "2022",
+          "h3CentersAssigned": 856,
+          "h3CentersUnassigned": 12,
+          "districtsTouched": 4,
+          "districts": [
+            {
+              "districtId": "3708",
+              "h3Cells": 298,
+              "population": 280441
+            },
+            {
+              "districtId": "3710",
+              "h3Cells": 82,
+              "population": 58887
+            },
+            {
+              "districtId": "3712",
+              "h3Cells": 261,
+              "population": 747873
+            },
+            {
+              "districtId": "3714",
+              "h3Cells": 215,
+              "population": 651712
+            }
+          ]
+        },
+        {
+          "claimTag": "descriptive_with_assignment_caveat",
+          "planId": "nc-2023-enacted-congressional",
+          "name": "NC 2023 enacted congressional plan",
+          "status": "enacted",
+          "cycle": "2024",
+          "h3CentersAssigned": 856,
+          "h3CentersUnassigned": 12,
+          "districtsTouched": 5,
+          "districts": [
+            {
+              "districtId": "3706",
+              "h3Cells": 77,
+              "population": 134138
+            },
+            {
+              "districtId": "3708",
+              "h3Cells": 344,
+              "population": 431584
+            },
+            {
+              "districtId": "3710",
+              "h3Cells": 82,
+              "population": 58887
+            },
+            {
+              "districtId": "3712",
+              "h3Cells": 156,
+              "population": 744411
+            },
+            {
+              "districtId": "3714",
+              "h3Cells": 197,
+              "population": 369893
+            }
+          ]
+        }
+      ],
+      "boundaryDelta": {
+        "claimTag": "descriptive_with_assignment_caveat",
+        "interpretationTag": "requires_ensemble_and_expert_validation",
+        "basePlanId": "nc-2022-court-interim-congressional",
+        "basePlanName": "NC 2022 court-ordered congressional plan",
+        "comparePlanId": "nc-2023-enacted-congressional",
+        "comparePlanName": "NC 2023 enacted congressional plan",
+        "h3CellsCompared": 856,
+        "h3CellsReassigned": 277,
+        "reassignedCellPct": 32.4,
+        "populationInReassignedCells": 776780,
+        "populationInReassignedCellsPct": 44.6,
+        "reassignedPrecinctSignal": {
+          "claimTag": "descriptive_with_centroid_caveat",
+          "precinctsReassigned": 156,
+          "demVotes": 241527,
+          "repVotes": 176693,
+          "totalVotes": 418220,
+          "demPct": 57.8,
+          "repPct": 42.2,
+          "lean": "D"
+        },
+        "districtFlows": [
+          {
+            "fromDistrictId": "3714",
+            "toDistrictId": "3712",
+            "h3Cells": 63,
+            "population": 337021
+          },
+          {
+            "fromDistrictId": "3712",
+            "toDistrictId": "3714",
+            "h3Cells": 62,
+            "population": 125265
+          },
+          {
+            "fromDistrictId": "3712",
+            "toDistrictId": "3708",
+            "h3Cells": 58,
+            "population": 110293
+          },
+          {
+            "fromDistrictId": "3712",
+            "toDistrictId": "3706",
+            "h3Cells": 48,
+            "population": 104925
+          },
+          {
+            "fromDistrictId": "3714",
+            "toDistrictId": "3708",
+            "h3Cells": 17,
+            "population": 70063
+          },
+          {
+            "fromDistrictId": "3708",
+            "toDistrictId": "3706",
+            "h3Cells": 29,
+            "population": 29213
+          }
+        ],
+        "interpretationNote": "Reassignment counts describe where the two adopted boundary sets differ inside this selection. Whether any flow is lawful, ensemble-typical, VRA-required, or a reviewable choice cannot be concluded from this packet; it needs an ensemble baseline, district election history, and VRA/COI context."
+      },
+      "deviationLedgerSeed": [
+        {
+          "question": "Do the 2023 boundary shifts around the Charlotte core follow county lines, or do they cross Mecklenburg for another reason?",
+          "candidateJustifications": [
+            "county-lines",
+            "compactness",
+            "partisan-choice"
+          ],
+          "status": "unresolved"
+        },
+        {
+          "question": "Is the suburban-edge reassignment consistent with what a compactness-driven redraw would produce?",
+          "candidateJustifications": [
+            "compactness",
+            "contiguity",
+            "partisan-choice"
+          ],
+          "status": "needs-data",
+          "neededData": "Ensemble baseline of legally compliant plans for the Charlotte region."
+        }
+      ],
+      "caveats": [
+        "H3 cells are equal-area hexagons, not districts and not equal-population units; raw hex counts are not a seat measure.",
+        "Population uses Census block internal points assigned to H3 cells; precinct signal uses VEST precinct centroids. Both shortcuts failed bounded audits for evidence-grade statistics.",
+        "Plan assignment uses H3 cell center points inside plan polygons, not area or population apportionment.",
+        "2020 presidential returns are a partisan-lean proxy, not congressional performance.",
+        "No CVAP, racially polarized voting, candidate-of-choice, COI, or ensemble analysis is included. No VRA conclusion can be drawn from this packet."
+      ]
+    },
+    {
+      "id": "eastern-black-belt",
+      "name": "Eastern Black Belt",
+      "shortName": "East NC",
+      "description": "Eastern North Carolina counties with substantial Black population and VRA-adjacent review questions.",
+      "legalFrame": "VRA-adjacent region: any deviation here may be a legally required VRA adjustment rather than a reviewable choice. Honeycombing can only flag where boundaries changed; it cannot classify a change as VRA-driven without CVAP, racially polarized voting, and candidate-of-choice evidence, none of which are implemented.",
+      "reviewerPrompt": "Inspect demographic concentration and plan continuity, and identify which boundary changes would need VRA analysis before any characterization is defensible.",
+      "bounds": {
+        "south": 34.85,
+        "west": -78.65,
+        "north": 36.6,
+        "east": -76.15
+      },
+      "center": {
+        "lat": 35.72,
+        "lng": -77.4
+      },
+      "zoom": 8,
+      "h3Resolution": 7,
+      "selectionCaveat": "Bounds are a rectangular review selection, not an official region or a legal community of interest.",
+      "populationLayer": {
+        "claimTag": "descriptive_with_assignment_caveat",
+        "h3Cells": 7742,
+        "sourceBlockRecords": 50033,
+        "total": 1969311,
+        "votingAge": 1522144,
+        "black": 610983,
+        "blackPct": 31,
+        "hispanic": 217890,
+        "hispanicPct": 11.1,
+        "nonHispanicWhite": 1029132,
+        "nonwhite": 940179,
+        "nonwhitePct": 47.7,
+        "assignmentCaveat": "Census block internal points are assigned to one H3 cell each. Bounded audits classify this shortcut as material_for_statistics: Alamance County max cell population delta 505.62; Mecklenburg County max cell population delta 1875.69. Statistical use of these totals should move to polygon apportionment."
+      },
+      "precinctSignal": {
+        "claimTag": "descriptive_with_centroid_caveat",
+        "precincts": 564,
+        "demVotes": 524238,
+        "repVotes": 497938,
+        "totalVotes": 1022176,
+        "demPct": 51.3,
+        "repPct": 48.7,
+        "lean": "D",
+        "h3CellsWithVotes": 537,
+        "demLeaningCells": 260,
+        "repLeaningCells": 277,
+        "competitiveCells": 94,
+        "competitiveBandPp": 5,
+        "proxyCaveat": "2020 presidential returns are a partisan-lean proxy, not congressional performance.",
+        "centroidCaveat": "VEST precinct centroids are assigned to one H3 cell each. Bounded audits classify this shortcut as disqualifying_for_evidence_without_apportionment: Alamance County max cell vote-share delta 9.16pp; Mecklenburg County max cell vote-share delta 16.36pp."
+      },
+      "planAssignments": [
+        {
+          "claimTag": "descriptive_with_assignment_caveat",
+          "planId": "us-congress-118-enacted",
+          "name": "118th Congress enacted districts",
+          "status": "enacted",
+          "cycle": "2022",
+          "h3CentersAssigned": 7506,
+          "h3CentersUnassigned": 236,
+          "districtsTouched": 6,
+          "districts": [
+            {
+              "districtId": "3701",
+              "h3Cells": 3794,
+              "population": 742767
+            },
+            {
+              "districtId": "3702",
+              "h3Cells": 166,
+              "population": 347665
+            },
+            {
+              "districtId": "3703",
+              "h3Cells": 2695,
+              "population": 394060
+            },
+            {
+              "districtId": "3704",
+              "h3Cells": 134,
+              "population": 32902
+            },
+            {
+              "districtId": "3707",
+              "h3Cells": 26,
+              "population": 1850
+            },
+            {
+              "districtId": "3713",
+              "h3Cells": 691,
+              "population": 436526
+            }
+          ]
+        },
+        {
+          "claimTag": "descriptive_with_assignment_caveat",
+          "planId": "nc-2022-court-interim-congressional",
+          "name": "NC 2022 court-ordered congressional plan",
+          "status": "court",
+          "cycle": "2022",
+          "h3CentersAssigned": 7713,
+          "h3CentersUnassigned": 29,
+          "districtsTouched": 6,
+          "districts": [
+            {
+              "districtId": "3701",
+              "h3Cells": 3854,
+              "population": 742240
+            },
+            {
+              "districtId": "3702",
+              "h3Cells": 169,
+              "population": 350435
+            },
+            {
+              "districtId": "3703",
+              "h3Cells": 2842,
+              "population": 405637
+            },
+            {
+              "districtId": "3704",
+              "h3Cells": 134,
+              "population": 32863
+            },
+            {
+              "districtId": "3707",
+              "h3Cells": 26,
+              "population": 1688
+            },
+            {
+              "districtId": "3713",
+              "h3Cells": 688,
+              "population": 435579
+            }
+          ]
+        },
+        {
+          "claimTag": "descriptive_with_assignment_caveat",
+          "planId": "nc-2023-enacted-congressional",
+          "name": "NC 2023 enacted congressional plan",
+          "status": "enacted",
+          "cycle": "2024",
+          "h3CentersAssigned": 7713,
+          "h3CentersUnassigned": 29,
+          "districtsTouched": 5,
+          "districts": [
+            {
+              "districtId": "3701",
+              "h3Cells": 3930,
+              "population": 715238
+            },
+            {
+              "districtId": "3702",
+              "h3Cells": 138,
+              "population": 406345
+            },
+            {
+              "districtId": "3703",
+              "h3Cells": 2592,
+              "population": 431097
+            },
+            {
+              "districtId": "3707",
+              "h3Cells": 119,
+              "population": 14748
+            },
+            {
+              "districtId": "3713",
+              "h3Cells": 934,
+              "population": 401014
+            }
+          ]
+        }
+      ],
+      "boundaryDelta": {
+        "claimTag": "descriptive_with_assignment_caveat",
+        "interpretationTag": "requires_ensemble_and_expert_validation",
+        "basePlanId": "nc-2022-court-interim-congressional",
+        "basePlanName": "NC 2022 court-ordered congressional plan",
+        "comparePlanId": "nc-2023-enacted-congressional",
+        "comparePlanName": "NC 2023 enacted congressional plan",
+        "h3CellsCompared": 7713,
+        "h3CellsReassigned": 1476,
+        "reassignedCellPct": 19.1,
+        "populationInReassignedCells": 635275,
+        "populationInReassignedCellsPct": 32.3,
+        "reassignedPrecinctSignal": {
+          "claimTag": "descriptive_with_centroid_caveat",
+          "precinctsReassigned": 154,
+          "demVotes": 170667,
+          "repVotes": 151216,
+          "totalVotes": 321883,
+          "demPct": 53,
+          "repPct": 47,
+          "lean": "D"
+        },
+        "districtFlows": [
+          {
+            "fromDistrictId": "3701",
+            "toDistrictId": "3703",
+            "h3Cells": 273,
+            "population": 152211
+          },
+          {
+            "fromDistrictId": "3713",
+            "toDistrictId": "3702",
+            "h3Cells": 42,
+            "population": 120555
+          },
+          {
+            "fromDistrictId": "3703",
+            "toDistrictId": "3701",
+            "h3Cells": 430,
+            "population": 113691
+          },
+          {
+            "fromDistrictId": "3713",
+            "toDistrictId": "3701",
+            "h3Cells": 167,
+            "population": 70141
+          },
+          {
+            "fromDistrictId": "3701",
+            "toDistrictId": "3713",
+            "h3Cells": 264,
+            "population": 68109
+          },
+          {
+            "fromDistrictId": "3702",
+            "toDistrictId": "3713",
+            "h3Cells": 73,
+            "population": 64645
+          },
+          {
+            "fromDistrictId": "3704",
+            "toDistrictId": "3713",
+            "h3Cells": 118,
+            "population": 23377
+          },
+          {
+            "fromDistrictId": "3703",
+            "toDistrictId": "3707",
+            "h3Cells": 93,
+            "population": 13060
+          },
+          {
+            "fromDistrictId": "3704",
+            "toDistrictId": "3701",
+            "h3Cells": 16,
+            "population": 9486
+          }
+        ],
+        "interpretationNote": "Reassignment counts describe where the two adopted boundary sets differ inside this selection. Whether any flow is lawful, ensemble-typical, VRA-required, or a reviewable choice cannot be concluded from this packet; it needs an ensemble baseline, district election history, and VRA/COI context."
+      },
+      "deviationLedgerSeed": [
+        {
+          "question": "Which reassigned cells sit in areas where a VRA district could be legally required?",
+          "candidateJustifications": [
+            "vra-required",
+            "county-lines",
+            "partisan-choice"
+          ],
+          "status": "needs-data",
+          "neededData": "CVAP, racially polarized voting analysis, and candidate-of-choice election history. Population composition alone cannot support a VRA conclusion."
+        },
+        {
+          "question": "Do the 2023 changes split any county groupings that the NC whole-county provision would otherwise protect?",
+          "candidateJustifications": [
+            "county-lines",
+            "state-constitutional-criteria"
+          ],
+          "status": "unresolved"
+        }
+      ],
+      "caveats": [
+        "H3 cells are equal-area hexagons, not districts and not equal-population units; raw hex counts are not a seat measure.",
+        "Population uses Census block internal points assigned to H3 cells; precinct signal uses VEST precinct centroids. Both shortcuts failed bounded audits for evidence-grade statistics.",
+        "Plan assignment uses H3 cell center points inside plan polygons, not area or population apportionment.",
+        "2020 presidential returns are a partisan-lean proxy, not congressional performance.",
+        "No CVAP, racially polarized voting, candidate-of-choice, COI, or ensemble analysis is included. No VRA conclusion can be drawn from this packet."
+      ]
+    }
+  ],
+  "sharedCaveats": [
+    "H3 cells are equal-area hexagons, not districts and not equal-population units.",
+    "All point-in-polygon assignment uses cell centers or precinct centroids; bounded audits rate these shortcuts material_for_statistics (blocks) and disqualifying_for_evidence_without_apportionment (precinct votes).",
+    "Whether any observed asymmetry or boundary flow is lawful, ensemble-typical, or map-drawing-driven cannot be concluded without an ensemble baseline, district election history, and VRA/COI context."
+  ],
+  "reviewerQuestions": [
+    "Which of the reported boundary flows would a redistricting lawyer treat as presumptively explained by county-line or contiguity requirements?",
+    "For the Eastern Black Belt, what minimum evidence set would you require before characterizing any flow as VRA-related in either direction?",
+    "Is the reassigned-population framing (cells and population moved between the court and enacted plans) a useful triage signal, or does it invite over-reading?",
+    "What should be added or removed before this packet is shown to an election-data practitioner cold?"
+  ]
+}

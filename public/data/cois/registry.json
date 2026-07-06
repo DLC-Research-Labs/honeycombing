@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "cois": [
+    {
+      "id": "nc-sample-fictional-crescent",
+      "name": "Sample crescent (FICTIONAL)",
+      "url": "/data/cois/nc-sample-fictional-crescent.json",
+      "status": "sample",
+      "submitter": {
+        "name": "build-sample-coi.mjs (generated fixture)",
+        "type": "synthetic"
+      },
+      "source": {
+        "description": "Deterministic literals in scripts/build-sample-coi.mjs. Not collected from any person or portal.",
+        "collectedAt": "2026-07-03",
+        "method": "Hand-placed polygon vertices chosen to cross the Charlotte-area district seam so the fracture readout exercises both registered NC plans."
+      },
+      "description": "Fictional sample COI that validates the registry schema, provenance fields, and fracture readout end-to-end.",
+      "caveats": [
+        "SAMPLE PAYLOAD: this polygon is fictional. It validates the COI registry schema, provenance fields, and fracture computation. It is not a community of interest and must never be cited or displayed as one."
+      ]
+    }
+  ]
+}

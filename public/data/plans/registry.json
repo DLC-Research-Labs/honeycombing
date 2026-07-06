@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "plans": [
+    {
+      "id": "us-congress-118-enacted",
+      "name": "118th Congress enacted districts",
+      "source": "U.S. Census Bureau",
+      "cycle": "2022",
+      "url": "/data/plans/us-congress-118-enacted.json",
+      "status": "enacted",
+      "description": "Normalized baseline congressional district plan using the same 118th Congress geometry as the enacted outline layer.",
+      "caveats": [
+        "This registry entry is a baseline enacted plan package, not an alternative proposal.",
+        "It proves the local plan-registry path before court, commission, and proposed maps are added."
+      ],
+      "metadata": {
+        "jurisdiction": "United States",
+        "office": "U.S. House",
+        "districtCount": 441
+      }
+    },
+    {
+      "id": "nc-2022-court-interim-congressional",
+      "name": "NC 2022 court-ordered congressional plan",
+      "source": "North Carolina General Assembly",
+      "cycle": "2022",
+      "url": "/data/plans/nc-2022-court-interim-congressional.json",
+      "status": "court",
+      "description": "Congressional district plan ordered by the NC Courts on February 23, 2022 and used for the 2022 election.",
+      "caveats": [
+        "This is an official plan file from the NCGA 2022 redistricting process, normalized for Honeycombing's plan registry.",
+        "It is a plan overlay only; election and demographic comparisons still need separate aggregation."
+      ],
+      "metadata": {
+        "jurisdiction": "North Carolina",
+        "office": "U.S. House",
+        "districtCount": 14,
+        "sourceUrl": "https://www.ncleg.gov/Files/GIS/Plans_Main/Congress_2022_Court/2022%20Interim%20Congressional%20-%20Shapefile.zip"
+      }
+    },
+    {
+      "id": "nc-2023-enacted-congressional",
+      "name": "NC 2023 enacted congressional plan",
+      "source": "North Carolina General Assembly",
+      "cycle": "2024",
+      "url": "/data/plans/nc-2023-enacted-congressional.json",
+      "status": "enacted",
+      "description": "Congressional district plan enacted as Session Law 2023-145 and used for North Carolina's 2024 congressional elections.",
+      "caveats": [
+        "This is an official plan file from the NCGA 2023 redistricting process, normalized for Honeycombing's plan registry.",
+        "It provides a meaningfully different NC congressional-plan contrast against the 2022 court-ordered plan, but vote aggregation still uses centroid assignment until polygon apportionment is implemented."
+      ],
+      "metadata": {
+        "jurisdiction": "North Carolina",
+        "office": "U.S. House",
+        "districtCount": 14,
+        "sessionLaw": "SL 2023-145",
+        "sourceUrl": "https://www.ncleg.gov/Files/GIS/Plans_Main/Congress_2023/SL%202023-145%20Congress%20-%20Shapefile.zip"
+      }
+    }
+  ]
+}

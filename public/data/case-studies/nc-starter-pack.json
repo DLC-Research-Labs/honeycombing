@@ -1,0 +1,544 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-starter-pack",
+  "title": "North Carolina starter stats packet",
+  "generatedAt": "2026-05-02T06:08:36.376Z",
+  "caseStudy": {
+    "id": "nc",
+    "name": "North Carolina",
+    "statePostal": "NC",
+    "stateFips": "37",
+    "year": 2020
+  },
+  "statewide": {
+    "population": 10439388,
+    "votingAgePopulation": 8155099,
+    "sourceBlocks": 236638,
+    "h3Cells": 25956,
+    "h3Resolution": 7,
+    "blackPopulation": 2140217,
+    "blackPct": 20.5,
+    "hispanicPopulation": 1118596,
+    "hispanicPct": 10.7,
+    "nonHispanicWhitePopulation": 6312148,
+    "nonwhitePopulation": 4127240,
+    "nonwhitePct": 39.5
+  },
+  "electionSignals": {
+    "precinctCentroids2020": {
+      "records": 2662,
+      "demVotes": 2684292,
+      "repVotes": 2758775,
+      "totalVotes": 5443067,
+      "demPct": 49.3,
+      "repPct": 50.7,
+      "caveat": "VEST precinct records are loaded as centroid points in the current prototype."
+    },
+    "countyCentroids2020": {
+      "records": 100,
+      "demVotes": 2684292,
+      "repVotes": 2758773,
+      "totalVotes": 5524802,
+      "demPct": 49.3,
+      "repPct": 50.7,
+      "caveat": "County centroids are coarse and mainly support broad orientation."
+    },
+    "countyDerivedDistrictHeat2020": {
+      "districts": 14,
+      "demVotes": 2684292,
+      "repVotes": 2758773,
+      "totalVotes": 5524802,
+      "countyAssignments": 100,
+      "demPct": 49.3,
+      "repPct": 50.7,
+      "caveat": "District heat fill is county-derived and not precinct-to-district aggregation."
+    }
+  },
+  "planComparisons": [
+    {
+      "planId": "us-congress-118-enacted",
+      "name": "118th Congress enacted districts",
+      "status": "enacted",
+      "source": "U.S. Census Bureau",
+      "cycle": "2022",
+      "districtCount": 14,
+      "featureCount": 14,
+      "totalPopulation": 0,
+      "h3CentersCovered": 25186,
+      "h3CentersUncovered": 770,
+      "h3CoveragePct": 97,
+      "districtsTouchedByH3Centers": 14,
+      "caveats": [
+        "This registry entry is a baseline enacted plan package, not an alternative proposal.",
+        "It proves the local plan-registry path before court, commission, and proposed maps are added."
+      ]
+    },
+    {
+      "planId": "nc-2022-court-interim-congressional",
+      "name": "NC 2022 court-ordered congressional plan",
+      "status": "court",
+      "source": "North Carolina General Assembly",
+      "cycle": "2022",
+      "districtCount": 14,
+      "featureCount": 14,
+      "totalPopulation": 10439388,
+      "h3CentersCovered": 25770,
+      "h3CentersUncovered": 186,
+      "h3CoveragePct": 99.3,
+      "districtsTouchedByH3Centers": 14,
+      "caveats": [
+        "This is an official plan file from the NCGA 2022 redistricting process, normalized for Honeycombing's plan registry.",
+        "It is a plan overlay only; election and demographic comparisons still need separate aggregation."
+      ]
+    },
+    {
+      "planId": "nc-2023-enacted-congressional",
+      "name": "NC 2023 enacted congressional plan",
+      "status": "enacted",
+      "source": "North Carolina General Assembly",
+      "cycle": "2024",
+      "districtCount": 14,
+      "featureCount": 14,
+      "totalPopulation": 10439388,
+      "h3CentersCovered": 25770,
+      "h3CentersUncovered": 186,
+      "h3CoveragePct": 99.3,
+      "districtsTouchedByH3Centers": 14,
+      "caveats": [
+        "This is an official plan file from the NCGA 2023 redistricting process, normalized for Honeycombing's plan registry.",
+        "It provides a meaningfully different NC congressional-plan contrast against the 2022 court-ordered plan, but vote aggregation still uses centroid assignment until polygon apportionment is implemented."
+      ]
+    }
+  ],
+  "starterSelections": [
+    {
+      "id": "triangle",
+      "name": "Triangle",
+      "shortName": "Triangle",
+      "description": "Wake, Durham, Orange, and nearby suburban growth corridors.",
+      "reviewerPrompt": "Inspect how the court and enacted plans handle a high-growth Democratic urban/suburban cluster.",
+      "bounds": {
+        "south": 35.45,
+        "west": -79.35,
+        "north": 36.25,
+        "east": -78.35
+      },
+      "center": {
+        "lat": 35.88,
+        "lng": -78.82
+      },
+      "zoom": 9,
+      "h3Resolution": 7,
+      "h3Cells": 1682,
+      "sourceBlockRecords": 27640,
+      "population": {
+        "total": 1960555,
+        "votingAge": 1512225,
+        "black": 393196,
+        "blackPct": 20.1,
+        "hispanic": 242110,
+        "hispanicPct": 12.3,
+        "nonHispanicWhite": 1105661,
+        "nonwhite": 854894,
+        "nonwhitePct": 43.6
+      },
+      "electionSignal": {
+        "precincts": 363,
+        "demVotes": 691338,
+        "repVotes": 388136,
+        "totalVotes": 1079474,
+        "demPct": 64,
+        "repPct": 36,
+        "marginPct": 28.1,
+        "lean": "D",
+        "caveat": "VEST precinct records are loaded as centroid points in the current prototype."
+      },
+      "planTouches": [
+        {
+          "planId": "nc-2022-court-interim-congressional",
+          "name": "NC 2022 court-ordered congressional plan",
+          "status": "court",
+          "cycle": "2022",
+          "h3CentersCovered": 1682,
+          "h3CentersUncovered": 0,
+          "h3CoveragePct": 100,
+          "districtsTouched": 6,
+          "districtIds": [
+            "3701",
+            "3702",
+            "3704",
+            "3706",
+            "3709",
+            "3713"
+          ]
+        },
+        {
+          "planId": "nc-2023-enacted-congressional",
+          "name": "NC 2023 enacted congressional plan",
+          "status": "enacted",
+          "cycle": "2024",
+          "h3CentersCovered": 1682,
+          "h3CentersUncovered": 0,
+          "h3CoveragePct": 100,
+          "districtsTouched": 5,
+          "districtIds": [
+            "3701",
+            "3702",
+            "3704",
+            "3709",
+            "3713"
+          ]
+        }
+      ],
+      "caveats": [
+        "Bounds are rectangular starter selections for review triage, not official regions or legal communities of interest.",
+        "Population uses Census block internal points assigned to H3 cells; precinct signal uses VEST precinct centroids.",
+        "Plan touch counts use selected H3 cell centers inside plan polygons, not area or population apportionment."
+      ]
+    },
+    {
+      "id": "charlotte-mecklenburg",
+      "name": "Charlotte / Mecklenburg",
+      "shortName": "Charlotte",
+      "description": "Charlotte, Mecklenburg County, and the immediate suburban edge.",
+      "reviewerPrompt": "Inspect whether the metro core and suburban edge are packed, cracked, or preserved across plans.",
+      "bounds": {
+        "south": 34.9,
+        "west": -81.15,
+        "north": 35.55,
+        "east": -80.45
+      },
+      "center": {
+        "lat": 35.23,
+        "lng": -80.84
+      },
+      "zoom": 9,
+      "h3Resolution": 7,
+      "h3Cells": 868,
+      "sourceBlockRecords": 23497,
+      "population": {
+        "total": 1742306,
+        "votingAge": 1328017,
+        "black": 415562,
+        "blackPct": 23.9,
+        "hispanic": 239289,
+        "hispanicPct": 13.7,
+        "nonHispanicWhite": 917961,
+        "nonwhite": 824345,
+        "nonwhitePct": 47.3
+      },
+      "electionSignal": {
+        "precincts": 320,
+        "demVotes": 516308,
+        "repVotes": 395644,
+        "totalVotes": 911952,
+        "demPct": 56.6,
+        "repPct": 43.4,
+        "marginPct": 13.2,
+        "lean": "D",
+        "caveat": "VEST precinct records are loaded as centroid points in the current prototype."
+      },
+      "planTouches": [
+        {
+          "planId": "nc-2022-court-interim-congressional",
+          "name": "NC 2022 court-ordered congressional plan",
+          "status": "court",
+          "cycle": "2022",
+          "h3CentersCovered": 856,
+          "h3CentersUncovered": 12,
+          "h3CoveragePct": 98.6,
+          "districtsTouched": 4,
+          "districtIds": [
+            "3708",
+            "3710",
+            "3712",
+            "3714"
+          ]
+        },
+        {
+          "planId": "nc-2023-enacted-congressional",
+          "name": "NC 2023 enacted congressional plan",
+          "status": "enacted",
+          "cycle": "2024",
+          "h3CentersCovered": 856,
+          "h3CentersUncovered": 12,
+          "h3CoveragePct": 98.6,
+          "districtsTouched": 5,
+          "districtIds": [
+            "3706",
+            "3708",
+            "3710",
+            "3712",
+            "3714"
+          ]
+        }
+      ],
+      "caveats": [
+        "Bounds are rectangular starter selections for review triage, not official regions or legal communities of interest.",
+        "Population uses Census block internal points assigned to H3 cells; precinct signal uses VEST precinct centroids.",
+        "Plan touch counts use selected H3 cell centers inside plan polygons, not area or population apportionment."
+      ]
+    },
+    {
+      "id": "triad",
+      "name": "Triad",
+      "shortName": "Triad",
+      "description": "Greensboro, Winston-Salem, High Point, and surrounding counties.",
+      "reviewerPrompt": "Inspect the state's central urban/suburban corridor where multiple districts can touch compact clusters.",
+      "bounds": {
+        "south": 35.75,
+        "west": -80.55,
+        "north": 36.35,
+        "east": -79.45
+      },
+      "center": {
+        "lat": 36.07,
+        "lng": -79.9
+      },
+      "zoom": 9,
+      "h3Resolution": 7,
+      "h3Cells": 1396,
+      "sourceBlockRecords": 24619,
+      "population": {
+        "total": 1305668,
+        "votingAge": 1022668,
+        "black": 312432,
+        "blackPct": 23.9,
+        "hispanic": 138216,
+        "hispanicPct": 10.6,
+        "nonHispanicWhite": 757737,
+        "nonwhite": 547931,
+        "nonwhitePct": 42
+      },
+      "electionSignal": {
+        "precincts": 352,
+        "demVotes": 340602,
+        "repVotes": 337986,
+        "totalVotes": 678588,
+        "demPct": 50.2,
+        "repPct": 49.8,
+        "marginPct": 0.4,
+        "lean": "D",
+        "caveat": "VEST precinct records are loaded as centroid points in the current prototype."
+      },
+      "planTouches": [
+        {
+          "planId": "nc-2022-court-interim-congressional",
+          "name": "NC 2022 court-ordered congressional plan",
+          "status": "court",
+          "cycle": "2022",
+          "h3CentersCovered": 1396,
+          "h3CentersUncovered": 0,
+          "h3CoveragePct": 100,
+          "districtsTouched": 5,
+          "districtIds": [
+            "3704",
+            "3705",
+            "3706",
+            "3708",
+            "3709"
+          ]
+        },
+        {
+          "planId": "nc-2023-enacted-congressional",
+          "name": "NC 2023 enacted congressional plan",
+          "status": "enacted",
+          "cycle": "2024",
+          "h3CentersCovered": 1396,
+          "h3CentersUncovered": 0,
+          "h3CoveragePct": 100,
+          "districtsTouched": 5,
+          "districtIds": [
+            "3705",
+            "3706",
+            "3709",
+            "3710",
+            "3713"
+          ]
+        }
+      ],
+      "caveats": [
+        "Bounds are rectangular starter selections for review triage, not official regions or legal communities of interest.",
+        "Population uses Census block internal points assigned to H3 cells; precinct signal uses VEST precinct centroids.",
+        "Plan touch counts use selected H3 cell centers inside plan polygons, not area or population apportionment."
+      ]
+    },
+    {
+      "id": "eastern-black-belt",
+      "name": "Eastern Black Belt",
+      "shortName": "East NC",
+      "description": "Eastern North Carolina counties with substantial Black population and VRA-adjacent review questions.",
+      "reviewerPrompt": "Inspect demographic concentration, plan continuity, and where Honeycombing must defer to CVAP/RPV evidence.",
+      "bounds": {
+        "south": 34.85,
+        "west": -78.65,
+        "north": 36.6,
+        "east": -76.15
+      },
+      "center": {
+        "lat": 35.72,
+        "lng": -77.4
+      },
+      "zoom": 8,
+      "h3Resolution": 7,
+      "h3Cells": 7742,
+      "sourceBlockRecords": 50033,
+      "population": {
+        "total": 1969311,
+        "votingAge": 1522144,
+        "black": 610983,
+        "blackPct": 31,
+        "hispanic": 217890,
+        "hispanicPct": 11.1,
+        "nonHispanicWhite": 1029132,
+        "nonwhite": 940179,
+        "nonwhitePct": 47.7
+      },
+      "electionSignal": {
+        "precincts": 564,
+        "demVotes": 524238,
+        "repVotes": 497938,
+        "totalVotes": 1022176,
+        "demPct": 51.3,
+        "repPct": 48.7,
+        "marginPct": 2.6,
+        "lean": "D",
+        "caveat": "VEST precinct records are loaded as centroid points in the current prototype."
+      },
+      "planTouches": [
+        {
+          "planId": "nc-2022-court-interim-congressional",
+          "name": "NC 2022 court-ordered congressional plan",
+          "status": "court",
+          "cycle": "2022",
+          "h3CentersCovered": 7713,
+          "h3CentersUncovered": 29,
+          "h3CoveragePct": 99.6,
+          "districtsTouched": 6,
+          "districtIds": [
+            "3701",
+            "3702",
+            "3703",
+            "3704",
+            "3707",
+            "3713"
+          ]
+        },
+        {
+          "planId": "nc-2023-enacted-congressional",
+          "name": "NC 2023 enacted congressional plan",
+          "status": "enacted",
+          "cycle": "2024",
+          "h3CentersCovered": 7713,
+          "h3CentersUncovered": 29,
+          "h3CoveragePct": 99.6,
+          "districtsTouched": 5,
+          "districtIds": [
+            "3701",
+            "3702",
+            "3703",
+            "3707",
+            "3713"
+          ]
+        }
+      ],
+      "caveats": [
+        "Bounds are rectangular starter selections for review triage, not official regions or legal communities of interest.",
+        "Population uses Census block internal points assigned to H3 cells; precinct signal uses VEST precinct centroids.",
+        "Plan touch counts use selected H3 cell centers inside plan polygons, not area or population apportionment."
+      ]
+    },
+    {
+      "id": "western-nc",
+      "name": "Western North Carolina",
+      "shortName": "West NC",
+      "description": "Mountain and foothill region anchored by Asheville and western counties.",
+      "reviewerPrompt": "Inspect rural/urban contrast, geography-driven boundaries, and whether the scaffold overstates natural mountain separations.",
+      "bounds": {
+        "south": 34.8,
+        "west": -84.35,
+        "north": 36.45,
+        "east": -81.65
+      },
+      "center": {
+        "lat": 35.62,
+        "lng": -82.55
+      },
+      "zoom": 8,
+      "h3Resolution": 7,
+      "h3Cells": 3660,
+      "sourceBlockRecords": 30142,
+      "population": {
+        "total": 926459,
+        "votingAge": 758261,
+        "black": 38594,
+        "blackPct": 4.2,
+        "hispanic": 69658,
+        "hispanicPct": 7.5,
+        "nonHispanicWhite": 757691,
+        "nonwhite": 168768,
+        "nonwhitePct": 18.2
+      },
+      "electionSignal": {
+        "precincts": 352,
+        "demVotes": 225895,
+        "repVotes": 299267,
+        "totalVotes": 525162,
+        "demPct": 43,
+        "repPct": 57,
+        "marginPct": -14,
+        "lean": "R",
+        "caveat": "VEST precinct records are loaded as centroid points in the current prototype."
+      },
+      "planTouches": [
+        {
+          "planId": "nc-2022-court-interim-congressional",
+          "name": "NC 2022 court-ordered congressional plan",
+          "status": "court",
+          "cycle": "2022",
+          "h3CentersCovered": 3605,
+          "h3CentersUncovered": 55,
+          "h3CoveragePct": 98.5,
+          "districtsTouched": 3,
+          "districtIds": [
+            "3705",
+            "3710",
+            "3711"
+          ]
+        },
+        {
+          "planId": "nc-2023-enacted-congressional",
+          "name": "NC 2023 enacted congressional plan",
+          "status": "enacted",
+          "cycle": "2024",
+          "h3CentersCovered": 3605,
+          "h3CentersUncovered": 55,
+          "h3CoveragePct": 98.5,
+          "districtsTouched": 3,
+          "districtIds": [
+            "3705",
+            "3711",
+            "3714"
+          ]
+        }
+      ],
+      "caveats": [
+        "Bounds are rectangular starter selections for review triage, not official regions or legal communities of interest.",
+        "Population uses Census block internal points assigned to H3 cells; precinct signal uses VEST precinct centroids.",
+        "Plan touch counts use selected H3 cell centers inside plan polygons, not area or population apportionment."
+      ]
+    }
+  ],
+  "caveats": [
+    "Block and precinct assignments currently use internal points or centroids rather than polygon-to-H3 apportionment.",
+    "District heat fill is county-derived and should not be treated as precinct-to-district aggregation.",
+    "Plan coverage counts selected H3 cell centers inside plan polygons; it is a diagnostic coverage signal, not an area apportionment.",
+    "CVAP, racially polarized voting, candidate-of-choice, COI, ensemble, and formal VRA workflows are not included yet."
+  ],
+  "nextQuestions": [
+    "Should the next evidence upgrade replace county-derived district heat with precinct-to-district aggregation?",
+    "Which NC regions should become named starter selections for expert review?",
+    "What COI source should be used first for a North Carolina overlay skeleton?",
+    "Which statistics should be considered mandatory before sharing with redistricting lawyers?"
+  ]
+}

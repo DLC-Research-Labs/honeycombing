@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-03T19:25:06.867334+00:00",
+  "county": {
+    "state": "NC",
+    "countyFips": "119",
+    "countyNumber": 60,
+    "name": "Mecklenburg"
+  },
+  "h3Resolution": 7,
+  "method": {
+    "pointAssignment": "Current shortcut: source internal point or centroid assigned to one H3 cell.",
+    "polygonApportionment": "Audit method: source polygon intersected with overlapping H3 cells and attributes allocated by intersection area share.",
+    "workingAreaCrs": "EPSG:5070",
+    "displayCrs": "EPSG:4326"
+  },
+  "layers": [
+    {
+      "layer": "blocks",
+      "county_fips": "119",
+      "county_name": "Mecklenburg",
+      "h3_resolution": 7,
+      "source_polygons": 12132,
+      "point_cells": 342,
+      "apportioned_cells": 356,
+      "split_polygons": 3700,
+      "total_by_field": {
+        "total_population": 1115482.0,
+        "voting_age_population": 860025.0,
+        "white_alone": 520567.0,
+        "black_alone": 330458.0,
+        "hispanic_or_latino": 169922.0,
+        "non_hispanic_white_alone": 498683.0
+      },
+      "delta_by_field": {
+        "total_population": 0.0,
+        "voting_age_population": 0.0,
+        "white_alone": 0.0,
+        "black_alone": 0.0,
+        "hispanic_or_latino": 0.0,
+        "non_hispanic_white_alone": 0.0
+      },
+      "max_abs_cell_delta_by_field": {
+        "total_population": 1875.694217,
+        "voting_age_population": 1518.245304,
+        "white_alone": 1097.944416,
+        "black_alone": 891.57919,
+        "hispanic_or_latino": 518.109926,
+        "non_hispanic_white_alone": 1095.335144
+      },
+      "mean_abs_cell_delta_by_field": {
+        "total_population": 240.449416,
+        "voting_age_population": 187.965249,
+        "white_alone": 123.009836,
+        "black_alone": 79.423255,
+        "hispanic_or_latino": 36.495817,
+        "non_hispanic_white_alone": 119.714735
+      },
+      "max_vote_share_delta_pp": null,
+      "weighted_mean_vote_share_delta_pp": null,
+      "classification": "material_for_statistics",
+      "caveats": [
+        "Polygon apportionment is area-weighted, not population-density-weighted inside source polygons.",
+        "The H3 overlap polyfill uses an experimental containment mode in h3-py 4.4.2.",
+        "This is a bounded county audit and should not be generalized statewide without additional slices."
+      ]
+    },
+    {
+      "layer": "precincts",
+      "county_fips": "119",
+      "county_name": "Mecklenburg",
+      "h3_resolution": 7,
+      "source_polygons": 195,
+      "point_cells": 148,
+      "apportioned_cells": 356,
+      "split_polygons": 195,
+      "total_by_field": {
+        "dem_votes": 378107.0,
+        "rep_votes": 179211.0,
+        "total_votes": 557318.0
+      },
+      "delta_by_field": {
+        "dem_votes": 0.0,
+        "rep_votes": 0.0,
+        "total_votes": 0.0
+      },
+      "max_abs_cell_delta_by_field": {
+        "dem_votes": 6073.029625,
+        "rep_votes": 3080.677301,
+        "total_votes": 8084.532213
+      },
+      "mean_abs_cell_delta_by_field": {
+        "dem_votes": 881.30801,
+        "rep_votes": 462.913613,
+        "total_votes": 1340.575828
+      },
+      "max_vote_share_delta_pp": 16.3636,
+      "weighted_mean_vote_share_delta_pp": 1.3045,
+      "classification": "disqualifying_for_evidence_without_apportionment",
+      "caveats": [
+        "Polygon apportionment is area-weighted, not population-density-weighted inside source polygons.",
+        "The H3 overlap polyfill uses an experimental containment mode in h3-py 4.4.2.",
+        "This is a bounded county audit and should not be generalized statewide without additional slices."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-03T08:30:46.622884+00:00",
+  "county": {
+    "state": "NC",
+    "countyFips": "001",
+    "countyNumber": 1,
+    "name": "Alamance"
+  },
+  "h3Resolution": 7,
+  "method": {
+    "pointAssignment": "Current shortcut: source internal point or centroid assigned to one H3 cell.",
+    "polygonApportionment": "Audit method: source polygon intersected with overlapping H3 cells and attributes allocated by intersection area share.",
+    "workingAreaCrs": "EPSG:5070",
+    "displayCrs": "EPSG:4326"
+  },
+  "layers": [
+    {
+      "layer": "blocks",
+      "county_fips": "001",
+      "county_name": "Alamance",
+      "h3_resolution": 7,
+      "source_polygons": 3594,
+      "point_cells": 264,
+      "apportioned_cells": 278,
+      "split_polygons": 1300,
+      "total_by_field": {
+        "total_population": 171415.0,
+        "voting_age_population": 133969.0,
+        "white_alone": 105847.0,
+        "black_alone": 34014.0,
+        "hispanic_or_latino": 24703.0,
+        "non_hispanic_white_alone": 102487.0
+      },
+      "delta_by_field": {
+        "total_population": 0.0,
+        "voting_age_population": 0.0,
+        "white_alone": 0.0,
+        "black_alone": 0.0,
+        "hispanic_or_latino": 0.0,
+        "non_hispanic_white_alone": 0.0
+      },
+      "max_abs_cell_delta_by_field": {
+        "total_population": 505.618935,
+        "voting_age_population": 386.701845,
+        "white_alone": 405.478514,
+        "black_alone": 173.426164,
+        "hispanic_or_latino": 142.786548,
+        "non_hispanic_white_alone": 399.318711
+      },
+      "mean_abs_cell_delta_by_field": {
+        "total_population": 86.839108,
+        "voting_age_population": 68.002312,
+        "white_alone": 65.767209,
+        "black_alone": 13.589125,
+        "hispanic_or_latino": 8.536052,
+        "non_hispanic_white_alone": 64.866322
+      },
+      "max_vote_share_delta_pp": null,
+      "weighted_mean_vote_share_delta_pp": null,
+      "classification": "material_for_statistics",
+      "caveats": [
+        "Polygon apportionment is area-weighted, not population-density-weighted inside source polygons.",
+        "The H3 overlap polyfill uses an experimental containment mode in h3-py 4.4.2.",
+        "This is a bounded county audit and should not be generalized statewide without additional slices."
+      ]
+    },
+    {
+      "layer": "precincts",
+      "county_fips": "001",
+      "county_name": "Alamance",
+      "h3_resolution": 7,
+      "source_polygons": 38,
+      "point_cells": 35,
+      "apportioned_cells": 278,
+      "split_polygons": 37,
+      "total_by_field": {
+        "dem_votes": 38825.0,
+        "rep_votes": 46056.0,
+        "total_votes": 84881.0
+      },
+      "delta_by_field": {
+        "dem_votes": 0.0,
+        "rep_votes": 0.0,
+        "total_votes": 0.0
+      },
+      "max_abs_cell_delta_by_field": {
+        "dem_votes": 2153.383155,
+        "rep_votes": 2328.619466,
+        "total_votes": 4238.430166
+      },
+      "mean_abs_cell_delta_by_field": {
+        "dem_votes": 164.841244,
+        "rep_votes": 232.442381,
+        "total_votes": 397.233797
+      },
+      "max_vote_share_delta_pp": 9.1598,
+      "weighted_mean_vote_share_delta_pp": 1.1544,
+      "classification": "disqualifying_for_evidence_without_apportionment",
+      "caveats": [
+        "Polygon apportionment is area-weighted, not population-density-weighted inside source polygons.",
+        "The H3 overlap polyfill uses an experimental containment mode in h3-py 4.4.2.",
+        "This is a bounded county audit and should not be generalized statewide without additional slices."
+      ]
+    }
+  ]
+}

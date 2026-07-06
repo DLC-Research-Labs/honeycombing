@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #ededed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.whitepaper {
+  color: #d4d4d8;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.whitepaper h1 {
+  color: #f4f4f5;
+  font-size: 30px;
+  line-height: 1.15;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.whitepaper h2 {
+  color: #e4e4e7;
+  font-size: 22px;
+  line-height: 1.3;
+  font-weight: 650;
+  margin-top: 48px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+}
+
+.whitepaper h3 {
+  color: #d4d4d8;
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 650;
+  margin-top: 28px;
+  margin-bottom: 8px;
+}
+
+.whitepaper h4 {
+  color: #a1a1aa;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 650;
+  margin-top: 20px;
+}
+
+.whitepaper p,
+.whitepaper ul,
+.whitepaper ol,
+.whitepaper table,
+.whitepaper pre {
+  margin-top: 14px;
+  margin-bottom: 14px;
+}
+
+.whitepaper ul,
+.whitepaper ol {
+  padding-left: 24px;
+}
+
+.whitepaper ul {
+  list-style: disc;
+}
+
+.whitepaper ol {
+  list-style: decimal;
+}
+
+.whitepaper li {
+  margin-top: 6px;
+}
+
+.whitepaper strong {
+  color: #f4f4f5;
+  font-weight: 650;
+}
+
+.whitepaper em {
+  color: #e4e4e7;
+}
+
+.whitepaper a {
+  color: #22d3ee;
+  text-decoration: none;
+}
+
+.whitepaper a:hover {
+  text-decoration: underline;
+}
+
+.whitepaper hr {
+  border: 0;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+  margin: 32px 0;
+}
+
+.whitepaper pre {
+  overflow-x: auto;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 8px;
+  background: #18181b;
+  padding: 16px;
+}
+
+.whitepaper code {
+  color: #67e8f9;
+  font-size: 14px;
+}
+
+.whitepaper table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.whitepaper th {
+  color: #e4e4e7;
+  font-weight: 650;
+  text-align: left;
+  border-bottom: 1px solid rgb(255 255 255 / 0.22);
+  padding: 8px 12px 8px 0;
+}
+
+.whitepaper td {
+  color: #c4c4cc;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  padding: 8px 12px 8px 0;
+}
