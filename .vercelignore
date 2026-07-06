@@ -1,7 +1,7 @@
-data/
-docs/
-scripts/
-internal/
+/data/
+/docs/
+/scripts/
+/internal/
 public/data/census/
 public/data/precincts-national-2020.json
 AGENTS.md
