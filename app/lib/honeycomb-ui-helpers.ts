@@ -875,6 +875,11 @@ export function getNamedSelectionsPacketUrl(caseStudyId: CaseStudyId = DEFAULT_C
   return "/data/case-studies/nc-named-selections.json";
 }
 
+export function getHeadlineFindingUrl(caseStudyId: CaseStudyId = DEFAULT_CASE_STUDY_ID): string {
+  if (caseStudyId === "nc") return "/data/case-studies/nc-headline-finding.json";
+  return "/data/case-studies/nc-headline-finding.json";
+}
+
 export function getEnsembleRegistryUrl(): string {
   return "/data/ensembles/registry.json";
 }
