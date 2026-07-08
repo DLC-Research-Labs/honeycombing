@@ -4,6 +4,8 @@ Honeycombing is a civic mapping prototype that compares enacted district maps ag
 
 **Live demo:** [dalovecompany.com/honeycombing](https://www.dalovecompany.com/honeycombing)
 
+**Headline finding (NC case study):** 4 of 14 districts lean Democratic under North Carolina's 2023 enacted congressional map — 94.5% of 5,000 neutral simulated maps produce more (ALARM ensemble, 2020 presidential vote proxy; 2.8th percentile, ensemble median 6). This is a diagnostic position inside a documented simulated distribution — not a seat forecast and not legal evidence. Method and derivation: `docs/research/outputs/headline-finding/nc-headline-finding.md`.
+
 **What this is not:** a diagnostic prototype, not legal evidence. Nothing here demonstrates illegal intent or legal injury, hex counts are not a seat measure, and the known methodological shortcuts are disclosed rather than hidden. Read [/limits](https://www.dalovecompany.com/honeycombing/limits) before citing any number, and the white paper at [/about](https://www.dalovecompany.com/honeycombing/about) for the full method.
 
 ## Run the App
@@ -49,6 +51,7 @@ Current reviewer-facing status:
 - `scripts/build-census-blocks.py`: builds county/state Census block demographic point slices.
 - `scripts/build-census-h3.mjs`: builds the app-facing H3 aggregate from the raw Census block slice and writes a manifest.
 - `scripts/build-nc-starter-pack.mjs`: builds the compact North Carolina handoff packet from the tracked H3, precinct, county, district-heat, and plan-registry artifacts.
+- `scripts/build-headline-finding.mjs`: derives the demo's headline finding (2023 enacted plan vs the ALARM ensemble seat distribution) from the normalized ensemble payload, recomputing every number so the headline card can never drift from its source data.
 
 Example Census block dry run:
 
@@ -80,6 +83,14 @@ npm run build:nc-starter-pack
 
 The app reads `public/data/case-studies/nc-starter-pack.json` on the white-paper page. It summarizes the default NC H3 population layer, 2020 precinct and county vote signals, county-derived district heat, enacted district coverage, and NC court-plan coverage with caveats suitable for external review.
 
+Build the North Carolina headline finding:
+
+```bash
+npm run build:headline-finding
+```
+
+The map view reads `public/data/case-studies/nc-headline-finding.json` and renders it as the Finding banner (with a method/provenance detail card). The artifact is derived entirely from `public/data/ensembles/nc-congress-2020-alarm.json`; `scripts/headline-finding.test.mjs` recomputes the stat from the ensemble payload and fails if the tracked artifact drifts. A human-readable derivation lives at `docs/research/outputs/headline-finding/nc-headline-finding.md`.
+
 ## Data Artifact Policy
 
 Tracked app payloads should be compact, documented, and useful without private setup. Raw downloads, TIGER files, Census county slices, national precinct dumps, and other bulky rebuildable inputs stay ignored under `data/` or `public/data/`. The current tracked public-data exception is `public/data/plans/`, because the plan registry is small enough to review and is part of the app-facing product contract.
@@ -99,6 +110,7 @@ Current packaged plans:
 The map currently has functional controls for:
 
 - Case study: North Carolina by default
+- Headline finding banner: the enacted-plan-vs-ensemble stat rendered above the map, with a method/provenance detail card and a standing link to `/limits`
 - Granularity: Block, Precinct, County
 - Layer A: regional H3 grid
 - Layer B: detail H3 grid

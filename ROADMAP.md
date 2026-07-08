@@ -1,5 +1,12 @@
 # ROADMAP — Honeycombing
 
+## STATUS 2026-07-08 — first headline finding shipped (local commits, not yet deployed)
+
+- **Headline finding:** the demo now states a conclusion instead of only offering exploratory layers. Finding banner on the map view: "4 of 14 districts lean Democratic under North Carolina's 2023 enacted congressional map — 94.5% of 5,000 neutral simulated maps produce more." Ensemble median 6; enacted plan at the 2.8th percentile (low outlier under `classifyEnsemblePercentile`); ALARM 50-State Simulations, 2020 presidential proxy.
+- **Pipeline:** `npm run build:headline-finding` → `public/data/case-studies/nc-headline-finding.json`, derived entirely from the normalized ALARM ensemble payload; `scripts/headline-finding.test.mjs` recomputes the stat and fails on drift. Derivation report: `docs/research/outputs/headline-finding/nc-headline-finding.md`. Banner links "method" (provenance + caveats card) and `/limits`.
+- **Honesty posture:** diagnostic position inside a documented simulated distribution — presidential proxy, draft ensemble status, no intent/legality claim. The `/limits` "Ensemble percentiles are not intent" section covers exactly this stat.
+- **Next headline:** when precinct-level congressional results land in the H3 layer, graduate the stat from the presidential proxy to observed congressional votes; ingest ALARM's plan-assignment matrices (`NC_cd_2020_plans.rds`) to localize *where* the enacted plan diverges from the ensemble, not just how much.
+
 ## STATUS 2026-07-06 — public demo live, share-readiness in progress
 
 - **Live demo:** `honeycombing.dalovecompany.com` (static Vercel build; raw census inputs and bulk build inputs are excluded from deploys via `.vercelignore`). The `/about` white paper and `/limits` page are public-facing documents.
