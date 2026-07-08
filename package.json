@@ -8,6 +8,7 @@
     "start": "next start",
     "build:census-h3": "node scripts/build-census-h3.mjs",
     "build:nc-starter-pack": "node scripts/build-nc-starter-pack.mjs",
+    "build:headline-finding": "node scripts/build-headline-finding.mjs",
     "test": "node --test scripts/*.test.mjs",
     "lint": "eslint"
   },

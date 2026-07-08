@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-headline-enacted-vs-alarm-ensemble",
+  "caseStudyId": "nc",
+  "generatedAt": "2026-07-08T00:00:00Z",
+  "headline": "4 of 14 districts lean Democratic under North Carolina's 2023 enacted congressional map — 94.5% of 5,000 neutral simulated maps produce more.",
+  "shortHeadline": "NC's 2023 enacted map: 4 of 14 Democratic-leaning districts — 94.5% of 5,000 neutral maps produce more.",
+  "methodNote": "Districts scored by 2020 presidential two-party vote, compared against the ALARM Project's 5,000-plan simulated ensemble (redist SMC, NC constraints). Ensemble median: 6 Democratic-leaning seats; the enacted plan sits at the 2.8th percentile. Diagnostic position, not a seat forecast and not legal evidence.",
+  "stat": {
+    "planId": "nc-2023-enacted-congressional",
+    "planName": "NC 2023 enacted congressional plan (SL 2023-145)",
+    "measureId": "dem_seats_pre20",
+    "measureLabel": "Democratic seats (of 14)",
+    "planSeats": 4,
+    "districtCount": 14,
+    "ensembleMedianSeats": 6,
+    "planCount": 5000,
+    "plansAtOrBelow": 275,
+    "plansAtOrBelowPct": 5.5,
+    "plansAbove": 4725,
+    "plansAbovePct": 94.5,
+    "percentile": 2.8,
+    "band": "low_outlier"
+  },
+  "provenance": {
+    "script": "scripts/build-headline-finding.mjs",
+    "inputs": [
+      {
+        "path": "public/data/ensembles/nc-congress-2020-alarm.json",
+        "description": "ALARM Project 50-State Redistricting Simulations, NC 2020 congressional cycle, normalized by scripts/build-alarm-ensemble.mjs",
+        "sourceUrl": "https://doi.org/10.7910/DVN/SLCD3E",
+        "status": "draft"
+      }
+    ],
+    "citation": "McCartan, Kenny, Simko, Kuriwaki, Garcia, Wang, Wu, Ebowe, O'Sullivan, Samarth, Arora, Gao, Zhao & Imai, \"50-State Redistricting Simulations\" (Harvard Dataverse, doi:10.7910/DVN/SLCD3E, version 15), files NC_cd_2020_stats.csv and NC_cd_2020_doc.html. See also McCartan et al., \"Simulated redistricting plans for the analysis and evaluation of redistricting in the United States\", Scientific Data 9:689 (2022).",
+    "voteProxy": "2020 presidential two-party vote (ALARM pre_20 columns); compared-plan seat counts use Honeycombing's VEST precinct centroid assignment, calibrated against ALARM's exact assignment (max rank-sorted district share delta 0.12pp)."
+  },
+  "caveats": [
+    "Percentile position describes where the plan sits inside a simulated distribution with a documented constraint set. It is not evidence of intent or legal injury, and it cannot show whether deviations were legally required.",
+    "Seat counts use the 2020 presidential vote as a partisan-lean proxy, not congressional election results.",
+    "The underlying ensemble payload is status \"draft\" pending expert review of its consistency checks.",
+    "Read /limits before citing this number."
+  ]
+}
