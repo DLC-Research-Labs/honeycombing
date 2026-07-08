@@ -21,6 +21,7 @@ import {
   getCaseStudy,
   getCaseStudyPacketUrl,
   getNamedSelectionsPacketUrl,
+  getHeadlineFindingUrl,
   getDatasetModeGuide,
   getDatasetKind,
   getDatasetNote,
@@ -140,6 +141,28 @@ interface NamedSelectionsPacket {
   regions?: NamedSelectionRegion[];
 }
 
+interface HeadlineFinding {
+  headline: string;
+  shortHeadline: string;
+  methodNote: string;
+  stat: {
+    planName: string;
+    planSeats: number;
+    districtCount: number;
+    ensembleMedianSeats: number;
+    planCount: number;
+    plansAbove: number;
+    plansAbovePct: number;
+    percentile: number;
+    band: string;
+  };
+  provenance: {
+    inputs: { description: string; sourceUrl: string; status: string }[];
+    voteProxy: string;
+  };
+  caveats: string[];
+}
+
 function districtLabel(districtId: string): string {
   const district = Number(districtId.slice(2));
   return Number.isFinite(district) && districtId.startsWith("37") ? `CD ${district}` : districtId;
@@ -191,6 +214,8 @@ export default function Home() {
   const [sidekickOpen, setSidekickOpen] = useState(false);
   const [caseStudyPacket, setCaseStudyPacket] = useState<CaseStudyPacket | null>(null);
   const [namedSelections, setNamedSelections] = useState<NamedSelectionsPacket | null>(null);
+  const [headlineFinding, setHeadlineFinding] = useState<HeadlineFinding | null>(null);
+  const [findingOpen, setFindingOpen] = useState(false);
   const [activeStarterId, setActiveStarterId] = useState<string | null>(null);
   const [mapFocusBounds, setMapFocusBounds] = useState<MapFocusBounds | null>(null);
   const [manifestState, setManifestState] = useState<ManifestState | null>(null);
@@ -247,6 +272,18 @@ export default function Home() {
       })
       .catch(() => {
         if (!cancelled) setNamedSelections(null);
+      });
+
+    fetch(withBasePath(getHeadlineFindingUrl(caseStudyId)))
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((finding: HeadlineFinding) => {
+        if (!cancelled) setHeadlineFinding(finding);
+      })
+      .catch(() => {
+        if (!cancelled) setHeadlineFinding(null);
       });
 
     return () => {
@@ -525,6 +562,119 @@ export default function Home() {
           Prototype — not legal evidence
         </Link>
       </div>
+
+      {/* Headline finding banner */}
+      {headlineFinding && (
+        <div className="flex flex-shrink-0 items-start gap-2 border-b border-cyan-500/15 bg-cyan-500/[0.05] px-4 py-1.5 font-mono text-[11px]">
+          <span className="mt-px shrink-0 rounded bg-cyan-500/15 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] text-cyan-300">
+            Finding
+          </span>
+          <span className="min-w-0 leading-snug text-zinc-200">
+            {headlineFinding.headline}{" "}
+            <button
+              type="button"
+              onClick={() => setFindingOpen((open) => !open)}
+              aria-expanded={findingOpen}
+              className="text-cyan-400 underline decoration-cyan-400/40 underline-offset-2 transition-colors hover:text-cyan-300"
+            >
+              method
+            </button>
+            <span className="text-zinc-600"> · </span>
+            <Link
+              href="/limits"
+              className="text-amber-300/90 underline decoration-amber-400/40 underline-offset-2 transition-colors hover:text-amber-300"
+            >
+              limits
+            </Link>
+          </span>
+        </div>
+      )}
+
+      {/* Headline finding detail card */}
+      {headlineFinding && findingOpen && (
+        <aside className="fixed left-3 top-32 z-[1250] w-[min(440px,calc(100vw-24px))] max-h-[calc(100dvh-152px)] overflow-auto border border-cyan-500/25 bg-zinc-950/95 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3">
+            <div>
+              <div className="text-[10px] uppercase tracking-[0.18em] text-cyan-400">Headline Finding · NC case study</div>
+              <h2 className="mt-1 text-sm font-semibold text-zinc-100">Enacted plan vs neutral ensemble</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFindingOpen(false)}
+              aria-label="Close headline finding detail"
+              className="rounded p-1 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-200"
+            >
+              <X size={15} aria-hidden="true" />
+            </button>
+          </div>
+          <div className="space-y-4 px-4 py-3 text-[11px] font-mono">
+            <div className="border border-cyan-500/20 bg-cyan-500/[0.05] px-3 py-2.5">
+              <div className="text-2xl font-semibold tracking-tight text-cyan-200">
+                {headlineFinding.stat.planSeats} of {headlineFinding.stat.districtCount}
+              </div>
+              <div className="mt-1 leading-relaxed text-zinc-300">
+                Democratic-leaning districts under the {headlineFinding.stat.planName} — {headlineFinding.stat.plansAbovePct}% of{" "}
+                {headlineFinding.stat.planCount.toLocaleString()} neutral simulated maps produce more.
+              </div>
+            </div>
+
+            <section className="grid grid-cols-3 gap-2">
+              <div className="border border-white/10 bg-white/[0.03] px-2 py-1.5">
+                <div className="text-zinc-500">Ensemble median</div>
+                <div className="mt-1 text-zinc-200">{headlineFinding.stat.ensembleMedianSeats} seats</div>
+              </div>
+              <div className="border border-white/10 bg-white/[0.03] px-2 py-1.5">
+                <div className="text-zinc-500">Percentile</div>
+                <div className="mt-1 text-zinc-200">{headlineFinding.stat.percentile}</div>
+              </div>
+              <div className="border border-white/10 bg-white/[0.03] px-2 py-1.5">
+                <div className="text-zinc-500">Band</div>
+                <div className="mt-1 text-zinc-200">{headlineFinding.stat.band.replace("_", " ")}</div>
+              </div>
+            </section>
+
+            <section className="space-y-1.5">
+              <div className="text-zinc-500">Method</div>
+              <p className="leading-relaxed text-zinc-300">{headlineFinding.methodNote}</p>
+            </section>
+
+            <section className="space-y-1.5">
+              <div className="text-zinc-500">Source</div>
+              {headlineFinding.provenance.inputs.map((input) => (
+                <p key={input.sourceUrl} className="leading-relaxed text-zinc-400">
+                  {input.description} (
+                  <a
+                    href={input.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-cyan-400 underline decoration-cyan-400/40 underline-offset-2 hover:text-cyan-300"
+                  >
+                    doi:10.7910/DVN/SLCD3E
+                  </a>
+                  , status: {input.status})
+                </p>
+              ))}
+              <p className="leading-relaxed text-zinc-500">{headlineFinding.provenance.voteProxy}</p>
+            </section>
+
+            <section className="space-y-2">
+              <div className="text-zinc-500">Cite carefully</div>
+              <ul className="space-y-1.5 text-zinc-400">
+                {headlineFinding.caveats.map((caveat) => (
+                  <li key={caveat} className="leading-relaxed">- {caveat}</li>
+                ))}
+              </ul>
+            </section>
+
+            <Link
+              href="/limits"
+              className="inline-block rounded border border-amber-400/25 bg-amber-500/10 px-2 py-1 text-amber-300 transition-colors hover:bg-amber-500/15"
+            >
+              Read /limits before citing this number →
+            </Link>
+          </div>
+        </aside>
+      )}
 
       {/* Stats bar / Selection banner */}
       {selectionPhase === "selecting" ? (
