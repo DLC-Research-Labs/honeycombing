@@ -51,6 +51,17 @@ next-env.d.ts
 !/public/data/ensembles/*.json
 !/public/data/cois/
 !/public/data/cois/*.json
+# NC lens payloads — app-facing product contract (see README "Data Artifact Policy")
+!/public/data/precincts-nc-2020.json
+!/public/data/counties-nc-2000.json
+!/public/data/counties-nc-2004.json
+!/public/data/counties-nc-2008.json
+!/public/data/counties-nc-2012.json
+!/public/data/counties-nc-2016.json
+!/public/data/counties-nc-2020.json
+!/public/data/counties-nc-2024.json
+!/public/data/congressional-districts-2022.json
+!/public/data/districts-votes-2020.json
 
 # internal working docs (personas, BD, process) — never tracked
 /internal/

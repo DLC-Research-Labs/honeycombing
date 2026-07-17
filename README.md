@@ -93,7 +93,7 @@ The map view reads `public/data/case-studies/nc-headline-finding.json` and rende
 
 ## Data Artifact Policy
 
-Tracked app payloads should be compact, documented, and useful without private setup. Raw downloads, TIGER files, Census county slices, national precinct dumps, and other bulky rebuildable inputs stay ignored under `data/` or `public/data/`. The current tracked public-data exception is `public/data/plans/`, because the plan registry is small enough to review and is part of the app-facing product contract.
+Tracked app payloads should be compact, documented, and useful without private setup. Raw downloads, TIGER files, Census county slices, national precinct dumps, and other bulky rebuildable inputs stay ignored under `data/` or `public/data/`. Tracked public-data exceptions are files that are part of the app-facing product contract and small enough to review: `public/data/plans/` (the plan registry) and the North Carolina lens payloads the map fetches at runtime — `precincts-nc-2020.json`, `counties-nc-<year>.json`, `congressional-districts-2022.json`, and `districts-votes-2020.json` (~3.4 MB total). With those tracked, a fresh clone renders every layer the live demo shows. Provenance and rebuild instructions for each family live in `DATA.md` and `REPRODUCE.md`.
 
 ## Plan Registry
 
