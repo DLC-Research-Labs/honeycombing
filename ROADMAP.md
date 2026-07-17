@@ -7,6 +7,13 @@
 - **Bonus:** the map file carries per-precinct returns for eight statewide races (Senate/governor/AG, 2016+2020) — proxy-robustness checks for the headline stat before congressional returns are ingested.
 - **Now unblocked (next):** the h3-keyed ensemble unit measure (schema doc Objective 3 remainder) and divergence *localization* — where the 2023 enacted plan departs from the simulated distribution, feeding the "next headline" below. Deployed demo unchanged by this work.
 
+## STATUS 2026-07-17 — four-agent share-readiness audit; three DoD items closed
+
+- **Audit:** four independent auditors (methodology, code/repo hygiene, Playwright QA, industry positioning) reviewed the project. Methodology: the headline stat was independently recomputed from the raw ALARM CSV — every number confirmed exact; it agrees with Duke Quantifying Gerrymandering's independent ensemble and the actual 2024 outcome (10R–4D, NC-01 the only close seat); under ALARM's multi-election composite only 0.1% of plans produce ≤4 D seats, so the presidential proxy is the conservative choice. Repo hygiene: clean (identity, secrets, tracked-vs-ignored, deploy config).
+- **Shipped this pass:** map header made horizontally scrollable (all controls now reachable at 390/820px; fits untruncated at 1440 — Playwright-verified); the nine NC lens payloads (`precincts-nc-2020`, `counties-nc-<year>` ×7, `congressional-districts-2022`, `districts-votes-2020`, ~3.4 MB) are now tracked with the README data policy amended, so a fresh clone renders every layer the demo shows; **REPRODUCE.md + DATA.md written** — the two pending DoD items below are closed.
+- **Top open finding (P1): the headline describes a superseded map.** NC enacted a mid-decade congressional redraw in October 2025 for the 2026 cycle (federal courts declined to block; *Williams v. Hall* dismissed Jan 2026). Rephrase the banner to name the 2024 election cycle, add a dated note, ingest the Oct 2025 plan into the registry, and rerun `build:headline-finding` (same 14-district 2020-cycle ensemble; pipeline applies unchanged).
+- **Then:** expert-review emails to the ALARM team and Duke QG (the draft→published promotion gate the ensemble payload defines for itself); publish a proxy-sensitivity table (pre_20 vs multi-election composite); pin ALARM inputs (checksums) and move compared-plan seat counts to the exact-assignment matrices (extraction above); polish tier — percentile-convention footnote, "neutral" wording, mobile provenance-aside occlusion, /about mobile header + TOC.
+
 ## STATUS 2026-07-08 — first headline finding shipped (local commits, not yet deployed)
 
 - **Headline finding:** the demo now states a conclusion instead of only offering exploratory layers. Finding banner on the map view: "4 of 14 districts lean Democratic under North Carolina's 2023 enacted congressional map — 94.5% of 5,000 neutral simulated maps produce more." Ensemble median 6; enacted plan at the 2.8th percentile (low outlier under `classifyEnsemblePercentile`); ALARM 50-State Simulations, 2020 presidential proxy.
@@ -16,9 +23,9 @@
 
 ## STATUS 2026-07-06 — public demo live, share-readiness in progress
 
-- **Live demo:** `honeycombing.dalovecompany.com` (static Vercel build; raw census inputs and bulk build inputs are excluded from deploys via `.vercelignore`). The `/about` white paper and `/limits` page are public-facing documents.
+- **Live demo:** `dalovecompany.com/honeycombing` (static Vercel build behind the dalove proxy; the earlier `honeycombing.` subdomain was dropped and has no DNS; raw census inputs and bulk build inputs are excluded from deploys via `.vercelignore`). The `/about` white paper and `/limits` page are public-facing documents.
 - **Landing posture:** live demo + public repo. Licenses: Apache-2.0 (code), CC-BY-4.0 (white paper + derived data).
-- **Share-readiness definition of done:** a stranger can use the demo (including mobile), understand the method, reproduce the NC result (REPRODUCE.md + DATA.md — pending), and know what not to conclude (`/limits`). COI/VRA work is explicitly out of this pass.
+- **Share-readiness definition of done:** a stranger can use the demo (including mobile), understand the method, reproduce the NC result (REPRODUCE.md + DATA.md — shipped 2026-07-17), and know what not to conclude (`/limits`). COI/VRA work is explicitly out of this pass.
 
 
 ## Core Algorithm Insight (Apr 3 2026)
