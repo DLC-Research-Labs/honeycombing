@@ -57,11 +57,13 @@ import {
   summarizeHexStats,
 } from "../app/lib/honeycomb-ui-helpers.ts";
 
-test("new sessions default to NC vote-map orientation", () => {
+test("new sessions default to the NC population layer, not the vote-on-hexes map", () => {
   assert.equal(DEFAULT_CASE_STUDY_ID, "nc");
   assert.equal(DEFAULT_DATASET_ID, "precincts");
   assert.equal(DEFAULT_YEAR, 2020);
-  assert.equal(DEFAULT_VIEW_PRESET_ID, "vote-map");
+  // Opens on population, not vote margin: the equal-area vote map is a MAUP-loaded
+  // "ruler-that-isn't" and must not be the front door (red-team T1.3).
+  assert.equal(DEFAULT_VIEW_PRESET_ID, "population-demographics");
   assert.deepEqual(DATASETS.map((dataset) => dataset.id), ["blocks", "precincts", "counties"]);
 
   const nc = getCaseStudy("nc");

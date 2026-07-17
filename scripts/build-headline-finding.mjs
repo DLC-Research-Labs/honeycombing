@@ -99,9 +99,9 @@ const shortHeadline =
 const methodNote =
   `Districts scored by 2020 presidential two-party vote, compared against the ALARM Project's ${planCount.toLocaleString("en-US")}-plan `
   + `simulated ensemble (redist SMC, NC constraints). Ensemble median: ${medianSeats} Democratic-leaning seats; only `
-  + `${plansAtOrBelow} of ${planCount.toLocaleString("en-US")} simulated plans produce ${enacted.value} or fewer, so the SL 2025-95 plan sits at `
-  + `the ${percentile.toFixed(1)}th percentile (exact mid-percentile ${round2(((below + equal / 2) / planCount) * 100)}%; `
-  + `plans tied with it split evenly above and below). Diagnostic position, not a seat forecast and not legal evidence.`;
+  + `${plansAtOrBelow} of ${planCount.toLocaleString("en-US")} simulated plans produce ${enacted.value} or fewer — the plan lands at or below the `
+  + `ensemble's observed minimum. Its ${percentile.toFixed(1)}th percentile position (exact mid-percentile ${round2(((below + equal / 2) / planCount) * 100)}%) `
+  + `means "at or below the observed minimum," not a probability of zero. Diagnostic position, not a seat forecast and not legal evidence.`;
 
 const mapStatusNote =
   `SL 2025-95 was enacted October 22, 2025 as a mid-decade redraw and applies from the 2026 election; a federal `

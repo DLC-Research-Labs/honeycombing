@@ -94,22 +94,22 @@ export type CaseStudyId = CaseStudyConfig["id"];
 export const DEFAULT_CASE_STUDY_ID: CaseStudyId = "nc";
 export const DEFAULT_DATASET_ID: DatasetId = "precincts";
 export const DEFAULT_YEAR: ElectionYear = 2020;
-export const DEFAULT_VIEW_PRESET_ID: ViewPresetId = "vote-map";
+export const DEFAULT_VIEW_PRESET_ID: ViewPresetId = "population-demographics";
 
 export const VIEW_PRESETS: readonly ViewPreset[] = [
   {
     id: "vote-map",
     label: "Vote Map",
-    eyebrow: "Start Here",
+    eyebrow: "Vote Signal",
     dataset: "precincts",
     metric: "margin",
-    summary: "red/blue precinct signal on the neutral H3 grid. Best first view for seeing the electoral geography.",
-    sidekickPrompt: "You are looking at the vote signal: red/blue H3 cells summarize 2020 precinct returns by margin.",
+    summary: "red/blue precinct signal on the H3 grid. Equal-area cells overcount rural land and undercount dense cities, so read this as spatial orientation — never as a seat measure.",
+    sidekickPrompt: "You are looking at the vote signal: red/blue H3 cells summarize 2020 precinct returns by margin. Equal-area hexes undercount urban population, so this is orientation, not a seat count.",
   },
   {
     id: "population-demographics",
     label: "Population / Demographics",
-    eyebrow: "Census Layer",
+    eyebrow: "Start Here",
     dataset: "blocks",
     metric: "population",
     summary: "Census block-derived H3 population and demographic totals. This is where red/blue intentionally disappears.",

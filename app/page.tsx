@@ -572,6 +572,7 @@ export default function Home() {
           </span>
           <span className="min-w-0 leading-snug text-zinc-200">
             {headlineFinding.headline}{" "}
+            <span className="text-zinc-500">Descriptive — not proof of intent or unlawfulness.</span>{" "}
             <button
               type="button"
               onClick={() => setFindingOpen((open) => !open)}

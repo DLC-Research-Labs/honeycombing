@@ -47,6 +47,13 @@ const LIMITS: Limit[] = [
     detail:
       "Percentiles do not establish motive or unlawfulness, and they cannot show whether deviations were legally required (for example, Voting Rights Act compliance). The ensemble's constraints are always displayed alongside its numbers.",
   },
+  {
+    title: "Partisan signal, not racial — and the law is moving",
+    body:
+      "This tool measures a partisan seat outlier; it says nothing about race. The live challenge to North Carolina's 2025 map is a racial vote-dilution case, and the Supreme Court sharply narrowed the Voting Rights Act in Louisiana v. Callais (April 2026). Nothing here bears on those racial claims or on what the law now requires.",
+    detail:
+      "The comparison ensemble holds majority-minority districts near a 2020-cycle baseline — a simulation constraint, not a VRA analysis, and one that predates both the redraw and Callais.",
+  },
 ];
 
 export default function LimitsPage() {
@@ -79,7 +86,7 @@ export default function LimitsPage() {
             Honeycombing compares enacted district maps against a neutral hexagonal reference grid
             (Uber&apos;s H3) to make spatial patterns visible. The grid predates any election and was
             drawn for logistics, not politics — that neutrality is the point. But visibility is not
-            proof. Everything here is descriptive; before citing any number, read the five limits below.
+            proof. Everything here is descriptive; before citing any number, read the six limits below.
           </p>
         </div>
 
