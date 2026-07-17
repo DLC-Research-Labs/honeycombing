@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,6 +15,7 @@ import { fileURLToPath } from "node:url";
 const root = dirname(fileURLToPath(new URL("../package.json", import.meta.url)));
 
 const STATS_CSV = join(root, "data/alarm/NC_cd_2020_stats.csv");
+const INPUTS_MANIFEST = join(root, "docs/research/outputs/alarm-ensemble/alarm-inputs.json");
 const DIAGNOSTICS_CSV = join(root, "docs/research/outputs/nc-asymmetry/nc-plan-district-diagnostics.csv");
 const OUT_DIR = join(root, "public/data/ensembles");
 const REPORT_DIR = join(root, "docs/research/outputs/alarm-ensemble");
@@ -50,7 +52,21 @@ if (!existsSync(STATS_CSV)) {
 // Simple CSV: quoted fields never contain commas; numeric fields may carry
 // leading spaces.
 
-const statsText = await readFile(STATS_CSV, "utf8");
+// Pin the raw input: verify the stats CSV against its recorded Dataverse
+// checksum before computing anything, so the ensemble can never be built from a
+// drifted or substituted source file.
+const statsBuffer = await readFile(STATS_CSV);
+const statsSha = createHash("sha256").update(statsBuffer).digest("hex");
+const pinnedInputs = JSON.parse(await readFile(INPUTS_MANIFEST, "utf8"));
+const pinnedStats = pinnedInputs.files.find((file) => file.filename === "NC_cd_2020_stats.csv");
+if (!pinnedStats) throw new Error(`Inputs manifest ${INPUTS_MANIFEST} is missing NC_cd_2020_stats.csv`);
+if (pinnedStats.sha256 !== statsSha) {
+  throw new Error(
+    `ALARM stats CSV checksum mismatch.\n  pinned: ${pinnedStats.sha256}\n  actual: ${statsSha}\n`
+    + `The input has drifted from the pinned Dataverse file (id ${pinnedStats.dataverseFileId}); re-download or update the manifest deliberately.`,
+  );
+}
+const statsText = statsBuffer.toString("utf8");
 const statsLines = statsText.split("\n").filter((line) => line.length > 0);
 const statsHeader = statsLines[0].split(",");
 const drawIndex = statsHeader.indexOf("draw");
@@ -154,6 +170,7 @@ const histogram = [...seatCounts.entries()]
   .map(([value, planCount]) => ({ value, planCount }));
 
 const round1 = (value) => Math.round(value * 10) / 10;
+const round2 = (value) => Math.round(value * 100) / 100;
 const round4 = (value) => Math.round(value * 10000) / 10000;
 
 const seatPercentile = (seats) => {
@@ -166,16 +183,32 @@ const seatPercentile = (seats) => {
   return round1(((below + equal / 2) / sampledDraws.length) * 100);
 };
 
+// The 2022 court plan equals ALARM's cd_2020 reference geometry, so it is scored
+// from ALARM's exact per-district vote totals. The other compared plans are not
+// in ALARM's ensemble (the 118th enacted plan, and the post-2020-cycle SL
+// 2023-145 / SL 2025-95 maps), so they stay on Honeycombing's precinct-centroid
+// assignment — whose district-level error is bounded by the reference
+// calibration and reported per plan against each plan's closest-district margin.
+const closestMarginPp = (shares) => round2(Math.min(...shares.map((s) => Math.abs(s - 0.5))) * 100);
+
 const comparedPlans = [
   "us-congress-118-enacted",
   "nc-2022-court-interim-congressional",
   "nc-2023-enacted-congressional",
   "nc-2025-enacted-congressional",
 ].map((planId) => {
+  const isReference = planId === REFERENCE_REGISTRY_PLAN;
   const districts = planDistricts.get(planId);
   if (!districts) throw new Error(`Diagnostics missing plan ${planId}`);
-  const value = demSeats(districts.map((district) => district.share));
-  return { planId, value, percentile: seatPercentile(value) };
+  const shares = isReference ? referenceShares : districts.map((district) => district.share);
+  const value = demSeats(shares);
+  return {
+    planId,
+    value,
+    percentile: seatPercentile(value),
+    assignment: isReference ? "exact_alarm_reference" : "centroid",
+    seatMarginPp: closestMarginPp(shares),
+  };
 });
 
 // ── District-keyed unit measure: rank-ordered Democratic share ──────────────
@@ -234,9 +267,12 @@ const rankedUnits = [...unitPlan]
 // ── Assemble the summary ─────────────────────────────────────────────────────
 
 const CENTROID_CAVEAT =
-  "Compared-plan values (seat counts and district shares) are computed by Honeycombing from VEST 2020 precinct "
-  + "centroid assignment (descriptive_with_assignment_caveat). Calibration against ALARM's exact precinct assignment "
-  + `for the same reference geometry shows a maximum rank-sorted district share difference of ${(maxCalibrationDelta * 100).toFixed(2)}pp.`;
+  "The reference plan (NC 2022 court plan) equals ALARM's cd_2020 reference and is scored from ALARM's exact "
+  + "per-district vote totals (assignment: exact_alarm_reference). The other compared plans are not in ALARM's "
+  + "ensemble and are scored by Honeycombing from VEST 2020 precinct-centroid assignment "
+  + `(descriptive_with_assignment_caveat). The reference calibration bounds the district-level error of that shortcut `
+  + `at ${(maxCalibrationDelta * 100).toFixed(2)}pp; every compared plan's Democratic-seat count clears that bound — `
+  + "its closest-district margin is reported in seatMarginPp.";
 
 const summary = {
   schemaVersion: 1,

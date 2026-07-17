@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,6 +15,7 @@ import { fileURLToPath } from "node:url";
 
 const root = dirname(fileURLToPath(new URL("../package.json", import.meta.url)));
 const STATS_CSV = join(root, "data/alarm/NC_cd_2020_stats.csv");
+const INPUTS_MANIFEST = join(root, "docs/research/outputs/alarm-ensemble/alarm-inputs.json");
 const OUT_DIR = join(root, "docs/research/outputs/proxy-sensitivity");
 const GENERATED_AT = "2026-07-17T00:00:00Z";
 
@@ -40,7 +42,17 @@ if (!existsSync(STATS_CSV)) {
   process.exit(1);
 }
 
-const lines = (await readFile(STATS_CSV, "utf8")).split("\n").filter((line) => line.length > 0);
+// Pin the raw input against its recorded Dataverse checksum before computing.
+const statsBuffer = await readFile(STATS_CSV);
+const statsSha = createHash("sha256").update(statsBuffer).digest("hex");
+const pinnedStats = JSON.parse(await readFile(INPUTS_MANIFEST, "utf8")).files.find(
+  (file) => file.filename === "NC_cd_2020_stats.csv",
+);
+if (!pinnedStats) throw new Error(`Inputs manifest ${INPUTS_MANIFEST} is missing NC_cd_2020_stats.csv`);
+if (pinnedStats.sha256 !== statsSha) {
+  throw new Error(`ALARM stats CSV checksum mismatch (pinned ${pinnedStats.sha256}, actual ${statsSha}).`);
+}
+const lines = statsBuffer.toString("utf8").split("\n").filter((line) => line.length > 0);
 const header = lines[0].split(",");
 const idx = (name) => {
   const i = header.indexOf(name);

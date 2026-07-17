@@ -1,0 +1,43 @@
+{
+  "dataset": "ALARM Project 50-State Redistricting Simulations, North Carolina 2020 congressional cycle",
+  "doi": "10.7910/DVN/SLCD3E",
+  "doiUrl": "https://doi.org/10.7910/DVN/SLCD3E",
+  "version": 15,
+  "license": "CC0",
+  "note": "Pinned checksums for the ALARM source files the pipeline consumes. The builders verify the stats CSV against the sha256 below and fail on drift. Raw files live under the gitignored data/alarm/; re-download from Dataverse by file id.",
+  "generatedAt": "2026-07-17T00:00:00Z",
+  "files": [
+    {
+      "filename": "NC_cd_2020_stats.csv",
+      "dataverseFileId": 6392710,
+      "downloadUrl": "https://dataverse.harvard.edu/api/access/datafile/6392710?format=original",
+      "sha256": "d0654614f502d97cebd0abe3f23b05a93d96a13b72607d7dd0e00b998dbe0cd3",
+      "bytes": 28445903,
+      "usedBy": ["scripts/build-alarm-ensemble.mjs", "scripts/build-proxy-sensitivity.mjs"]
+    },
+    {
+      "filename": "NC_cd_2020_plans.rds",
+      "dataverseFileId": 6392711,
+      "downloadUrl": "https://dataverse.harvard.edu/api/access/datafile/6392711",
+      "sha256": "730554b195e108bbb2508fa3aeae176b94b1c51642a1c2e4588ebd1208d1aaf8",
+      "bytes": 705156,
+      "usedBy": ["scripts/extract-alarm-plans.py"]
+    },
+    {
+      "filename": "NC_cd_2020_map.rds",
+      "dataverseFileId": 6380468,
+      "downloadUrl": "https://dataverse.harvard.edu/api/access/datafile/6380468",
+      "sha256": "20524d958d836d06e4bd60fe9533e575b1cd42809573aab2cbd94ad9f7b7c974",
+      "bytes": 1187028,
+      "usedBy": ["scripts/extract-alarm-plans.py"]
+    },
+    {
+      "filename": "NC_cd_2020_doc.html",
+      "dataverseFileId": 6431354,
+      "downloadUrl": "https://dataverse.harvard.edu/api/access/datafile/6431354",
+      "sha256": "0e0aa6dbb9f5c462ba638f94b222f26267df81d175fdb3fe2a7dd81126452e36",
+      "bytes": 5509,
+      "usedBy": ["reference / method documentation"]
+    }
+  ]
+}
