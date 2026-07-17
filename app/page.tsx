@@ -145,6 +145,7 @@ interface HeadlineFinding {
   headline: string;
   shortHeadline: string;
   methodNote: string;
+  supersededNote?: string;
   stat: {
     planName: string;
     planSeats: number;
@@ -571,6 +572,9 @@ export default function Home() {
           </span>
           <span className="min-w-0 leading-snug text-zinc-200">
             {headlineFinding.headline}{" "}
+            {headlineFinding.supersededNote && (
+              <span className="text-zinc-500">Map replaced Oct 2025.</span>
+            )}{" "}
             <button
               type="button"
               onClick={() => setFindingOpen((open) => !open)}
@@ -632,6 +636,13 @@ export default function Home() {
                 <div className="mt-1 text-zinc-200">{headlineFinding.stat.band.replace("_", " ")}</div>
               </div>
             </section>
+
+            {headlineFinding.supersededNote && (
+              <section className="space-y-1.5 border border-amber-400/20 bg-amber-500/[0.05] px-3 py-2">
+                <div className="text-amber-300/90">Map status</div>
+                <p className="leading-relaxed text-zinc-300">{headlineFinding.supersededNote}</p>
+              </section>
+            )}
 
             <section className="space-y-1.5">
               <div className="text-zinc-500">Method</div>

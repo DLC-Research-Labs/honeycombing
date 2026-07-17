@@ -4,7 +4,7 @@ Honeycombing is a civic mapping prototype that compares enacted district maps ag
 
 **Live demo:** [dalovecompany.com/honeycombing](https://www.dalovecompany.com/honeycombing)
 
-**Headline finding (NC case study):** 4 of 14 districts lean Democratic under North Carolina's 2023 enacted congressional map — 94.5% of 5,000 neutral simulated maps produce more (ALARM ensemble, 2020 presidential vote proxy; 2.8th percentile, ensemble median 6). This is a diagnostic position inside a documented simulated distribution — not a seat forecast and not legal evidence. Method and derivation: `docs/research/outputs/headline-finding/nc-headline-finding.md`.
+**Headline finding (NC case study):** 4 of 14 districts leaned Democratic under the congressional map North Carolina used in its 2024 election (SL 2023-145) — 94.5% of 5,000 neutral simulated maps produce more (ALARM ensemble, 2020 presidential vote proxy; 2.8th percentile, ensemble median 6). This is a diagnostic position inside a documented simulated distribution — not a seat forecast and not legal evidence. North Carolina enacted a replacement map in October 2025 (SL 2025-95) for the 2026 election. Method and derivation: `docs/research/outputs/headline-finding/nc-headline-finding.md`.
 
 **What this is not:** a diagnostic prototype, not legal evidence. Nothing here demonstrates illegal intent or legal injury, hex counts are not a seat measure, and the known methodological shortcuts are disclosed rather than hidden. Read [/limits](https://www.dalovecompany.com/honeycombing/limits) before citing any number, and the white paper at [/about](https://www.dalovecompany.com/honeycombing/about) for the full method.
 

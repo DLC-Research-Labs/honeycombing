@@ -43,7 +43,7 @@ const LIMITS: Limit[] = [
   {
     title: "Ensemble percentiles are not intent",
     body:
-      "A plan sitting at an extreme percentile of a comparison ensemble — for example, North Carolina's 2023 enacted plan at the 2.8th percentile of Democratic seats in the ALARM ensemble — is atypical relative to that documented constraint set. Nothing more.",
+      "A plan sitting at an extreme percentile of a comparison ensemble — for example, North Carolina's 2023 enacted plan (used in the 2024 election) at the 2.8th percentile of Democratic seats in the ALARM ensemble — is atypical relative to that documented constraint set. Nothing more.",
     detail:
       "Percentiles do not establish motive or unlawfulness, and they cannot show whether deviations were legally required (for example, Voting Rights Act compliance). The ensemble's constraints are always displayed alongside its numbers.",
   },
