@@ -1,14 +1,18 @@
-# Honeycombing: A Neutral Hex Grid Layer for Auditing Redistricting Distortion
+# Honeycombing: Making Redistricting Ensembles Legible on a Neutral Hex Grid
 
-**Draft v0.3 - Diagnostic Tool First, Plan Registry Online**
+**Draft v0.4 — Visual Layer for Ensemble Analysis; NC 2026 Map Finding**
 
 ---
 
 ## Abstract
 
-We present *Honeycombing*, a browser-based diagnostic method for evaluating redistricting distortion by comparing enacted legislative boundaries against a geometrically neutral reference layer generated from Uber's H3 hierarchical hexagonal grid system. Unlike ensemble methods that ask what many valid maps might look like, Honeycombing asks a narrower visual question: what does the partisan vote signal look like when it is aggregated onto a fixed grid that was not drawn for politics?
+Rigor about whether an enacted district map is a statistical outlier comes from redistricting *ensembles* — large collections of computer-drawn legal maps that establish what a neutral map of a state tends to look like. The ALARM Project's 5,000 simulated North Carolina plans, and the MGGG/GerryChain and Duke *Quantifying Gerrymandering* ensembles, are the state of the art. Their weakness is legibility: an ensemble's statistical output is hard for a journalist, advocate, or judge to *see*.
 
-Honeycombing does not claim that equal-area H3 cells should replace legal districts. The current tool is an audit and communication layer: it helps researchers, journalists, advocates, and legal practitioners see where official boundaries diverge from geographically coherent voting patterns. A more ambitious future project could use H3 as the starting scaffold for population-balanced, Voting Rights Act-aware, community-sensitive district construction, but that prescriptive version requires additional algorithmic and legal work.
+*Honeycombing* is a browser-based communication and audit layer on top of that science. It renders the vote and population signal onto Uber's H3 hierarchical hexagonal grid — a fixed, pre-existing grid built for logistics, not politics — so the pattern an ensemble measures statistically becomes legible visually, without a statistician in the room. The hex grid is the **picture, not the ruler**: every quantitative claim in this paper, including the headline finding, is computed at the district level against an ensemble, so it does not depend on the grid's resolution.
+
+Applied to North Carolina's congressional map adopted in October 2025 for the 2026 election (Session Law 2025-95), the ALARM ensemble places the enacted map at an extreme: 3 of its 14 districts lean Democratic on the 2020 presidential vote proxy, and only 3 of 5,000 neutral simulated maps produce that few — none produce fewer. That position is `descriptive` relative to the ensemble's documented constraint set; it is not, by itself, evidence of unlawful intent or legal injury, and it holds most conservatively under the presidential proxy we use (every alternative election ALARM ships places the map deeper in the tail, not shallower).
+
+Honeycombing does not claim that equal-area H3 cells should replace legal districts, and it does not produce legal conclusions. A more ambitious future project could use H3 as a scaffold for population-balanced, Voting Rights Act-aware, community-sensitive district construction, but that prescriptive version is a separate research track that requires additional algorithmic and legal work.
 
 ---
 
@@ -29,7 +33,7 @@ The result: a party can win a majority of seats while losing the popular vote wi
 
 **Independent redistricting commissions** exist in some states and can reduce partisan abuse, but they still face political pressure, criteria ambiguity, public-input complexity, and litigation risk.
 
-**Existing mathematical measures** such as efficiency gap, compactness scores, partisan symmetry, and ensemble analysis are powerful tools for experts. They are less immediately legible to general audiences, journalists, and courts that need to see where spatial distortion occurs.
+**Existing mathematical measures** such as the efficiency gap, compactness scores, partisan symmetry, and — most rigorously — ensemble analysis are powerful tools for experts. Ensembles in particular are the strongest available answer to "is this map an outlier?": they sample thousands of legal maps and show where the enacted map falls in that distribution. Their limitation is not rigor but legibility — the output is hard for general audiences, journalists, and courts to connect to where the distortion actually occurs on the map. Honeycombing is built to close that legibility gap, not to replace the statistics.
 
 ### 1.3 The Representational Gap
 
@@ -45,7 +49,7 @@ This proportional benchmark is not itself a gerrymandering test. Geography, incu
 
 ## 2. The Honeycombing Approach
 
-### 2.1 H3: A Neutral Grid
+### 2.1 H3: A Neutral Legibility Grid
 
 Uber's H3 geospatial indexing system divides the Earth's surface into a hierarchical grid of mostly hexagonal cells at 16 resolution levels, 0 through 15. Key properties:
 
@@ -55,6 +59,8 @@ Uber's H3 geospatial indexing system divides the Earth's surface into a hierarch
 - **Open source**: H3 is freely available, reproducible, and auditable.
 
 At resolution 5, each hex roughly corresponds to a small-to-medium county. At resolution 7, a hex captures a neighborhood or precinct cluster. The appropriate resolution depends on the question being asked and the density of the underlying data.
+
+Because the grid is fixed and pre-existing, it makes a good **canvas**: nobody drew it to help or hurt a party, so rendering vote and population signal onto it introduces no partisan choice of our own. But a canvas is not a measuring instrument. Honeycombing uses H3 to *display* signal legibly; the question of whether an enacted map is unusual is answered by the ensemble, at the district level — not by the hexes. This separation, hexes for legibility and the ensemble for the statistic, is the core design decision of the current tool, and it is why the headline finding does not depend on which hex resolution a viewer is looking at.
 
 ### 2.2 The Parallel Layer
 
@@ -77,17 +83,19 @@ A key insight is that the same precinct or county result can be aggregated at mu
 
 This is useful for diagnostics because packing and cracking often operate across scales. A city, metro area, county cluster, or neighborhood corridor may each tell a different story. If a pattern appears across multiple resolutions, the analyst can have more confidence that it is not merely an artifact of one aggregation choice.
 
+A downstream extension of this idea, still on the research track, is *adaptive* multi-resolution rendering: coarse hexes where population is sparse and fine hexes where it is dense, so that population is generalized legibly across a single map rather than at one fixed scale. Because H3 is hierarchical, a location nests inside cells at every resolution at once, which makes such mixed-resolution views well-defined. This is a visualization direction, not a claim; the current tool renders one selected resolution at a time.
+
 ### 2.4 Population Normalization
 
 A critical design challenge: H3 cells have equal *area*, not equal *population*. A resolution-7 hex in Manhattan may contain many thousands of people; the same hex in rural Wyoming may contain very few.
 
 The current diagnostic tool addresses this through:
 
-1. **Vote-signal rendering**: hexes display partisan lean and competitiveness rather than treating equal-area cells as equal-population districts.
+1. **Selectable signal rendering**: the same hex grid can render partisan lean and competitiveness, or flip to population and demographic density, so equal-area cells are never mistaken for equal-population districts — the grid is a canvas for whichever signal the analyst selects, not a district plan.
 2. **Population-weighted summaries**: selected regions report raw vote totals and vote shares separately from raw hex counts.
 3. **Resolution controls**: users can inspect the same data at multiple H3 resolutions to see whether a pattern is robust or an artifact of aggregation scale.
 
-This distinction matters. A hex map is a visual baseline, not a legally valid district plan. Prescriptive redistricting requires equal population, contiguity, state-law criteria, Voting Rights Act compliance, and communities-of-interest analysis.
+This distinction matters. A hex map is a visual *layer*, not a statistical baseline and not a legally valid district plan. The statistical baseline is the ensemble; a legally valid plan additionally requires equal population, contiguity, state-law criteria, Voting Rights Act compliance, and communities-of-interest analysis.
 
 **Current implementation note.** The North Carolina block view now follows a reproducible derived-data pattern. Raw Census PL 94-171 block point records remain build artifacts, while the browser loads an H3 resolution-7 aggregate with a manifest recording source path, checksum, record counts, and population totals. This makes the default map practical to load while preserving an audit trail. The current method assigns each block's internal point to an H3 cell; a court-grade version should apportion block polygons to intersecting H3 cells where that distinction matters.
 
@@ -127,9 +135,9 @@ This is a separate project from the current diagnostic tool. The current tool is
 
 Honeycombing becomes more useful when it can overlay external redistricting artifacts on the same neutral grid. Candidate layers include:
 
-- **Enacted plans**: current congressional, state house, state senate, county, municipal, and school-board boundaries.
+- **Enacted plans**: enacted congressional, state house, state senate, county, municipal, and school-board boundaries.
 - **Alternative plans**: court-drawn maps, commission proposals, party proposals, public submissions, and Districtr exports.
-- **Ensemble summaries**: GerryChain or other ensemble outputs showing how often each area appears in a district with a given partisan, racial, or competitiveness profile.
+- **Ensemble summaries** (the statistical backbone, not just another overlay): ALARM, GerryChain/MGGG, or Duke *Quantifying Gerrymandering* outputs showing where the enacted map falls in the distribution of neutral maps, and how often each area appears in a district with a given partisan, racial, or competitiveness profile.
 - **Communities of interest**: public COI submissions, municipal regions, tribal areas, school districts, transit corridors, watersheds, and other civic geographies.
 - **VRA opportunity layers**: demographic concentration, citizen voting-age population, racially polarized voting analysis outputs, and candidate-of-choice performance estimates.
 - **Administrative split layers**: county splits, municipal splits, precinct splits, and compactness or boundary-complexity diagnostics.
@@ -146,15 +154,29 @@ For Honeycombing, the lesson is practical: preserve raw source data and provenan
 
 ## 3. What the Comparison Reveals
 
-### 3.1 Packed Districts
+The tool is built to make one thing visible: where an enacted map departs from what neutral maps of the same state look like. The sharpest example is a real ensemble finding; the packing and cracking patterns after it are the visual vocabulary for reading such a finding on the grid.
+
+### 3.1 The North Carolina Ensemble Finding
+
+North Carolina redrew its congressional districts mid-decade in October 2025 (Session Law 2025-95) for the 2026 election. Run against the ALARM Project's ensemble of 5,000 neutral simulated North Carolina plans, the enacted map is a stark outlier: **3 of its 14 districts lean Democratic** on the 2020 presidential proxy, and **only 3 of the 5,000 simulated maps produce that few Democratic-leaning seats — none produce fewer.** The ensemble's median is 6. The map it replaced (SL 2023-145, used in the 2024 election) had 4 Democratic-leaning districts and sat at the 2.8th percentile of the same ensemble.
+
+Three things make this finding honest rather than rhetorical:
+
+- **It rests on the ensemble, not the hexes.** The seat count is computed at the district level — enacted district boundaries against ALARM's per-district vote totals. The H3 grid is how the pattern is *shown*, not how it is *measured*; the number is identical at any hex resolution. `descriptive`
+- **It is re-derivable from published data.** Every number comes from ALARM's public statistics (Harvard Dataverse, doi:10.7910/DVN/SLCD3E, CC0); the finding is not new science, it is a legible presentation of what the ensemble already implies. It agrees with Duke *Quantifying Gerrymandering*'s independent ensemble, and the same pipeline's characterization of the prior map (SL 2023-145) matched the actual 2024 congressional result (10 Republican, 4 Democratic seats).
+- **Our proxy is the conservative choice.** Democratic "seats" use the 2020 presidential vote as a partisan-lean proxy. Of the eleven statewide-election proxies ALARM ships, the presidential proxy produces the *widest* low tail — every 2020 statewide race and ALARM's multi-election composite place the enacted map deeper in the tail, not shallower (full table in §5.5).
+
+What this finding is **not**: it is not a conclusion that the map is unlawful. *Rucho* closed the federal partisan-gerrymandering door; an ensemble outlier is descriptive evidence of how unusual a map is relative to a documented set of neutral constraints. Whether any particular deviation is legally *required* — by the Voting Rights Act, for instance — is a separate question this tool does not answer. `requires_ensemble_and_expert_validation`
+
+### 3.2 Packed Districts
 
 A packed district appears in the Honeycombing layer as a cluster of deeply colored hexes that corresponds to a single safe district. The hex layer shows a coherent dense community. The district layer shows whether that community has been used up in one safe seat rather than influencing adjacent districts.
 
-### 3.2 Cracked Communities
+### 3.3 Cracked Communities
 
 A cracked community appears as a coherent hex cluster that is visibly split across multiple enacted districts. The diagnostic question is not merely "is the district oddly shaped?" but "does the enacted boundary cut through a coherent vote-signal region in a way that changes representational power?"
 
-### 3.3 The Proportionality Gap
+### 3.4 The Proportionality Gap
 
 For any selected region, Honeycombing can currently compute:
 
@@ -164,7 +186,7 @@ For any selected region, Honeycombing can currently compute:
 
 This is related to but distinct from the efficiency gap. Rather than counting wasted votes, it asks: *what spatial pattern appears before district lines are imposed, and how do enacted lines alter that pattern?*
 
-#### 3.3.1 National Analysis: 2020 Presidential Data
+#### 3.4.1 National Analysis: 2020 Presidential Data
 
 Using 2020 presidential returns as a partisan lean proxy, we computed population-weighted H3 vote-signal projections at multiple resolutions. The key metric: *what fraction of voters live in H3 cells with a Democratic vs. Republican majority?* This is a signal proxy, not a seat forecast, because H3 cells are not districts and are not equal population.
 
@@ -180,6 +202,8 @@ Using 2020 presidential returns as a partisan lean proxy, we computed population
 | Actual 118th Congress | 213 | 222 | - | 48.9% seats held by Democrats |
 
 **The finding**: the older county-centroid analysis produced a large Democratic-leaning neutral-grid signal. The newer VEST precinct-centroid analysis still shows a Democratic-leaning population-weighted signal, but the effect is smaller and more resolution-sensitive. At H3 resolutions 3 and 4, the precinct analysis produces a D proxy near 239-240 rather than 247-258. Compared with the 213 Democratic seats in the 118th Congress, this suggests a meaningful spatial distortion worth investigating, but it should not be described as a precise 40-45 seat estimate.
+
+This national projection is deliberately kept as an early, exploratory signal — and it is exactly the kind of number the reframed tool no longer leans on. Raw hex counts as a seat proxy are sensitive to resolution and to the equal-area-not-equal-population problem (the modifiable areal unit problem); the D proxy visibly swings with resolution in the table above. The North Carolina finding in §3.1 avoids this entirely by computing seats at the district level against an ensemble rather than by counting hexes. Where a claim has to be rigorous, it comes from the ensemble; the hexes stay in their role as the picture.
 
 Presidential returns are an imperfect proxy for congressional partisan lean. House elections include incumbency effects, local candidates, uncontested races, turnout differences, and district-specific dynamics.
 
@@ -220,9 +244,9 @@ This is not a reason to abandon neutral baselines. It is a reason to distinguish
 | Compactness scores | Measure shape regularity | Intuitive, long legal history | Does not capture partisan intent by itself |
 | MCMC ensemble | Random map sampling | Statistically rigorous | Opaque to non-experts |
 | Princeton-style report cards | Multiple public-facing metrics | Interpretable, media-friendly | Baseline depends on generated map universe |
-| Honeycombing | Fixed neutral grid comparison | Legible, pre-existing spatial reference | Diagnostic only unless population/VRA/community constraints are added |
+| Honeycombing | **Visual/legibility layer on top of ensembles** | Makes ensemble findings legible to non-experts; pre-existing neutral canvas | Not a statistical method itself — rigor comes from the ensemble it renders |
 
-Honeycombing is not a replacement for MCMC analysis. It is a complementary visualization and communication layer. The two approaches could be used together: ensemble methods to establish statistical significance, Honeycombing to communicate the spatial pattern visually.
+Honeycombing is not a replacement for ensemble analysis, and it is not a rival method. It is a communication and audit layer that sits on top of ensembles such as ALARM, MGGG/GerryChain, and Duke *Quantifying Gerrymandering*. The division of labor is explicit: the ensemble establishes whether an enacted map is a statistical outlier and by how much; Honeycombing renders where that outlier lives on the map so a non-statistician can see it. Every finding in this paper is an ensemble finding made legible — the value added is the seeing, not the statistic.
 
 ---
 
@@ -329,7 +353,9 @@ The first two expert-review objectives have started to convert the caveats above
 
 **H3 ensemble explainer (first real payload).** The ensemble explainer schema now carries a real ensemble: the ALARM Project's 50-State Redistricting Simulations for the North Carolina 2020 congressional cycle (Harvard Dataverse, doi:10.7910/DVN/SLCD3E, CC0) — 5,000 plans sampled by Sequential Monte Carlo under documented constraints (0.5% maximum population deviation, contiguity, compactness, county preservation, and hinge Gibbs constraints targeting majority-minority district counts and discouraging minority packing). Honeycombing computes all distributions from ALARM's published per-district 2020 presidential vote counts, so the ensemble uses the same partisan-lean proxy as the rest of the pipeline. Under that proxy, the ensemble's median outcome is 6 Democratic seats of 14. The 2023 enacted plan's 4 Democratic-majority districts sit at the 2.8th percentile of the seat distribution — a low outlier relative to this documented comparison universe — while the 2022 court plan's 7 sit at the 86.2nd percentile, the high edge but not an outlier. These positions are descriptive relative to ALARM's constraint set; they are not conclusions about intent or legality, and the compared-plan values carry the precinct-centroid assignment caveat. The ingestion also produced a useful calibration finding: rank-sorted district Democratic shares for the shared reference geometry differ from ALARM's exact precinct assignment by at most 0.12 percentage points, confirming that the centroid shortcut — disqualifying at cell level in the Alamance and Mecklenburg audits — largely washes out at district aggregation. The payload ships as a draft: the outlier gate opens because constraints are documented, but promotion to published status waits on expert review, and the H3 cell-level projection still requires ALARM's plan assignment matrices.
 
-**Mid-decade redraw (added 2026-07-17).** North Carolina enacted Session Law 2025-95 on October 22, 2025 — a mid-decade redraw of SL 2023-145 that applies from the 2026 election. Ingested into the plan registry from the NCGA shapefile and run through the same diagnostics, the 2025 plan summarizes as 3 Democratic-majority districts of 14 under the 2020 presidential precinct-centroid proxy. Against the same ALARM ensemble, only 3 of 5,000 simulated plans produce that few Democratic-leaning seats and none produce fewer (0th mid-percentile, matching the ensemble's minimum observed seat count). The seat classification is robust to the assignment shortcut at district level: the closest district sits 3.4 percentage points from the 50% threshold, versus a 0.12-point maximum calibration error. The same discipline applies — this is a position inside a documented simulated distribution, not a conclusion about intent or legality, and the ensemble was simulated under 2020-cycle constraints with the 2022 map as reference.
+**Mid-decade redraw (added 2026-07-17).** North Carolina enacted Session Law 2025-95 on October 22, 2025 — a mid-decade redraw of SL 2023-145 that applies from the 2026 election. Ingested into the plan registry from the NCGA shapefile and run through the same diagnostics, the 2025 plan summarizes as 3 Democratic-majority districts of 14 under the 2020 presidential precinct-centroid proxy. Against the same ALARM ensemble, only 3 of 5,000 simulated plans produce that few Democratic-leaning seats and none produce fewer (0th mid-percentile, matching the ensemble's minimum observed seat count). The seat classification is robust to the assignment shortcut at district level: the closest district sits 3.4 percentage points from the 50% threshold, versus a 0.12-point maximum calibration error. The same discipline applies — this is a position inside a documented simulated distribution, not a conclusion about intent or legality, and the ensemble was simulated under 2020-cycle constraints with the 2022 map as reference. A federal three-judge panel declined to enjoin SL 2025-95 in November 2025; litigation continues.
+
+**Proxy-sensitivity of the ensemble finding.** Because the seat proxy is the 2020 presidential vote, a fair objection is that the finding could be an artifact of that choice. It is not — and the presidential proxy is the conservative one. Computing the ensemble's Democratic-seat distribution under every partisan proxy ALARM ships (the ten statewide 2016 and 2020 contests plus ALARM's composite index), the 2020 presidential proxy produces the *widest* low tail: 5.5% of the 5,000 plans yield four or fewer Democratic-leaning seats. Every 2020 statewide race (Senate 2.7%, Governor 0.0%, Attorney General 0.3%, Secretary of State 0.0%) and ALARM's multi-election composite (0.1%) produce a narrower tail, so the enacted 2024 and 2026 maps sit *deeper* in the tail under the alternatives, not shallower. Reported without cherry-picking: the one proxy with a wide tail is the 2016 U.S. Senate race (25% of plans at four or fewer seats), reflecting an older and more Republican electorate — and even there a three-seat map remains a tail outcome (1.8%). The contemporaneous 2020 cycle and the composite are the relevant baseline. Reproducible via `scripts/build-proxy-sensitivity.mjs`. `descriptive`
 
 ---
 
@@ -407,20 +433,51 @@ State legislative gerrymandering is arguably more consequential than congression
 
 ## 7. Related Work
 
-- **Stephanopoulos & McGhee (2015)**: foundational paper on the efficiency gap measure
-- **Data and Democracy Lab / MGGG**: ensemble methods, redistricting science, Districtr, VRA-oriented computational work
-- **Princeton Gerrymandering Project**: public-facing report cards and map scoring
-- **Brennan Center for Justice**: legal, policy, and litigation research on fair maps
-- **Voting and Election Science Team (VEST)**: precinct-level election returns and boundary data
-- **Dave's Redistricting App**: the primary public interactive redistricting tool
+Honeycombing sits on top of this ensemble and data literature, not beside it. The ensembles below establish the statistical baselines; Honeycombing renders them.
+
+- **ALARM Project (McCartan, Kenny, Simko, Kuriwaki, Imai, et al.)**: the 50-State Redistricting Simulations — the Sequential Monte Carlo `redist` ensemble that supplies this project's North Carolina baseline (Harvard Dataverse, doi:10.7910/DVN/SLCD3E, CC0).
+- **Duke Quantifying Gerrymandering (Mattingly, Herschlag, et al.)**: independent ensemble analysis, used here as an external cross-check on the North Carolina finding.
+- **Stephanopoulos & McGhee (2015)**: foundational paper on the efficiency gap measure.
+- **Data and Democracy Lab / MGGG**: ensemble methods, redistricting science, Districtr, VRA-oriented computational work.
+- **Princeton Gerrymandering Project**: public-facing report cards and map scoring.
+- **Brennan Center for Justice**: legal, policy, and litigation research on fair maps.
+- **Voting and Election Science Team (VEST)**: precinct-level election returns and boundary data.
+- **Dave's Redistricting App**: the primary public interactive redistricting tool.
 
 ---
 
 ## 8. Conclusion
 
-Honeycombing offers a legible, pre-existing, politically neutral spatial reference frame. It does not require a statistician to interpret the first visual layer. It does not require a court or commission to accept a replacement plan. It simply asks: here is the vote signal on a neutral grid; here are the boundaries drawn by humans; where do they diverge, and why?
+Ensembles already tell us whether an enacted map is a statistical outlier. What they do not do is make that answer *visible* to the people who most need to act on it — journalists, advocates, and courts. Honeycombing fills exactly that gap: it renders the vote and population signal on a fixed, politically neutral hex grid, so an ensemble finding stops being a percentile in a table and becomes a picture on a map. It does not require a statistician to read the first layer, and it does not ask anyone to adopt a replacement plan. Its North Carolina result — an enacted 2026 map at the extreme edge of 5,000 neutral simulations — is not new science; it is established science made legible.
 
-That diagnostic question is the current project. The prescriptive question, whether neutral hex scaffolds can help generate legally valid maps, is real and promising, but it deserves its own algorithmic and legal research track.
+That legibility layer is the current project. The prescriptive question, whether neutral hex scaffolds can help *generate* legally valid maps, is real and promising, but it is a separate algorithmic and legal research track.
+
+---
+
+## Appendix A. Plain-Language FAQ
+
+*Written for someone fielding questions about the tool who is not a redistricting specialist.*
+
+**What does Honeycombing actually claim?**
+That North Carolina's enacted 2026 congressional map is an extreme statistical outlier: of 5,000 neutral, computer-drawn maps of the state, only 3 produce as few Democratic-leaning districts, and none produce fewer. It is a statement about how unusual the map is compared to neutral alternatives — nothing more.
+
+**Does it prove the map is an illegal gerrymander?**
+No, and it cannot. The Supreme Court's *Rucho* decision (2019) put partisan-gerrymandering claims outside the federal courts, and being a statistical outlier is not by itself proof of unlawful intent or legal injury. Some deviations from neutral maps are legally *required* — for example, by the Voting Rights Act. The tool flags how unusual a map is; it does not adjudicate why.
+
+**Where does the number come from — your hexagons?**
+No. The number is computed at the district level, comparing the enacted districts to the ALARM Project's published ensemble of simulated maps. The hexagons are how we *draw* the pattern so it is easy to see; they do not enter the calculation, and the result is the same at any hexagon size. Rigor comes from the ensemble; the hexes are the picture.
+
+**Why the 2020 presidential vote and not actual congressional results?**
+Presidential results are a clean, uniform partisan-lean proxy that the ensemble also uses, so the comparison is apples-to-apples. It is also the *conservative* choice: under every other statewide election in the data, the enacted map looks even more extreme, not less.
+
+**Did you build the ensemble, or invent this method?**
+Neither. The ensemble is the ALARM Project's public dataset (Harvard Dataverse, CC0). Independent groups — notably Duke's *Quantifying Gerrymandering* — reach the same conclusion with their own ensembles. Honeycombing's contribution is the legible presentation, not the underlying statistics.
+
+**Is this partisan?**
+The method is symmetric: it measures distance from neutral maps in either direction, so a Democratic gerrymander in another state would show up the same way. North Carolina happens to be the live example because it was redrawn in October 2025.
+
+**Can I reproduce the numbers?**
+Yes. The repository ships the derivation scripts and drift-lock tests; every headline number is recomputed from ALARM's published data. See `REPRODUCE.md`.
 
 ---
 
@@ -433,11 +490,15 @@ That diagnostic question is the current project. The prescriptive question, whet
 - [x] Add actual NC starter case study with numbers
 - [x] Add plan comparison panel for enacted vs court-plan overlays
 - [x] Add expert handoff packet to the white-paper surface
+- [x] Reframe around ensemble-as-baseline, H3-as-legibility-layer (v0.4)
+- [x] Ingest a real ensemble (ALARM NC) and derive the headline finding
+- [x] Ingest NC's Oct 2025 mid-decade map (SL 2025-95) and promote the 2026 finding
+- [x] Add partisan-proxy sensitivity analysis
 - [ ] Formalize the diagnostic Honeycombing Score
 - [ ] Scope prescriptive adaptive hex districting as a separate research project
 - [x] Add Census block / PL 94-171 ingestion scaffold and NC default block-derived H3 layer
 - [x] Add first local/public-data plan registry and NC court-ordered congressional plan
-- [ ] Add COI, ensemble-summary, and VRA-layer roadmap
+- [x] Add ensemble-summary layer (ALARM NC) and COI overlay skeleton; VRA-layer roadmap in ROADMAP.md
 - [ ] Add citations with proper academic formatting
 - [ ] Get review from someone with redistricting law background
 - [ ] Address population-per-district constitutional standard more rigorously
