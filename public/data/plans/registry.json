@@ -57,6 +57,26 @@
         "sessionLaw": "SL 2023-145",
         "sourceUrl": "https://www.ncleg.gov/Files/GIS/Plans_Main/Congress_2023/SL%202023-145%20Congress%20-%20Shapefile.zip"
       }
+    },
+    {
+      "id": "nc-2025-enacted-congressional",
+      "name": "NC 2025 enacted congressional plan",
+      "source": "North Carolina General Assembly",
+      "cycle": "2026",
+      "url": "/data/plans/nc-2025-enacted-congressional.json",
+      "status": "enacted",
+      "description": "Congressional district plan enacted as Session Law 2025-95 in October 2025 (mid-decade redraw of SL 2023-145), to be used for North Carolina's 2026 congressional elections.",
+      "caveats": [
+        "This is an official plan file from the NCGA 2025 redistricting process, normalized for Honeycombing's plan registry.",
+        "It supersedes the SL 2023-145 map used in the 2024 election; vote aggregation still uses centroid assignment until polygon apportionment is implemented."
+      ],
+      "metadata": {
+        "jurisdiction": "North Carolina",
+        "office": "U.S. House",
+        "districtCount": 14,
+        "sessionLaw": "SL 2025-95",
+        "sourceUrl": "https://webservices.ncleg.gov/ViewBillDocument/2025/7667/0/SL%202025-95%20-%20Shapefile"
+      }
     }
   ]
 }
