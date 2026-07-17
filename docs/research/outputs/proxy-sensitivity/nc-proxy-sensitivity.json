@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "id": "nc-proxy-sensitivity",
+  "generatedAt": "2026-07-17T00:00:00Z",
+  "claimTag": "descriptive",
+  "ensembleDraws": 5000,
+  "districtCount": 14,
+  "source": "ALARM Project 50-State Redistricting Simulations, NC 2020 congressional (doi:10.7910/DVN/SLCD3E, v15, CC0)",
+  "finding": "Across all four 2020 statewide contests and ALARM's multi-election composite, the ensemble's central tendency is 6-7 Democratic seats of 14, and plans producing 4 or fewer Democratic-leaning seats are at least as rare under each as under the 2020 presidential proxy the headline uses. The presidential proxy therefore produces the widest low tail — it is the most conservative choice, the one most generous to the enacted maps.",
+  "headlineProxyIsMostConservative": true,
+  "caveats": [
+    "This is an ensemble-level robustness statement. The enacted 2023/2025 plans are scored only under the presidential proxy (the one our VEST precinct data carries); this table does not re-place them under the other proxies.",
+    "The 2016 races reflect an older, more Republican electorate. Under the 2016 U.S. Senate proxy the ensemble's low tail is wide: a 4-seat map is within normal range, though a 3-seat map remains a tail outcome. The contemporaneous 2020 cycle and the composite are the relevant baseline, but the 2016 results are reported here without exception.",
+    "Democratic 'seats' use each election as a partisan-lean proxy, not congressional performance."
+  ],
+  "rows": [
+    {
+      "proxy": "2020 President (headline proxy)",
+      "medianDemSeats": 6,
+      "plansLe3": 3,
+      "plansLe3Pct": 0.06,
+      "plansLe4": 275,
+      "plansLe4Pct": 5.5,
+      "histogram": {
+        "3": 3,
+        "4": 272,
+        "5": 1220,
+        "6": 2269,
+        "7": 1094,
+        "8": 142
+      }
+    },
+    {
+      "proxy": "2020 U.S. Senate",
+      "medianDemSeats": 6,
+      "plansLe3": 1,
+      "plansLe3Pct": 0.02,
+      "plansLe4": 136,
+      "plansLe4Pct": 2.72,
+      "histogram": {
+        "3": 1,
+        "4": 135,
+        "5": 1810,
+        "6": 1926,
+        "7": 1017,
+        "8": 111
+      }
+    },
+    {
+      "proxy": "2020 Governor",
+      "medianDemSeats": 7,
+      "plansLe3": 0,
+      "plansLe3Pct": 0,
+      "plansLe4": 0,
+      "plansLe4Pct": 0,
+      "histogram": {
+        "5": 82,
+        "6": 620,
+        "7": 1963,
+        "8": 2245,
+        "9": 89,
+        "10": 1
+      }
+    },
+    {
+      "proxy": "2020 Attorney General",
+      "medianDemSeats": 7,
+      "plansLe3": 0,
+      "plansLe3Pct": 0,
+      "plansLe4": 16,
+      "plansLe4Pct": 0.32,
+      "histogram": {
+        "4": 16,
+        "5": 584,
+        "6": 1554,
+        "7": 2335,
+        "8": 509,
+        "9": 2
+      }
+    },
+    {
+      "proxy": "2020 Secretary of State",
+      "medianDemSeats": 7,
+      "plansLe3": 0,
+      "plansLe3Pct": 0,
+      "plansLe4": 0,
+      "plansLe4Pct": 0,
+      "histogram": {
+        "5": 175,
+        "6": 944,
+        "7": 2649,
+        "8": 1223,
+        "9": 9
+      }
+    },
+    {
+      "proxy": "2016 President",
+      "medianDemSeats": 6,
+      "plansLe3": 1,
+      "plansLe3Pct": 0.02,
+      "plansLe4": 175,
+      "plansLe4Pct": 3.5,
+      "histogram": {
+        "3": 1,
+        "4": 174,
+        "5": 2080,
+        "6": 1975,
+        "7": 677,
+        "8": 93
+      }
+    },
+    {
+      "proxy": "2016 U.S. Senate",
+      "medianDemSeats": 5,
+      "plansLe3": 90,
+      "plansLe3Pct": 1.8,
+      "plansLe4": 1250,
+      "plansLe4Pct": 25,
+      "histogram": {
+        "3": 90,
+        "4": 1160,
+        "5": 2939,
+        "6": 791,
+        "7": 19,
+        "8": 1
+      }
+    },
+    {
+      "proxy": "2016 Governor",
+      "medianDemSeats": 6,
+      "plansLe3": 0,
+      "plansLe3Pct": 0,
+      "plansLe4": 38,
+      "plansLe4Pct": 0.76,
+      "histogram": {
+        "4": 38,
+        "5": 1264,
+        "6": 2463,
+        "7": 1077,
+        "8": 158
+      }
+    },
+    {
+      "proxy": "2016 Attorney General",
+      "medianDemSeats": 6,
+      "plansLe3": 0,
+      "plansLe3Pct": 0,
+      "plansLe4": 10,
+      "plansLe4Pct": 0.2,
+      "histogram": {
+        "4": 10,
+        "5": 738,
+        "6": 2337,
+        "7": 1555,
+        "8": 359,
+        "9": 1
+      }
+    },
+    {
+      "proxy": "2016 Secretary of State",
+      "medianDemSeats": 7,
+      "plansLe3": 0,
+      "plansLe3Pct": 0,
+      "plansLe4": 0,
+      "plansLe4Pct": 0,
+      "histogram": {
+        "5": 19,
+        "6": 584,
+        "7": 2628,
+        "8": 1467,
+        "9": 302
+      }
+    },
+    {
+      "proxy": "ALARM composite (ndshare)",
+      "medianDemSeats": 6,
+      "plansLe3": 0,
+      "plansLe3Pct": 0,
+      "plansLe4": 5,
+      "plansLe4Pct": 0.1,
+      "histogram": {
+        "4": 5,
+        "5": 622,
+        "6": 2122,
+        "7": 1783,
+        "8": 467,
+        "9": 1
+      }
+    }
+  ]
+}
