@@ -413,7 +413,7 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-black text-white" style={{ height: '100dvh', overflow: 'hidden' }}>
       {/* Header */}
-      <header className="flex items-center gap-3 px-4 py-2.5 border-b border-white/5 flex-shrink-0" style={{ paddingTop: 'max(10px, env(safe-area-inset-top, 10px))' }}>
+      <header className="flex items-center gap-3 overflow-x-auto px-4 py-2.5 border-b border-white/5 flex-shrink-0" style={{ paddingTop: 'max(10px, env(safe-area-inset-top, 10px))' }}>
         <div className="flex items-center gap-3 flex-shrink-0">
           <h1 className="text-base font-semibold tracking-tight text-zinc-100">
             ⬡ Honeycombing
@@ -424,7 +424,7 @@ export default function Home() {
               dataset === "precincts" ? `${results.length.toLocaleString()} ${unitLabel} · ${caseStudy.label} VEST ${year}` :
               `${results.length.toLocaleString()} ${unitLabel} · ${year} Presidential`}
           </span>
-          <span className="hidden md:inline text-[10px] text-zinc-700 font-mono">
+          <span className="hidden 2xl:inline text-[10px] text-zinc-700 font-mono">
             {caseStudy.fullLabel} study · {getDatasetNote(dataset)}
           </span>
         </div>
