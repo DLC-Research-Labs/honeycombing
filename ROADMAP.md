@@ -1,5 +1,12 @@
 # ROADMAP — Honeycombing
 
+## STATUS 2026-07-17 — ALARM plan-assignment matrices extracted (pure Python; "needs R" blocker dead)
+
+- **Feasibility flip:** `NC_cd_2020_plans.rds` and `NC_cd_2020_map.rds` are fully readable in pure Python via the `rdata` package — the assignment matrix lives in a `plans` R attribute that data-frame-level readers drop; walking the raw parse tree recovers it. No R toolchain needed.
+- **Extraction shipped:** `scripts/extract-alarm-plans.py` → `data/alarm/derived/nc-plans-assignment.bin` (int8, 2,666 precincts × 5,001 draws, column 0 = `cd_2020` reference) + manifest with GEOID row order and provenance. Four hard gates, all passed: dims, reference alignment vs the map's `cd_2020`, **exact population closure for every one of 5,001 draws**, complete district labels. Report: `docs/research/outputs/alarm-ensemble/nc-plans-matrix-extraction.md`.
+- **Bonus:** the map file carries per-precinct returns for eight statewide races (Senate/governor/AG, 2016+2020) — proxy-robustness checks for the headline stat before congressional returns are ingested.
+- **Now unblocked (next):** the h3-keyed ensemble unit measure (schema doc Objective 3 remainder) and divergence *localization* — where the 2023 enacted plan departs from the simulated distribution, feeding the "next headline" below. Deployed demo unchanged by this work.
+
 ## STATUS 2026-07-08 — first headline finding shipped (local commits, not yet deployed)
 
 - **Headline finding:** the demo now states a conclusion instead of only offering exploratory layers. Finding banner on the map view: "4 of 14 districts lean Democratic under North Carolina's 2023 enacted congressional map — 94.5% of 5,000 neutral simulated maps produce more." Ensemble median 6; enacted plan at the 2.8th percentile (low outlier under `classifyEnsemblePercentile`); ALARM 50-State Simulations, 2020 presidential proxy.
