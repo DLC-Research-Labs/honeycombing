@@ -491,6 +491,12 @@ export default function HoneycombMap({
     return layers;
   }, [showDistricts, districtHeatFill, activePlanIds, showEnsemble, showCois]);
 
+  // Color is keyed by registry order (not activation order) so a plan's row
+  // swatch, drawn outlines, and comparison card always agree.
+  const planColorById = useMemo(
+    () => new Map(planRegistry.map((plan, index) => [plan.id, PLAN_COLORS[index % PLAN_COLORS.length]])),
+    [planRegistry],
+  );
   const planRegistryById = useMemo(
     () => new Map(planRegistry.map((plan) => [plan.id, plan])),
     [planRegistry],
@@ -509,7 +515,7 @@ export default function HoneycombMap({
   const plansGroup = layerGroups.find((group) => group.group === "Plans");
   const planImportSchema = useMemo(() => getPlanImportSchema(), []);
   const activePlanComparisons = useMemo<ActivePlanComparison[]>(() => {
-    return activePlanIds.flatMap((planId, index) => {
+    return activePlanIds.flatMap((planId) => {
       const data = planDataById[planId];
       const entry = planRegistryById.get(planId);
       if (!data || !entry) return [];
@@ -521,7 +527,7 @@ export default function HoneycombMap({
         source: entry.source,
         cycle: entry.cycle,
         status: entry.status,
-        color: PLAN_COLORS[index % PLAN_COLORS.length],
+        color: planColorById.get(planId) ?? PLAN_COLORS[0],
         districtCount: summary.districtCount,
         totalPopulation: summary.totalPopulation,
         selection: planComparisonPoints.length > 0
@@ -529,7 +535,7 @@ export default function HoneycombMap({
           : null,
       }];
     });
-  }, [activePlanIds, planDataById, planRegistryById, planComparisonPoints]);
+  }, [activePlanIds, planDataById, planRegistryById, planColorById, planComparisonPoints]);
 
   function toggleResearchLayer(layerId: ResearchLayerId) {
     if (layerId === "district-outlines") {
@@ -1350,12 +1356,12 @@ export default function HoneycombMap({
 
     if (!planLayerRef.current || activePlanIds.length === 0) return;
 
-    activePlanIds.forEach((planId, index) => {
+    activePlanIds.forEach((planId) => {
       const data = planDataById[planId];
       if (!data) return;
 
       const entry = planRegistryById.get(planId);
-      const color = PLAN_COLORS[index % PLAN_COLORS.length];
+      const color = planColorById.get(planId) ?? PLAN_COLORS[0];
 
       const geojsonLayer = L.geoJSON(data, {
         style: () => ({
@@ -1396,7 +1402,7 @@ export default function HoneycombMap({
         }
       });
     }
-  }, [activePlanIds, planDataById, planRegistryById]);
+  }, [activePlanIds, planDataById, planRegistryById, planColorById]);
 
   // ── Draw Layer B hexes ──
   useEffect(() => {
@@ -1541,7 +1547,7 @@ export default function HoneycombMap({
       )}
 
       {/* Plans + communities + ensemble quick panels */}
-      <div className="absolute z-[1000] flex items-start gap-2" style={{ top: 'max(12px, env(safe-area-inset-top, 12px))', left: 'max(12px, env(safe-area-inset-left, 12px))' }}>
+      <div className="absolute z-[1010] flex items-start gap-2" style={{ top: 'max(12px, env(safe-area-inset-top, 12px))', left: 'max(12px, env(safe-area-inset-left, 12px))' }}>
         <div>
         <button
           type="button"
@@ -1698,7 +1704,7 @@ export default function HoneycombMap({
                     No local plan registry entries found.
                   </div>
                 )}
-                {planRegistry.map((plan, index) => (
+                {planRegistry.map((plan) => (
                   <label
                     key={plan.id}
                     className={`block border px-2 py-1.5 transition-colors ${
@@ -1718,7 +1724,7 @@ export default function HoneycombMap({
                         <div className="flex items-center gap-2">
                           <span
                             className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full"
-                            style={{ backgroundColor: PLAN_COLORS[index % PLAN_COLORS.length] }}
+                            style={{ backgroundColor: planColorById.get(plan.id) ?? PLAN_COLORS[0] }}
                             aria-hidden="true"
                           />
                           <span className="text-[10px] font-medium text-zinc-200">

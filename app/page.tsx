@@ -626,7 +626,7 @@ export default function Home() {
               </div>
               <div className="border border-white/10 bg-white/[0.03] px-2 py-1.5">
                 <div className="text-zinc-500">Percentile</div>
-                <div className="mt-1 text-zinc-200">{headlineFinding.stat.percentile}</div>
+                <div className="mt-1 text-zinc-200">{`${headlineFinding.stat.percentile}th`}</div>
               </div>
               <div className="border border-white/10 bg-white/[0.03] px-2 py-1.5">
                 <div className="text-zinc-500">Band</div>
