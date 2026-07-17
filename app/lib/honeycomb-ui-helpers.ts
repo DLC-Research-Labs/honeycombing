@@ -92,7 +92,7 @@ export const CASE_STUDIES: readonly CaseStudyConfig[] = [
 export type CaseStudyId = CaseStudyConfig["id"];
 
 export const DEFAULT_CASE_STUDY_ID: CaseStudyId = "nc";
-export const DEFAULT_DATASET_ID: DatasetId = "precincts";
+export const DEFAULT_DATASET_ID: DatasetId = "blocks";
 export const DEFAULT_YEAR: ElectionYear = 2020;
 export const DEFAULT_VIEW_PRESET_ID: ViewPresetId = "population-demographics";
 

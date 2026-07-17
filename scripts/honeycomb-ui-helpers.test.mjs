@@ -59,7 +59,7 @@ import {
 
 test("new sessions default to the NC population layer, not the vote-on-hexes map", () => {
   assert.equal(DEFAULT_CASE_STUDY_ID, "nc");
-  assert.equal(DEFAULT_DATASET_ID, "precincts");
+  assert.equal(DEFAULT_DATASET_ID, "blocks");
   assert.equal(DEFAULT_YEAR, 2020);
   // Opens on population, not vote margin: the equal-area vote map is a MAUP-loaded
   // "ruler-that-isn't" and must not be the front door (red-team T1.3).

@@ -464,7 +464,7 @@ That legibility layer is the current project. The prescriptive question, whether
 *Written for someone fielding questions about the tool who is not a redistricting specialist.*
 
 **What does Honeycombing actually claim?**
-That North Carolina's enacted 2026 congressional map is an extreme statistical outlier: of 5,000 neutral, computer-drawn maps of the state, only 3 produce as few Democratic-leaning districts, and none produce fewer. It is a statement about how unusual the map is compared to neutral alternatives — nothing more.
+That North Carolina's enacted 2026 congressional map is an extreme statistical outlier: of 5,000 computer-drawn maps of the state (each drawn to documented districting rules, none to a partisan goal), only about 0.06% produce as few Democratic-leaning districts — the enacted map sits at or below the simulated minimum in both of ALARM's independent simulation runs. It is a statement about how unusual the map is compared to those constraint-defined alternatives — nothing more.
 
 **Does it prove the map is an illegal gerrymander?**
 No, and it cannot. The Supreme Court's *Rucho* decision (2019) put partisan-gerrymandering claims outside the federal courts, and being a statistical outlier is not by itself proof of unlawful intent or legal injury. Some deviations from neutral maps are legally *required* — for example, by the Voting Rights Act. The tool flags how unusual a map is; it does not adjudicate why.
