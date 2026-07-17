@@ -5,7 +5,7 @@
   "status": "draft",
   "jurisdiction": "North Carolina",
   "office": "U.S. House",
-  "generatedAt": "2026-07-03T00:00:00Z",
+  "generatedAt": "2026-07-17T00:00:00Z",
   "method": {
     "generator": "ALARM Project 50-State Redistricting Simulations (redist SMC)",
     "algorithm": "Sequential Monte Carlo via the redist package: 20,000 plans sampled across two independent runs, thinned to 5,000. Honeycombing computes all distributions below from ALARM's published per-district 2020 presidential vote counts (pre_20), not ALARM's multi-election composite indices.",
@@ -80,6 +80,11 @@
         "planId": "nc-2023-enacted-congressional",
         "value": 4,
         "percentile": 2.8
+      },
+      {
+        "planId": "nc-2025-enacted-congressional",
+        "value": 3,
+        "percentile": 0
       }
     ]
   },
@@ -267,6 +272,7 @@
     "The seat and share measures use the 2020 presidential proxy (pre_20), not ALARM's e_dem/pr_dem multi-election composites and not congressional election results.",
     "Compared-plan values (seat counts and district shares) are computed by Honeycombing from VEST 2020 precinct centroid assignment (descriptive_with_assignment_caveat). Calibration against ALARM's exact precinct assignment for the same reference geometry shows a maximum rank-sorted district share difference of 0.12pp.",
     "The ensemble was simulated for the 2020 redistricting cycle with the 2022 ratified congressional map as its reference plan. Percentile positions describe where a plan sits in this simulated distribution; they are not evidence of intent or legal injury.",
+    "The district-level unit measure (ranked_dem_share_pre20) ranks the 2023 enacted plan's districts; a rank-matched measure for the 2025 enacted plan (SL 2025-95) has not been generated yet.",
     "No H3 cell-level measure yet: cell projection requires ALARM's plan assignment matrices (NC_cd_2020_plans.rds), which this adapter does not ingest."
   ]
 }

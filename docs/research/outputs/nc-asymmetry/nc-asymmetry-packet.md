@@ -28,13 +28,14 @@ This packet compares North Carolina's statewide vote proxy, H3 vote concentratio
 | 118th Congress enacted districts | 7 | 7 | 3 | 2 | 2 | 3.31% |
 | NC 2022 court-ordered congressional plan | 7 | 7 | 3 | 2 | 2 | 1.55% |
 | NC 2023 enacted congressional plan | 4 | 10 | 1 | 3 | 0 | 3.08% |
+| NC 2025 enacted congressional plan | 3 | 11 | 2 | 3 | 0 | 3.08% |
 
 ## Claim Classes
 
 - **descriptive**: NC 2020 two-party presidential vote proxy is nearly even but slightly Republican. VEST precinct centroids total D 49.32% / R 50.68%.
 - **descriptive_with_centroid_caveat**: Democratic voters are spatially concentrated in fewer H3 cells than Republican voters at resolution 7. 964 D-leaning H3 cells versus 1482 R-leaning cells; 63.54% of Democratic votes are in D-leaning cells.
 - **descriptive_with_assignment_caveat**: Baseline, enacted, and court plans can be compared with the same center-assignment diagnostic, but the comparison is not yet court-grade. 118th baseline: 7 D-majority / 7 R-majority districts. 2022 court plan: 7 D-majority / 7 R-majority districts. 2023 enacted plan: 4 D-majority / 10 R-majority districts by precinct-centroid assignment.
-- **descriptive_with_assignment_caveat**: The NC registry now includes a meaningfully different enacted-vs-court contrast. NC 2022 court-ordered congressional plan: 7-7, 3 competitive; NC 2023 enacted congressional plan: 4-10, 1 competitive. The contrast is useful for review triage but still depends on centroid assignment.
+- **descriptive_with_assignment_caveat**: The NC registry now includes a meaningfully different enacted-vs-court contrast. NC 2022 court-ordered congressional plan: 7-7, 3 competitive; NC 2023 enacted congressional plan: 4-10, 1 competitive; NC 2025 enacted congressional plan: 3-11, 2 competitive. The contrast is useful for review triage but still depends on centroid assignment.
 - **requires_ensemble_and_expert_validation**: Whether observed asymmetry is lawful, ensemble-typical, or map-drawing-driven cannot be concluded from this packet alone. Needs ensemble baseline, district-specific election history, VRA/COI context, and polygon-apportioned precinct-to-district aggregation.
 
 ## Caveats
