@@ -19,14 +19,12 @@ const REPORT_DIR = join(root, "docs/research/outputs/headline-finding");
 // Stamped, not `new Date()`, so rebuilding from the same inputs is a no-op diff.
 const GENERATED_AT = "2026-07-17T00:00:00Z";
 
-const HEADLINE_PLAN_ID = "nc-2023-enacted-congressional";
-const HEADLINE_PLAN_NAME = "NC 2023 enacted congressional plan (SL 2023-145)";
+const HEADLINE_PLAN_ID = "nc-2025-enacted-congressional";
+const HEADLINE_PLAN_NAME = "NC 2025 enacted congressional plan (SL 2025-95)";
 
-// The SL 2023-145 map was replaced mid-decade; the finding must read as
-// describing the 2024-election map, never the map currently in force.
-const SUPERSEDED_NOTE =
-  "North Carolina enacted a replacement congressional map in October 2025 (SL 2025-95), which applies from the "
-  + "2026 election. This finding describes the SL 2023-145 map used in the 2024 election, not the map now in force.";
+// The predecessor map anchors the finding in time: SL 2025-95 is the October
+// 2025 mid-decade redraw of SL 2023-145, the map used in the 2024 election.
+const PRIOR_PLAN_ID = "nc-2023-enacted-congressional";
 
 const ensemble = JSON.parse(await readFile(ENSEMBLE_JSON, "utf8"));
 
@@ -45,6 +43,9 @@ const districtCount = ensemble.unitMeasures[0].units.length;
 const enacted = comparedPlans.find((plan) => plan.planId === HEADLINE_PLAN_ID);
 if (!enacted) throw new Error(`Compared plans missing ${HEADLINE_PLAN_ID}`);
 
+const priorPlan = comparedPlans.find((plan) => plan.planId === PRIOR_PLAN_ID);
+if (!priorPlan) throw new Error(`Compared plans missing ${PRIOR_PLAN_ID}`);
+
 // Ensemble median seat count from the histogram.
 let cumulative = 0;
 let medianSeats = null;
@@ -62,6 +63,7 @@ const plansAtOrBelow = histogram
 const plansAbove = planCount - plansAtOrBelow;
 
 const round1 = (value) => Math.round(value * 10) / 10;
+const round2 = (value) => Math.round(value * 100) / 100;
 const plansAtOrBelowPct = round1((plansAtOrBelow / planCount) * 100);
 const plansAbovePct = round1((plansAbove / planCount) * 100);
 
@@ -87,18 +89,25 @@ const band =
   : "high_outlier";
 
 const headline =
-  `${enacted.value} of ${districtCount} districts leaned Democratic under the congressional map North Carolina used in `
-  + `its 2024 election — ${plansAbovePct}% of ${planCount.toLocaleString("en-US")} neutral simulated maps produce more.`;
+  `${enacted.value} of ${districtCount} districts lean Democratic under the congressional map North Carolina adopted in `
+  + `October 2025 for its 2026 election — ${plansAbovePct}% of ${planCount.toLocaleString("en-US")} neutral simulated maps produce more.`;
 
 const shortHeadline =
-  `NC's 2024-election map (SL 2023-145): ${enacted.value} of ${districtCount} Democratic-leaning districts — `
+  `NC's 2026-election map (SL 2025-95): ${enacted.value} of ${districtCount} Democratic-leaning districts — `
   + `${plansAbovePct}% of ${planCount.toLocaleString("en-US")} neutral maps produce more.`;
 
 const methodNote =
   `Districts scored by 2020 presidential two-party vote, compared against the ALARM Project's ${planCount.toLocaleString("en-US")}-plan `
-  + `simulated ensemble (redist SMC, NC constraints). Ensemble median: ${medianSeats} Democratic-leaning seats; the SL 2023-145 plan sits at `
-  + `the ${percentile}th percentile (mid-percentile convention: plans tied with it split evenly above and below). `
-  + `Diagnostic position, not a seat forecast and not legal evidence.`;
+  + `simulated ensemble (redist SMC, NC constraints). Ensemble median: ${medianSeats} Democratic-leaning seats; only `
+  + `${plansAtOrBelow} of ${planCount.toLocaleString("en-US")} simulated plans produce ${enacted.value} or fewer, so the SL 2025-95 plan sits at `
+  + `the ${percentile.toFixed(1)}th percentile (exact mid-percentile ${round2(((below + equal / 2) / planCount) * 100)}%; `
+  + `plans tied with it split evenly above and below). Diagnostic position, not a seat forecast and not legal evidence.`;
+
+const mapStatusNote =
+  `SL 2025-95 was enacted October 22, 2025 as a mid-decade redraw and applies from the 2026 election; a federal `
+  + `three-judge panel denied preliminary injunctions in November 2025 and litigation continues. It replaced `
+  + `the SL 2023-145 map used in the 2024 election, which had ${priorPlan.value} Democratic-leaning districts on the same `
+  + `proxy and sat at the ${priorPlan.percentile}th percentile of the same ensemble.`;
 
 const finding = {
   schemaVersion: 1,
@@ -108,7 +117,7 @@ const finding = {
   headline,
   shortHeadline,
   methodNote,
-  supersededNote: SUPERSEDED_NOTE,
+  mapStatusNote,
   stat: {
     planId: HEADLINE_PLAN_ID,
     planName: HEADLINE_PLAN_NAME,
@@ -142,7 +151,7 @@ const finding = {
       + "centroid assignment, calibrated against ALARM's exact assignment (max rank-sorted district share delta 0.12pp).",
   },
   caveats: [
-    SUPERSEDED_NOTE,
+    mapStatusNote,
     "Percentile position describes where the plan sits inside a simulated distribution with a documented constraint set. "
       + "It is not evidence of intent or legal injury, and it cannot show whether deviations were legally required.",
     "Seat counts use the 2020 presidential vote as a partisan-lean proxy, not congressional election results.",
@@ -157,7 +166,7 @@ Generated by \`scripts/build-headline-finding.mjs\` on ${GENERATED_AT.slice(0, 1
 
 **Headline:** ${headline}
 
-**Map status:** ${SUPERSEDED_NOTE}
+**Map status:** ${mapStatusNote}
 
 **Method:** ${methodNote}
 

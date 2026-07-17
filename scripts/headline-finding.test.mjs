@@ -67,11 +67,12 @@ test("headline sentences carry the load-bearing numbers", () => {
   assert.match(finding.methodNote, /not legal evidence/);
 });
 
-test("headline is dated to the map it describes, not the map now in force", () => {
-  assert.match(finding.headline, /2024/);
-  assert.match(finding.supersededNote, /SL 2025-95/);
-  assert.match(finding.supersededNote, /October 2025/);
-  assert.ok(finding.caveats.includes(finding.supersededNote));
+test("headline is dated to the map it describes and carries predecessor context", () => {
+  assert.match(finding.headline, /October 2025/);
+  assert.match(finding.headline, /2026 election/);
+  assert.match(finding.mapStatusNote, /SL 2023-145/);
+  assert.match(finding.mapStatusNote, /2024 election/);
+  assert.ok(finding.caveats.includes(finding.mapStatusNote));
 });
 
 test("headline finding never ships from a mock ensemble and keeps its claim discipline", () => {

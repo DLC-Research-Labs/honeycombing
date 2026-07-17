@@ -13,7 +13,7 @@ can claim), and the derivation report at
 git clone <this repo>
 cd honeycombing
 npm install
-npm test        # 49 tests, all offline, including the headline drift-lock
+npm test        # 50 tests, all offline, including the headline drift-lock
 npm run build
 npm run dev     # http://localhost:3000/honeycombing (basePath; bare / redirects)
 ```
@@ -23,9 +23,10 @@ downloads, API keys, or private setup are required to run the app or the tests.
 
 ## Reproducing the NC headline finding
 
-The headline: **4 of 14 districts lean Democratic under NC's 2023 enacted
-congressional map — 94.5% of 5,000 neutral simulated maps produce more.**
-Three levels of reproduction, cheapest first.
+The headline: **3 of 14 districts lean Democratic under the congressional map
+North Carolina adopted in October 2025 for its 2026 election (SL 2025-95) —
+99.9% of 5,000 neutral simulated maps produce more.** Three levels of
+reproduction, cheapest first.
 
 ### Level 1 — Verify the tracked artifact (seconds)
 
@@ -87,11 +88,12 @@ observed maximum delta is 0.12pp.
 | Ensemble plans | 5,000 |
 | Seat histogram (Dem seats → plans) | 3 → 3, 4 → 272, 5 → 1220, 6 → 2269, 7 → 1094, 8 → 142 |
 | Ensemble median Democratic-leaning seats | 6 |
-| 2023 enacted plan Democratic-leaning seats | 4 of 14 |
-| Plans strictly above 4 seats | 4,725 (94.5%) |
-| Plans at or below 4 seats | 275 (5.5%) |
-| Mid-percentile of the enacted plan | 2.8 |
+| 2025 enacted plan (SL 2025-95) Democratic-leaning seats | 3 of 14 |
+| Plans strictly above 3 seats | 4,997 (99.9%) |
+| Plans at or below 3 seats | 3 (0.1%) |
+| Mid-percentile of the 2025 enacted plan | 0 |
 | Band (`classifyEnsemblePercentile`) | `low_outlier` |
+| 2023 enacted plan (2024 election) | 4 seats @ 2.8th percentile |
 | Calibration max rank-sorted share delta | 0.12pp (tolerance 1pp) |
 | 2022 court plan / 118th enacted baseline | 7 seats @ 86.2nd percentile each |
 

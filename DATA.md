@@ -102,7 +102,11 @@ Tracked under `public/data/plans/` with a registry; every feature carries
 - **`nc-2023-enacted-congressional.json`** — NC 2023 enacted plan
   (SL 2023-145, used in the 2024 election). Producer:
   `scripts/import-nc-2023-congressional-plan.py`, which downloads directly
-  from `ncleg.gov` — the one plan with a fully committed import path.
+  from `ncleg.gov`.
+- **`nc-2025-enacted-congressional.json`** — NC 2025 enacted plan
+  (SL 2025-95, the October 2025 mid-decade redraw, in force for the 2026
+  election). Producer: `scripts/import-nc-2025-congressional-plan.py`,
+  which downloads directly from the NCGA bill-document service.
 
 **Caveats:** plan overlays are geometry only; district vote shares shown with
 them come from the separate (and coarser) aggregation layers below.

@@ -4,7 +4,7 @@ Honeycombing is a civic mapping prototype that compares enacted district maps ag
 
 **Live demo:** [dalovecompany.com/honeycombing](https://www.dalovecompany.com/honeycombing)
 
-**Headline finding (NC case study):** 4 of 14 districts leaned Democratic under the congressional map North Carolina used in its 2024 election (SL 2023-145) — 94.5% of 5,000 neutral simulated maps produce more (ALARM ensemble, 2020 presidential vote proxy; 2.8th percentile, ensemble median 6). This is a diagnostic position inside a documented simulated distribution — not a seat forecast and not legal evidence. North Carolina enacted a replacement map in October 2025 (SL 2025-95) for the 2026 election. Method and derivation: `docs/research/outputs/headline-finding/nc-headline-finding.md`.
+**Headline finding (NC case study):** 3 of 14 districts lean Democratic under the congressional map North Carolina adopted in October 2025 for its 2026 election (SL 2025-95) — 99.9% of 5,000 neutral simulated maps produce more; only 3 of 5,000 produce as few, none fewer (ALARM ensemble, 2020 presidential vote proxy; ensemble median 6). The SL 2023-145 map it replaced, used in the 2024 election, had 4 Democratic-leaning districts at the 2.8th percentile of the same ensemble. This is a diagnostic position inside a documented simulated distribution — not a seat forecast and not legal evidence. Method and derivation: `docs/research/outputs/headline-finding/nc-headline-finding.md`.
 
 **What this is not:** a diagnostic prototype, not legal evidence. Nothing here demonstrates illegal intent or legal injury, hex counts are not a seat measure, and the known methodological shortcuts are disclosed rather than hidden. Read [/limits](https://www.dalovecompany.com/honeycombing/limits) before citing any number, and the white paper at [/about](https://www.dalovecompany.com/honeycombing/about) for the full method.
 
@@ -51,7 +51,7 @@ Current reviewer-facing status:
 - `scripts/build-census-blocks.py`: builds county/state Census block demographic point slices.
 - `scripts/build-census-h3.mjs`: builds the app-facing H3 aggregate from the raw Census block slice and writes a manifest.
 - `scripts/build-nc-starter-pack.mjs`: builds the compact North Carolina handoff packet from the tracked H3, precinct, county, district-heat, and plan-registry artifacts.
-- `scripts/build-headline-finding.mjs`: derives the demo's headline finding (2023 enacted plan vs the ALARM ensemble seat distribution) from the normalized ensemble payload, recomputing every number so the headline card can never drift from its source data.
+- `scripts/build-headline-finding.mjs`: derives the demo's headline finding (2025 enacted plan, SL 2025-95, vs the ALARM ensemble seat distribution) from the normalized ensemble payload, recomputing every number so the headline card can never drift from its source data.
 
 Example Census block dry run:
 
@@ -104,6 +104,7 @@ Current packaged plans:
 - `public/data/plans/us-congress-118-enacted.json`: normalized 118th Congress baseline from Census congressional district boundaries.
 - `public/data/plans/nc-2022-court-interim-congressional.json`: North Carolina congressional plan ordered by the NC Courts on February 23, 2022, sourced from the NC General Assembly 2022 redistricting process shapefile.
 - `public/data/plans/nc-2023-enacted-congressional.json`: North Carolina 2023 enacted congressional plan (SL 2023-145), used in the 2024 election, sourced from the NC General Assembly.
+- `public/data/plans/nc-2025-enacted-congressional.json`: North Carolina 2025 enacted congressional plan (SL 2025-95, the October 2025 mid-decade redraw, in force for the 2026 election), sourced from the NC General Assembly.
 
 ## Layer Model
 
