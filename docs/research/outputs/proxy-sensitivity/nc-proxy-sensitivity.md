@@ -35,6 +35,6 @@ most generous available choice to the enacted maps, not the least. The enacted 2
 2026 map (3 seats) sit in the tail under the presidential proxy and move deeper, not shallower, under
 the alternatives.
 
-- This is an ensemble-level robustness statement. The enacted 2023/2025 plans are scored only under the presidential proxy (the one our VEST precinct data carries); this table does not re-place them under the other proxies.
+- This is an ensemble-level robustness statement. The enacted 2023/2025 plans are re-placed under all ten statewide proxies separately in scripts/score-enacted-maps-proxies.py (report: nc-enacted-maps-proxies.md): both hold at their presidential-proxy seat count (2025 map 3, 2023 map 4) under every 2020-cycle proxy, with a single 2016 Secretary-of-State exception for the 2025 map.
 - The 2016 races reflect an older, more Republican electorate. Under the 2016 U.S. Senate proxy the ensemble's low tail is wide: a 4-seat map is within normal range, though a 3-seat map remains a tail outcome. The contemporaneous 2020 cycle and the composite are the relevant baseline, but the 2016 results are reported here without exception.
 - Democratic 'seats' use each election as a partisan-lean proxy, not congressional performance.

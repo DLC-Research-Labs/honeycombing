@@ -1,0 +1,298 @@
+{
+  "id": "nc-enacted-maps-proxies",
+  "title": "Enacted NC congressional plans scored under every ALARM statewide proxy",
+  "claimTag": "descriptive_with_assignment_caveat",
+  "source": {
+    "dataset": "ALARM 50-State Simulations, NC 2020 congressional map",
+    "doi": "10.7910/DVN/SLCD3E",
+    "version": "v15",
+    "license": "CC0",
+    "file": "NC_cd_2020_map.rds (file id 6380468)"
+  },
+  "method": "Each 2020 VTD precinct in ALARM's NC map file is reprojected from EPSG:32119 to WGS84 and assigned to a district in each registry plan by point-in-polygon (interior point). Statewide-race votes are summed by district; a district leans Democratic when its two-party Democratic share exceeds 50%. District-level assignment error is bounded by the 0.12pp ALARM reference calibration.",
+  "gates": {
+    "crsCalibrationAgreement": 0.9996,
+    "presidentialReconciliation": {
+      "nc-2025-enacted-congressional": 3,
+      "nc-2023-enacted-congressional": 4
+    }
+  },
+  "proxies": [
+    "pre_20",
+    "uss_20",
+    "gov_20",
+    "atg_20",
+    "sos_20",
+    "pre_16",
+    "uss_16",
+    "gov_16",
+    "atg_16",
+    "sos_16"
+  ],
+  "plans": [
+    {
+      "planId": "nc-2025-enacted-congressional",
+      "label": "NC 2025 enacted (SL 2025-95, 2026 election)",
+      "byProxy": {
+        "pre_20": {
+          "proxy": "2020 President",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 3.35
+        },
+        "uss_20": {
+          "proxy": "2020 U.S. Senate",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 2.71
+        },
+        "gov_20": {
+          "proxy": "2020 Governor",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 0.7
+        },
+        "atg_20": {
+          "proxy": "2020 Attorney General",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 1.8
+        },
+        "sos_20": {
+          "proxy": "2020 Secretary of State",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 0.25
+        },
+        "pre_16": {
+          "proxy": "2016 President",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 2.24
+        },
+        "uss_16": {
+          "proxy": "2016 U.S. Senate",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 2.55
+        },
+        "gov_16": {
+          "proxy": "2016 Governor",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 1.53
+        },
+        "atg_16": {
+          "proxy": "2016 Attorney General",
+          "demSeats": 3,
+          "districts": 14,
+          "closestMarginPp": 0.02
+        },
+        "sos_16": {
+          "proxy": "2016 Secretary of State",
+          "demSeats": 5,
+          "districts": 14,
+          "closestMarginPp": 1.27
+        }
+      }
+    },
+    {
+      "planId": "nc-2023-enacted-congressional",
+      "label": "NC 2023 enacted (SL 2023-145, 2024 election)",
+      "byProxy": {
+        "pre_20": {
+          "proxy": "2020 President",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 0.85
+        },
+        "uss_20": {
+          "proxy": "2020 U.S. Senate",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 1.6
+        },
+        "gov_20": {
+          "proxy": "2020 Governor",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 2.18
+        },
+        "atg_20": {
+          "proxy": "2020 Attorney General",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 2.78
+        },
+        "sos_20": {
+          "proxy": "2020 Secretary of State",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 3.21
+        },
+        "pre_16": {
+          "proxy": "2016 President",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 2.45
+        },
+        "uss_16": {
+          "proxy": "2016 U.S. Senate",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 2.12
+        },
+        "gov_16": {
+          "proxy": "2016 Governor",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 2.82
+        },
+        "atg_16": {
+          "proxy": "2016 Attorney General",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 2.65
+        },
+        "sos_16": {
+          "proxy": "2016 Secretary of State",
+          "demSeats": 4,
+          "districts": 14,
+          "closestMarginPp": 1.27
+        }
+      }
+    },
+    {
+      "planId": "nc-2022-court-interim-congressional",
+      "label": "NC 2022 court-ordered interim",
+      "byProxy": {
+        "pre_20": {
+          "proxy": "2020 President",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.84
+        },
+        "uss_20": {
+          "proxy": "2020 U.S. Senate",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.14
+        },
+        "gov_20": {
+          "proxy": "2020 Governor",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.36
+        },
+        "atg_20": {
+          "proxy": "2020 Attorney General",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 1.74
+        },
+        "sos_20": {
+          "proxy": "2020 Secretary of State",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 1.57
+        },
+        "pre_16": {
+          "proxy": "2016 President",
+          "demSeats": 6,
+          "districts": 14,
+          "closestMarginPp": 1.24
+        },
+        "uss_16": {
+          "proxy": "2016 U.S. Senate",
+          "demSeats": 6,
+          "districts": 14,
+          "closestMarginPp": 1.08
+        },
+        "gov_16": {
+          "proxy": "2016 Governor",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.22
+        },
+        "atg_16": {
+          "proxy": "2016 Attorney General",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.29
+        },
+        "sos_16": {
+          "proxy": "2016 Secretary of State",
+          "demSeats": 8,
+          "districts": 14,
+          "closestMarginPp": 0.49
+        }
+      }
+    },
+    {
+      "planId": "us-congress-118-enacted",
+      "label": "118th Congress enacted (NC districts)",
+      "byProxy": {
+        "pre_20": {
+          "proxy": "2020 President",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.91
+        },
+        "uss_20": {
+          "proxy": "2020 U.S. Senate",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.2
+        },
+        "gov_20": {
+          "proxy": "2020 Governor",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.36
+        },
+        "atg_20": {
+          "proxy": "2020 Attorney General",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 1.8
+        },
+        "sos_20": {
+          "proxy": "2020 Secretary of State",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 1.57
+        },
+        "pre_16": {
+          "proxy": "2016 President",
+          "demSeats": 6,
+          "districts": 14,
+          "closestMarginPp": 1.18
+        },
+        "uss_16": {
+          "proxy": "2016 U.S. Senate",
+          "demSeats": 6,
+          "districts": 14,
+          "closestMarginPp": 1.08
+        },
+        "gov_16": {
+          "proxy": "2016 Governor",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.28
+        },
+        "atg_16": {
+          "proxy": "2016 Attorney General",
+          "demSeats": 7,
+          "districts": 14,
+          "closestMarginPp": 0.35
+        },
+        "sos_16": {
+          "proxy": "2016 Secretary of State",
+          "demSeats": 8,
+          "districts": 14,
+          "closestMarginPp": 0.49
+        }
+      }
+    }
+  ]
+}

@@ -9,7 +9,7 @@
   "finding": "Across all four 2020 statewide contests and ALARM's multi-election composite, the ensemble's central tendency is 6-7 Democratic seats of 14, and plans producing 4 or fewer Democratic-leaning seats are at least as rare under each as under the 2020 presidential proxy the headline uses. The presidential proxy therefore produces the widest low tail — it is the most conservative choice, the one most generous to the enacted maps.",
   "headlineProxyIsMostConservative": true,
   "caveats": [
-    "This is an ensemble-level robustness statement. The enacted 2023/2025 plans are scored only under the presidential proxy (the one our VEST precinct data carries); this table does not re-place them under the other proxies.",
+    "This is an ensemble-level robustness statement. The enacted 2023/2025 plans are re-placed under all ten statewide proxies separately in scripts/score-enacted-maps-proxies.py (report: nc-enacted-maps-proxies.md): both hold at their presidential-proxy seat count (2025 map 3, 2023 map 4) under every 2020-cycle proxy, with a single 2016 Secretary-of-State exception for the 2025 map.",
     "The 2016 races reflect an older, more Republican electorate. Under the 2016 U.S. Senate proxy the ensemble's low tail is wide: a 4-seat map is within normal range, though a 3-seat map remains a tail outcome. The contemporaneous 2020 cycle and the composite are the relevant baseline, but the 2016 results are reported here without exception.",
     "Democratic 'seats' use each election as a partisan-lean proxy, not congressional performance."
   ],

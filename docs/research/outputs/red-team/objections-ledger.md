@@ -29,10 +29,12 @@
 ### T2.1 The enacted maps are only scored under the presidential proxy
 *(lens 2, "single highest-value fix"; also lens 1)* The proxy-sensitivity table rescoresthe *ensemble* under 11 proxies but the enacted 2023/2025 maps are scored only under `pre_20`. "Presidential is conservative" is proven for the ensemble tail, asserted for the maps. Direction helps us (any more-Democratic proxy shifts both the tail and the map's seats), but it's unmeasured.
 **Fix:** score the enacted maps under the 2020 Senate and Governor proxies (VEST ships those precinct columns) and report their seat counts alongside.
+**✅ RESOLVED 2026-07-18** — `scripts/score-enacted-maps-proxies.py` re-places the enacted maps under **all ten** ALARM statewide proxies (not just Senate/Gov), sourced from ALARM's own `NC_cd_2020_map.rds` precinct returns (single provenance, EPSG:32119 → WGS84, 99.96% agreement (2665/2666) with the `cd_2020` reference; presidential reproduces the headline 3/4 as a hard gate). Result (`nc-enacted-maps-proxies.md`): the 2025 map holds at 3 D seats and the 2023 map at 4 under **every 2020-cycle proxy**; no 2020 contest gives either map more than presidential. Only exception across both cycles: 2025 map = 5 under 2016 Secretary of State (Marshall, stale electorate), reported without exception. "Presidential is conservative for the maps" is now measured, not asserted.
 
 ### T2.2 The 2023 map's 4th seat is centroid-scored at a thin +0.85pp
 *(lens 2)* 2023 District 1 sits +0.85pp from 50% — 7× the 0.12pp calibration bound, so polygon apportionment *could* flip it. Blunted by: 2024 reality (Davis (D) won CD-1 — the call is externally validated); and a flip would send 2023 to 3 seats = *deeper* into the tail. The **2025 headline is immune** (nearest D-side district R+3.36pp, ~28× the bound).
 **Fix:** polygon-apportion 2023 CD-1 specifically; report its margin with an error bar rather than a bare "4 @ p2.8."
+**↗ PARTIALLY BLUNTED 2026-07-18** — the T2.1 multi-proxy scoring shows presidential is the 2023 map's *thinnest* 4th-seat margin (0.85pp); every other proxy widens CD-1 to 1.6–3.2pp and the seat count stays 4 under all ten. So the 4th seat is fragile *only* under the single proxy we headline with, and the fragility direction (a flip → 3 seats) sends 2023 deeper into the tail. Polygon apportionment of CD-1 specifically is still the clean close-out.
 
 ---
 
