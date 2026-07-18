@@ -361,6 +361,8 @@ export interface EnsembleRegistryEntry {
   name: string;
   source: string;
   url: string;
+  /** Optional sidecar URL for the lazy-loaded H3 divergence-localization unit measure. */
+  h3LocalizationUrl?: string;
   status: EnsembleSummaryStatus;
   description?: string;
   caveats?: readonly string[];

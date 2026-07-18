@@ -31,6 +31,7 @@ import {
   type EnsembleRegistry,
   type EnsembleRegistryEntry,
   type EnsembleSummary,
+  type EnsembleUnitMeasure,
   type PlanRegistry,
   type PlanRegistryEntry,
   type PlanComparisonPoint,
@@ -446,6 +447,10 @@ export default function HoneycombMap({
   const [ensembleEntry, setEnsembleEntry] = useState<EnsembleRegistryEntry | null>(null);
   const [ensembleSummary, setEnsembleSummary] = useState<EnsembleSummary | null>(null);
   const [ensembleError, setEnsembleError] = useState<string | null>(null);
+  // H3 divergence-localization overlay (lazy-loaded sidecar, opt-in — heavy layer)
+  const [showEnsembleH3, setShowEnsembleH3] = useState(false);
+  const [ensembleH3Measure, setEnsembleH3Measure] = useState<EnsembleUnitMeasure | null>(null);
+  const [ensembleH3Error, setEnsembleH3Error] = useState<string | null>(null);
 
   // Communities (COI) layer
   const [showCois, setShowCois] = useState(false);
@@ -463,6 +468,7 @@ export default function HoneycombMap({
         setActivePlanIds(["nc-2022-court-interim-congressional", "nc-2023-enacted-congressional"]);
         setShowEnsemble(false);
         setEnsembleOpen(false);
+        setShowEnsembleH3(false);
         setShowCois(false);
         setCoisOpen(false);
         return;
@@ -475,6 +481,7 @@ export default function HoneycombMap({
         setActivePlanIds([]);
         setShowEnsemble(false);
         setEnsembleOpen(false);
+        setShowEnsembleH3(false);
         setShowCois(false);
         setCoisOpen(false);
       }
@@ -565,6 +572,8 @@ export default function HoneycombMap({
         // Constraints must be on screen before any band renders, so enabling
         // always opens the method panel.
         if (!show) setEnsembleOpen(true);
+        // Turning the ensemble off drops the H3 localization sub-layer with it.
+        if (show) setShowEnsembleH3(false);
         return !show;
       });
       return;
@@ -870,6 +879,32 @@ export default function HoneycombMap({
     };
   }, [showEnsemble, ensembleSummary]);
 
+  // ── Lazy-load the H3 divergence-localization sidecar when its sub-layer is enabled ──
+  useEffect(() => {
+    if (!showEnsembleH3 || ensembleH3Measure || !ensembleEntry?.h3LocalizationUrl) return;
+
+    let cancelled = false;
+    (async () => {
+      try {
+        const response = await fetch(withBasePath(ensembleEntry.h3LocalizationUrl!));
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const measure = await response.json() as EnsembleUnitMeasure;
+        if (!cancelled) {
+          setEnsembleH3Measure(measure);
+          setEnsembleH3Error(null);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setEnsembleH3Error(error instanceof Error ? error.message : "Failed to load H3 localization");
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [showEnsembleH3, ensembleH3Measure, ensembleEntry]);
+
   // ── Load the ensemble's reference plan geometry into the plan cache ──
   const ensembleReferencePlanId = useMemo(() => (
     ensembleSummary?.unitMeasures.find((measure) => measure.unitKeyType === "district")?.referencePlanId ?? null
@@ -952,7 +987,11 @@ export default function HoneycombMap({
       ensembleLayerRef.current.addLayer(geojsonLayer);
     }
 
-    const h3Measure = ensembleSummary.unitMeasures.find((measure) => measure.unitKeyType === "h3");
+    // The H3 localization measure is an opt-in, lazy-loaded sidecar (kept out of the
+    // main payload to avoid bloat); render it only when its sub-layer is enabled.
+    const h3Measure = showEnsembleH3
+      ? (ensembleH3Measure ?? ensembleSummary.unitMeasures.find((measure) => measure.unitKeyType === "h3"))
+      : undefined;
     if (h3Measure) {
       for (const unit of h3Measure.units) {
         try {
@@ -988,7 +1027,7 @@ export default function HoneycombMap({
         (layer as L.GeoJSON).bringToFront();
       }
     });
-  }, [showEnsemble, ensembleSummary, planDataById]);
+  }, [showEnsemble, ensembleSummary, planDataById, showEnsembleH3, ensembleH3Measure]);
 
   // ── Load the COI registry and payloads when the panel or layer is opened ──
   useEffect(() => {
@@ -2065,6 +2104,35 @@ export default function HoneycombMap({
                       })}
                     </div>
                   </div>
+
+                  {ensembleEntry?.h3LocalizationUrl && gate.allowed && (
+                    <div className="mt-2 border-t border-white/10 pt-2">
+                      <label className="flex cursor-pointer items-center justify-between gap-2 text-[10px] font-mono text-zinc-300 select-none">
+                        <span>Localize on H3 grid</span>
+                        <input
+                          type="checkbox"
+                          checked={showEnsembleH3}
+                          onChange={() => setShowEnsembleH3((v) => !v)}
+                          className="h-3 w-3 accent-purple-500"
+                        />
+                      </label>
+                      <div className="mt-1 text-[9px] leading-snug text-zinc-600">
+                        Hexes where the 2025 map places a location in a district the neutral ensemble rarely draws there
+                        (outlier tails only). This is the containing district&apos;s lean, not the cell residents&apos; own vote.
+                      </div>
+                      {showEnsembleH3 && ensembleH3Error && (
+                        <div className="mt-1 text-[9.5px] leading-snug text-red-300">{ensembleH3Error}</div>
+                      )}
+                      {showEnsembleH3 && !ensembleH3Measure && !ensembleH3Error && (
+                        <div className="mt-1 text-[9.5px] text-zinc-500">Loading H3 localization…</div>
+                      )}
+                      {showEnsembleH3 && ensembleH3Measure && (
+                        <div className="mt-1 text-[9.5px] leading-snug text-zinc-400">
+                          {ensembleH3Measure.units.length.toLocaleString()} outlier cells drawn (below 5th / above 95th percentile).
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="mt-2">
                     <div className="text-[9px] font-mono uppercase tracking-wide text-zinc-600">Percentile bands</div>

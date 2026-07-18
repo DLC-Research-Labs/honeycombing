@@ -344,8 +344,12 @@ const summary = {
       + "evidence of intent or legal injury.",
     "The district-level unit measure (ranked_dem_share_pre20) ranks the 2023 enacted plan's districts; a rank-matched "
       + "measure for the 2025 enacted plan (SL 2025-95) has not been generated yet.",
-    "No H3 cell-level measure yet: cell projection requires ALARM's plan assignment matrices (NC_cd_2020_plans.rds), "
-      + "which this adapter does not ingest.",
+    "The H3 cell-level measure (divergence localization) is generated separately by "
+      + "scripts/build-ensemble-h3-localization.py from ALARM's extracted plan-assignment matrices and shipped as a "
+      + "lazy-loaded sidecar (nc-congress-2020-alarm-h3.json, referenced by the registry's h3LocalizationUrl). It "
+      + "projects the CONTAINING DISTRICT's 2020-presidential lean onto each cell versus the neutral distribution — a "
+      + "spatial marker of where the enacted 2025 map departs from the ensemble, never a claim about the cell "
+      + "residents' own vote or representation.",
   ],
 };
 
@@ -362,6 +366,7 @@ const entry = {
   name: summary.title,
   source: "ALARM Project, 50-State Redistricting Simulations (Harvard Dataverse, CC0)",
   url: "/data/ensembles/nc-congress-2020-alarm.json",
+  h3LocalizationUrl: "/data/ensembles/nc-congress-2020-alarm-h3.json",
   status: summary.status,
   description:
     "Real NC congressional ensemble (5,000 redist SMC plans) normalized from ALARM's published per-district statistics "
