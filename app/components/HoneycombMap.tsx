@@ -185,6 +185,7 @@ interface DistrictVoteProps {
 interface PlanFeatureProps {
   GEOID?: string;
   district_id?: string;
+  district_number?: number;
   name?: string;
   plan_id?: string;
   source?: string;
@@ -976,7 +977,7 @@ export default function HoneycombMap({
           const band = ENSEMBLE_BAND_STYLES[classifyEnsemblePercentile(unit.comparedPercentile)];
           layer.bindTooltip(
             `<div style="font-size:11px;line-height:1.55">
-              <b>District ${districtId}</b><br>
+              <b>District ${props?.district_number ?? districtId}</b><br>
               ${districtMeasure.label}: <b>${unit.comparedValue.toFixed(3)}</b><br>
               Ensemble percentile: <b>${unit.comparedPercentile.toFixed(1)}</b> · ${band.label}${previewNote}
             </div>`,
