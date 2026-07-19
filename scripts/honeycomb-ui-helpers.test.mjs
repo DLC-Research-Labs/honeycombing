@@ -685,7 +685,7 @@ test("ALARM NC ensemble payload is real, gated open, and positions both plans", 
   assert.equal(classifyEnsemblePercentile(court.percentile), "high_edge");
 
   const districtMeasure = summary.unitMeasures.find((measure) => measure.unitKeyType === "district");
-  assert.equal(districtMeasure.referencePlanId, "nc-2023-enacted-congressional");
+  assert.equal(districtMeasure.referencePlanId, "nc-2025-enacted-congressional");
   assert.equal(districtMeasure.units.length, 14);
   const unitIds = new Set(districtMeasure.units.map((unit) => unit.unitId));
   assert.equal(unitIds.size, 14);

@@ -5,7 +5,7 @@
   "status": "draft",
   "jurisdiction": "North Carolina",
   "office": "U.S. House",
-  "generatedAt": "2026-07-17T00:00:00Z",
+  "generatedAt": "2026-07-19T00:00:00Z",
   "method": {
     "generator": "ALARM Project 50-State Redistricting Simulations (redist SMC)",
     "algorithm": "Sequential Monte Carlo via the redist package: 20,000 plans sampled across two independent runs, thinned to 5,000. Honeycombing computes all distributions below from ALARM's published per-district 2020 presidential vote counts (pre_20), not ALARM's multi-election composite indices.",
@@ -100,9 +100,9 @@
     {
       "measureId": "ranked_dem_share_pre20",
       "label": "District Democratic two-party share (rank-matched)",
-      "definition": "Distribution across ensemble plans of the k-th ranked district Democratic two-party share (2020 presidential), where k is the rank each 2023 enacted district holds within its own plan. Districts are compared by rank, not identity, because district numbering is not stable across plans.",
+      "definition": "Distribution across ensemble plans of the k-th ranked district Democratic two-party share (2020 presidential), where k is the rank each 2025 enacted (SL 2025-95) district holds within its own plan. Districts are compared by rank, not identity, because district numbering is not stable across plans.",
       "unitKeyType": "district",
-      "referencePlanId": "nc-2023-enacted-congressional",
+      "referencePlanId": "nc-2025-enacted-congressional",
       "units": [
         {
           "unitId": "3701",
@@ -113,8 +113,8 @@
             "p75": 0.5652,
             "p95": 0.5948
           },
-          "comparedValue": 0.5085,
-          "comparedPercentile": 0.5
+          "comparedValue": 0.4664,
+          "comparedPercentile": 0
         },
         {
           "unitId": "3702",
@@ -131,14 +131,14 @@
         {
           "unitId": "3703",
           "percentiles": {
-            "p5": 0.364,
-            "p25": 0.3901,
-            "p50": 0.4014,
-            "p75": 0.4085,
-            "p95": 0.4179
+            "p5": 0.4992,
+            "p25": 0.5162,
+            "p50": 0.5235,
+            "p75": 0.5352,
+            "p95": 0.5524
           },
-          "comparedValue": 0.4125,
-          "comparedPercentile": 85
+          "comparedValue": 0.4568,
+          "comparedPercentile": 0
         },
         {
           "unitId": "3704",
@@ -155,38 +155,38 @@
         {
           "unitId": "3705",
           "percentiles": {
-            "p5": 0.4453,
-            "p25": 0.4495,
-            "p50": 0.4641,
-            "p75": 0.4729,
-            "p95": 0.4925
+            "p5": 0.4322,
+            "p25": 0.445,
+            "p50": 0.4467,
+            "p75": 0.4489,
+            "p95": 0.4593
           },
           "comparedValue": 0.4222,
-          "comparedPercentile": 0
+          "comparedPercentile": 1.1
         },
         {
           "unitId": "3706",
           "percentiles": {
-            "p5": 0.398,
-            "p25": 0.4074,
-            "p50": 0.4143,
-            "p75": 0.4227,
-            "p95": 0.4329
+            "p5": 0.364,
+            "p25": 0.3901,
+            "p50": 0.4014,
+            "p75": 0.4085,
+            "p95": 0.4179
           },
           "comparedValue": 0.4175,
-          "comparedPercentile": 60
+          "comparedPercentile": 94.2
         },
         {
           "unitId": "3707",
           "percentiles": {
-            "p5": 0.478,
-            "p25": 0.4984,
-            "p50": 0.5104,
-            "p75": 0.5166,
-            "p95": 0.5307
+            "p5": 0.456,
+            "p25": 0.4757,
+            "p50": 0.4856,
+            "p75": 0.4998,
+            "p95": 0.5102
           },
           "comparedValue": 0.444,
-          "comparedPercentile": 0
+          "comparedPercentile": 0.1
         },
         {
           "unitId": "3708",
@@ -203,11 +203,11 @@
         {
           "unitId": "3709",
           "percentiles": {
-            "p5": 0.456,
-            "p25": 0.4757,
-            "p50": 0.4856,
-            "p75": 0.4998,
-            "p95": 0.5102
+            "p5": 0.4453,
+            "p25": 0.4495,
+            "p50": 0.4641,
+            "p75": 0.4729,
+            "p95": 0.4925
           },
           "comparedValue": 0.4289,
           "comparedPercentile": 0
@@ -215,23 +215,23 @@
         {
           "unitId": "3710",
           "percentiles": {
-            "p5": 0.4088,
-            "p25": 0.423,
-            "p50": 0.4317,
-            "p75": 0.4392,
-            "p95": 0.4481
+            "p5": 0.398,
+            "p25": 0.4074,
+            "p50": 0.4143,
+            "p75": 0.4227,
+            "p95": 0.4329
           },
           "comparedValue": 0.4187,
-          "comparedPercentile": 18.2
+          "comparedPercentile": 63.4
         },
         {
           "unitId": "3711",
           "percentiles": {
-            "p5": 0.4992,
-            "p25": 0.5162,
-            "p50": 0.5235,
-            "p75": 0.5352,
-            "p95": 0.5524
+            "p5": 0.478,
+            "p25": 0.4984,
+            "p50": 0.5104,
+            "p75": 0.5166,
+            "p95": 0.5307
           },
           "comparedValue": 0.4442,
           "comparedPercentile": 0
@@ -263,14 +263,14 @@
         {
           "unitId": "3714",
           "percentiles": {
-            "p5": 0.4322,
-            "p25": 0.445,
-            "p50": 0.4467,
-            "p75": 0.4489,
-            "p95": 0.4593
+            "p5": 0.4088,
+            "p25": 0.423,
+            "p50": 0.4317,
+            "p75": 0.4392,
+            "p95": 0.4481
           },
           "comparedValue": 0.4187,
-          "comparedPercentile": 0.2
+          "comparedPercentile": 18.2
         }
       ]
     }
@@ -280,7 +280,7 @@
     "The seat and share measures use the 2020 presidential proxy (pre_20), not ALARM's e_dem/pr_dem multi-election composites and not congressional election results.",
     "The reference plan (NC 2022 court plan) equals ALARM's cd_2020 reference and is scored from ALARM's exact per-district vote totals (assignment: exact_alarm_reference). The other compared plans are not in ALARM's ensemble and are scored by Honeycombing from VEST 2020 precinct-centroid assignment (descriptive_with_assignment_caveat). The reference calibration bounds the district-level error of that shortcut at 0.12pp; every compared plan's Democratic-seat count clears that bound — its closest-district margin is reported in seatMarginPp.",
     "The ensemble was simulated for the 2020 redistricting cycle with the 2022 ratified congressional map as its reference plan. Percentile positions describe where a plan sits in this simulated distribution; they are not evidence of intent or legal injury.",
-    "The district-level unit measure (ranked_dem_share_pre20) ranks the 2023 enacted plan's districts; a rank-matched measure for the 2025 enacted plan (SL 2025-95) has not been generated yet.",
+    "The district-level unit measure (ranked_dem_share_pre20) ranks the districts of the 2025 enacted plan (SL 2025-95, the map in force for 2026); the superseded 2023 plan appears in comparedPlans only. District rank assignments inherit the centroid-assignment calibration bound; districts 3706 and 3710; 3710 and 3714; 3707 and 3711 differ by less than that bound, so their ranks (and unit percentiles) could swap under exact assignment.",
     "The H3 cell-level measure (divergence localization) is generated separately by scripts/build-ensemble-h3-localization.py from ALARM's extracted plan-assignment matrices and shipped as a lazy-loaded sidecar (nc-congress-2020-alarm-h3.json, referenced by the registry's h3LocalizationUrl). It projects the CONTAINING DISTRICT's 2020-presidential lean onto each cell versus the neutral distribution — a spatial marker of where the enacted 2025 map departs from the ensemble, never a claim about the cell residents' own vote or representation."
   ]
 }
