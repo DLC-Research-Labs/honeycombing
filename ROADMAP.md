@@ -1,5 +1,12 @@
 # ROADMAP — Honeycombing
 
+## STATUS 2026-07-19 — district unit measure rekeyed to SL 2025-95 (ensemble caveat #5 retired)
+
+- **The ensemble's district bands now describe the map in force.** `UNIT_REFERENCE_PLAN` in `scripts/build-alarm-ensemble.mjs` switched from the superseded 2023 plan to `nc-2025-enacted-congressional`; the `ranked_dem_share_pre20` unit measure ranks the 2025 plan's 14 districts against the ensemble's rank-ordered share distributions, matching the headline. The 2023 plan remains in `comparedPlans` only. Seat histogram and compared-plan percentiles unchanged (2025: 3 @ p0; 2023: 4 @ p2.8).
+- **Claim discipline:** the stale "no 2025 measure yet" caveat is replaced by a *computed* rank-tie disclosure — adjacent ranks separated by less than the 0.12pp calibration bound (currently 3706/3710, 3710/3714, 3707/3711) could swap under exact assignment, so which district id carries which unit percentile is not robust for those pairs; the percentile set is.
+- **Verified:** methods auditor recomputed all 70 quantiles, 14 compared values, and 14 mid-rank percentiles independently from the raw ALARM CSV — exact. 50 tests + lint + build green. Playwright at 390/820/1440: method panel opens before bands, 14 bands render from the 2025 geometry, no 2023 leakage in band context, zero console errors. Tooltip now labels districts by number ("District 12", not GEOID "3712").
+- **Open on this track:** optional 2023/2025 band selector (emit both unit measures + small panel picker); tooltip viewport-edge clamping (clips on left-edge districts at 390px); draft→published still gated on expert review.
+
 ## STATUS 2026-07-18 — T4.2 shipped: the hex grid now touches the headline (H3 divergence localization)
 
 - **The differentiating feature is built.** Until now the hex grid did not touch the headline number (the red-team's lens-4 gap: "a banner quoting ALARM plus a vote chart"). The ensemble is now projected onto the H3 grid to show *where* the enacted 2025 map (SL 2025-95) diverges from the 5,000 neutral simulated plans. `scripts/build-ensemble-h3-localization.py`: for each populated r7 cell, take the 2020-presidential Democratic share of its containing district, build that value's distribution across the 5,000 draws (from the extracted plan-assignment matrices + ALARM's per-precinct pre_20 returns — no stats CSV), and locate the enacted 2025 map within it. Reduction: computed once per precinct (2666×5000), inherited by each cell. Four hard gates (GEOID order, matrix dims/labels, 3 D seats, 99.3% cell coverage).
