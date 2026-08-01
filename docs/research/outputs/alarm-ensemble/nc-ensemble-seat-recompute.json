@@ -1,0 +1,64 @@
+{
+  "generatedBy": "scripts/recompute-ensemble-seats.py",
+  "source": {
+    "assignmentMatrix": "data/alarm/derived/nc-plans-assignment.bin",
+    "returns": "NC_cd_2020_map.rds pre_20_dem_bid / pre_20_rep_tru",
+    "doi": "10.7910/DVN/SLCD3E",
+    "drawCount": 5000
+  },
+  "consistencyCheck": {
+    "publishedHistogram": {
+      "3": 3,
+      "4": 272,
+      "5": 1220,
+      "6": 2269,
+      "7": 1094,
+      "8": 142
+    },
+    "recomputedHistogram": {
+      "3": 3,
+      "4": 272,
+      "5": 1220,
+      "6": 2269,
+      "7": 1094,
+      "8": 142
+    },
+    "match": true,
+    "note": "Seat histogram recomputed independently from the assignment matrices reproduces ALARM's published statistics exactly."
+  },
+  "discreteTail": {
+    "measure": "Democratic-leaning seats of 14 (pre_20 two-party > 50%)",
+    "enactedSeats": 3,
+    "plansAtOrBelow": 3,
+    "plansBelow": 0,
+    "planCount": 5000,
+    "shareAtOrBelowPct": 0.06,
+    "exactBinomial95CI": {
+      "lowerPct": 0.012375152046931289,
+      "upperPct": 0.17524436033960472,
+      "method": "Clopper-Pearson"
+    },
+    "note": "The enacted map ties the ensemble's observed minimum: no simulated plan produces fewer, and a small number produce the same count. The count is an estimate of a tail probability from few events \u2014 the interval, not the raw count, is the defensible statement."
+  },
+  "continuousTail": {
+    "measure": "Democratic two-party share of the 4th-ranked district \u2014 the district that would have to flip to add a Democratic seat",
+    "enactedShare": 0.4664543242492856,
+    "enactedMarginPp": 3.354567575071438,
+    "percentile": 0.0,
+    "plansStrictlyBelow": 0,
+    "plansEqual": 0,
+    "strictlyBelowAllDraws": true,
+    "tiePlans": {
+      "count": 3,
+      "marginsPp": [
+        0.06479413160522252,
+        0.13916973058359372,
+        0.21997084413075685
+      ],
+      "enactedDeeperThanAll": true,
+      "separationPp": 3.1345967309406806
+    },
+    "claimTag": "descriptive_with_assignment_caveat",
+    "note": "Simulated draws use ALARM's exact assignment; the enacted plan uses precinct representative-point assignment, bounded at 0.12pp at district level."
+  }
+}
