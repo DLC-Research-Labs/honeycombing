@@ -157,6 +157,20 @@ interface HeadlineFinding {
     percentile: number;
     band: string;
   };
+  // Continuous companion to the discrete seat count. `statement` is null when the
+  // builder withholds the ordering claim, so the UI must treat it as optional.
+  tailContext?: {
+    measureLabel: string;
+    measureDefinition: string;
+    enactedMarginPp: number;
+    tiePlanCount: number;
+    tiePlanMaxMarginPp: number;
+    plansStrictlyBelow: number;
+    separationPp: number;
+    orderingClaimAllowed: boolean;
+    statement: string | null;
+    note: string;
+  };
   provenance: {
     inputs: { description: string; sourceUrl: string; status: string }[];
     voteProxy: string;
@@ -572,6 +586,9 @@ export default function Home() {
           </span>
           <span className="min-w-0 leading-snug text-zinc-200">
             {headlineFinding.headline}{" "}
+            {headlineFinding.tailContext?.statement && (
+              <span className="text-cyan-200/90">{headlineFinding.tailContext.statement}{" "}</span>
+            )}
             <span className="text-zinc-500">Descriptive — not proof of intent or unlawfulness.</span>{" "}
             <button
               type="button"
@@ -634,6 +651,25 @@ export default function Home() {
                 <div className="mt-1 text-zinc-200">{headlineFinding.stat.band.replace("_", " ")}</div>
               </div>
             </section>
+
+            {headlineFinding.tailContext && (
+              <section className="space-y-2 border border-cyan-500/20 bg-cyan-500/[0.04] px-3 py-2.5">
+                <div className="flex items-baseline justify-between gap-2">
+                  <div className="text-cyan-300/90">{headlineFinding.tailContext.measureLabel}</div>
+                  <div className="shrink-0 text-base font-semibold tracking-tight text-cyan-200">
+                    {headlineFinding.tailContext.enactedMarginPp}pp
+                  </div>
+                </div>
+                {headlineFinding.tailContext.statement && (
+                  <p className="leading-relaxed text-zinc-300">{headlineFinding.tailContext.statement}</p>
+                )}
+                <p className="leading-relaxed text-zinc-500">
+                  {headlineFinding.tailContext.measureDefinition}. Simulated plans strictly below the enacted plan on
+                  this measure: {headlineFinding.tailContext.plansStrictlyBelow} of{" "}
+                  {headlineFinding.stat.planCount.toLocaleString()}.
+                </p>
+              </section>
+            )}
 
             {headlineFinding.mapStatusNote && (
               <section className="space-y-1.5 border border-amber-400/20 bg-amber-500/[0.05] px-3 py-2">

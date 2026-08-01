@@ -75,6 +75,50 @@ test("headline is dated to the map it describes and carries predecessor context"
   assert.ok(finding.caveats.includes(finding.mapStatusNote));
 });
 
+test("continuous tail context is gated on the assignment bound and agrees with its artifact", async () => {
+  const { tailContext, stat } = finding;
+  assert.ok(tailContext, "headline finding carries continuous tail context");
+
+  const recompute = JSON.parse(
+    await readFile(
+      new URL("../docs/research/outputs/alarm-ensemble/nc-ensemble-seat-recompute.json", import.meta.url),
+      "utf8",
+    ),
+  );
+
+  // The artifact must describe the same ensemble the headline stat came from.
+  assert.equal(recompute.source.drawCount, stat.planCount);
+  assert.equal(recompute.discreteTail.enactedSeats, stat.planSeats);
+  assert.equal(recompute.discreteTail.plansAtOrBelow, stat.plansAtOrBelow);
+
+  const round2 = (value) => Math.round(value * 100) / 100;
+  const tail = recompute.continuousTail;
+  assert.equal(tailContext.enactedMarginPp, round2(tail.enactedMarginPp));
+  assert.equal(tailContext.separationPp, round2(tail.tiePlans.separationPp));
+  assert.equal(tailContext.plansStrictlyBelow, tail.plansStrictlyBelow);
+  assert.equal(tailContext.tiePlanCount, tail.tiePlans.count);
+  assert.equal(tailContext.tiePlanMaxMarginPp, round2(Math.max(...tail.tiePlans.marginsPp)));
+
+  // The ordering claim may only appear when the enacted plan is strictly beyond every
+  // draw AND the separation clears the centroid shortcut's district-level error bound.
+  const allowed =
+    tail.strictlyBelowAllDraws === true
+    && tail.tiePlans.enactedDeeperThanAll === true
+    && tail.tiePlans.separationPp > tailContext.centroidBoundPp;
+  assert.equal(tailContext.orderingClaimAllowed, allowed);
+  if (!allowed) {
+    assert.equal(tailContext.statement, null, "ordering claim withheld when the bound is not cleared");
+  } else {
+    assert.ok(tailContext.separationPp > tailContext.centroidBoundPp);
+    assert.match(tailContext.statement, new RegExp(`${tailContext.enactedMarginPp}pp`));
+    assert.match(tailContext.statement, new RegExp(`${tailContext.tiePlanMaxMarginPp}pp`));
+  }
+
+  // The continuous claim must not be presented without its assignment caveat.
+  assert.ok(finding.caveats.includes(tailContext.note));
+  assert.match(tailContext.note, /representative-point assignment/);
+});
+
 test("headline finding never ships from a mock ensemble and keeps its claim discipline", () => {
   assert.notEqual(ensemble.status, "mock");
   assert.equal(finding.provenance.inputs[0].status, ensemble.status);

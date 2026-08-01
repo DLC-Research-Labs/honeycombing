@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 const root = dirname(fileURLToPath(new URL("../package.json", import.meta.url)));
 
 const ENSEMBLE_JSON = join(root, "public/data/ensembles/nc-congress-2020-alarm.json");
+const RECOMPUTE_JSON = join(root, "docs/research/outputs/alarm-ensemble/nc-ensemble-seat-recompute.json");
 const OUT_JSON = join(root, "public/data/case-studies/nc-headline-finding.json");
 const REPORT_DIR = join(root, "docs/research/outputs/headline-finding");
 
@@ -103,6 +104,74 @@ const methodNote =
   + `ensemble's observed minimum. Its ${percentile.toFixed(1)}th percentile position (exact mid-percentile ${round2(((below + equal / 2) / planCount) * 100)}%) `
   + `means "at or below the observed minimum," not a probability of zero. Diagnostic position, not a seat forecast and not legal evidence.`;
 
+// ── Continuous tail context ──────────────────────────────────────────────────
+// Seat count is discrete, so several very different plans land in the same bin and
+// the enacted plan reads as merely "tied" with the ensemble minimum. The recompute
+// artifact (scripts/recompute-ensemble-seats.py) measures the same plans on a
+// continuous axis — the Democratic share of the district that would have to flip to
+// yield one more Democratic seat — which orders plans that tie on seat count.
+const recompute = JSON.parse(await readFile(RECOMPUTE_JSON, "utf8"));
+
+// Gate the artifact against the ensemble it claims to describe, so this file can
+// never quote a tail computed from different inputs than the headline.
+{
+  const check = recompute.consistencyCheck;
+  const published = Object.fromEntries(histogram.map((bin) => [String(bin.value), bin.planCount]));
+  if (JSON.stringify(check.recomputedHistogram) !== JSON.stringify(published)) {
+    throw new Error("Recompute artifact histogram does not match the ensemble payload histogram");
+  }
+  if (recompute.source.drawCount !== planCount) {
+    throw new Error(`Recompute draw count ${recompute.source.drawCount} != ensemble plan count ${planCount}`);
+  }
+  if (recompute.discreteTail.enactedSeats !== enacted.value) {
+    throw new Error(`Recompute enacted seats ${recompute.discreteTail.enactedSeats} != ${enacted.value}`);
+  }
+  if (recompute.discreteTail.plansAtOrBelow !== plansAtOrBelow) {
+    throw new Error("Recompute tail count disagrees with the histogram");
+  }
+}
+
+const tail = recompute.continuousTail;
+const CENTROID_BOUND_PP = 0.12;
+
+// The ordering claim is only allowed when the enacted plan is strictly beyond every
+// draw AND the separation clears the assignment shortcut's district-level error bound.
+// Otherwise the finding ships without it rather than overstating.
+const orderingClaimAllowed =
+  tail.strictlyBelowAllDraws === true
+  && tail.tiePlans.enactedDeeperThanAll === true
+  && tail.tiePlans.separationPp > CENTROID_BOUND_PP;
+
+const nextSeatOrdinal = tail.tiePlans.count > 0 ? enacted.value + 1 : null;
+const tieMaxMarginPp = round2(Math.max(...tail.tiePlans.marginsPp));
+
+const tailStatement = orderingClaimAllowed
+  ? `No simulated map is further from a ${nextSeatOrdinal}th Democratic-leaning district than the enacted one: `
+    + `it sits ${round2(tail.enactedMarginPp)}pp short of one, while the ${tail.tiePlans.count} simulated plans that match its `
+    + `seat count come within ${tieMaxMarginPp}pp.`
+  : null;
+
+const tailContext = {
+  measureLabel: `Distance to a ${nextSeatOrdinal}th Democratic-leaning district`,
+  measureDefinition: tail.measure,
+  enactedSharePct: round2(tail.enactedShare * 100),
+  enactedMarginPp: round2(tail.enactedMarginPp),
+  percentile: tail.percentile,
+  plansStrictlyBelow: tail.plansStrictlyBelow,
+  tiePlanCount: tail.tiePlans.count,
+  tiePlanMaxMarginPp: tieMaxMarginPp,
+  separationPp: round2(tail.tiePlans.separationPp),
+  centroidBoundPp: CENTROID_BOUND_PP,
+  orderingClaimAllowed,
+  statement: tailStatement,
+  note:
+    "Seat count is discrete, so plans that differ substantially can share a bin. This measure is "
+    + "continuous and orders them. Simulated draws use ALARM's exact precinct assignment; the enacted "
+    + `plan uses precinct representative-point assignment, bounded at ${CENTROID_BOUND_PP}pp at district `
+    + "level — the separation above is reported so that bound can be checked rather than assumed clear.",
+  source: "scripts/recompute-ensemble-seats.py",
+};
+
 const mapStatusNote =
   `SL 2025-95 was enacted October 22, 2025 as a mid-decade redraw and applies from the 2026 election; a federal `
   + `three-judge panel denied preliminary injunctions in November 2025 and litigation continues. It replaced `
@@ -134,6 +203,7 @@ const finding = {
     percentile,
     band,
   },
+  tailContext,
   provenance: {
     script: "scripts/build-headline-finding.mjs",
     inputs: [
@@ -155,6 +225,7 @@ const finding = {
     "Percentile position describes where the plan sits inside a simulated distribution with a documented constraint set. "
       + "It is not evidence of intent or legal injury, and it cannot show whether deviations were legally required.",
     "Seat counts use the 2020 presidential vote as a partisan-lean proxy, not congressional election results.",
+    tailContext.note,
     "The underlying ensemble payload is status \"" + ensemble.status + "\" pending expert review of its consistency checks.",
     "Read /limits before citing this number.",
   ],
@@ -184,6 +255,26 @@ All numbers recomputed from \`public/data/ensembles/nc-congress-2020-alarm.json\
 | Plans with > ${enacted.value} Democratic-leaning seats | ${plansAbove} (${plansAbovePct}%) |
 | Mid-percentile of the enacted plan | ${percentile} |
 | Band (\`classifyEnsemblePercentile\` thresholds) | ${band} |
+
+## Continuous tail context
+
+Seat count is discrete: plans that differ substantially can share a bin, which is why the
+enacted map reads as merely "tied" with the ensemble's observed minimum. Measured on a
+continuous axis — ${tailContext.measureDefinition} — the tie resolves into an ordering.
+Recomputed by \`${tailContext.source}\` from ALARM's assignment matrices; see
+\`docs/research/outputs/alarm-ensemble/nc-ensemble-seat-recompute.md\`.
+
+| Quantity | Value |
+| --- | --- |
+| Enacted plan's ${nextSeatOrdinal}th-ranked district share | ${tailContext.enactedSharePct}% |
+| Distance to a ${nextSeatOrdinal}th Democratic-leaning district | ${tailContext.enactedMarginPp}pp |
+| Simulated plans strictly below the enacted plan on this measure | ${tailContext.plansStrictlyBelow} of ${planCount} |
+| Simulated plans tying the enacted seat count | ${tailContext.tiePlanCount} (all within ${tailContext.tiePlanMaxMarginPp}pp of another seat) |
+| Separation from the nearest tie plan | ${tailContext.separationPp}pp |
+| Assignment-shortcut bound it must clear | ${tailContext.centroidBoundPp}pp |
+| Ordering claim permitted | ${tailContext.orderingClaimAllowed} |
+
+${tailContext.statement ?? "_Ordering claim withheld: the separation does not clear the assignment bound._"}
 
 ## Claim discipline
 

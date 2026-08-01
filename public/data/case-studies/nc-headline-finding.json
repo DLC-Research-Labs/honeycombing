@@ -23,6 +23,22 @@
     "percentile": 0,
     "band": "low_outlier"
   },
+  "tailContext": {
+    "measureLabel": "Distance to a 4th Democratic-leaning district",
+    "measureDefinition": "Democratic two-party share of the 4th-ranked district — the district that would have to flip to add a Democratic seat",
+    "enactedSharePct": 46.65,
+    "enactedMarginPp": 3.35,
+    "percentile": 0,
+    "plansStrictlyBelow": 0,
+    "tiePlanCount": 3,
+    "tiePlanMaxMarginPp": 0.22,
+    "separationPp": 3.13,
+    "centroidBoundPp": 0.12,
+    "orderingClaimAllowed": true,
+    "statement": "No simulated map is further from a 4th Democratic-leaning district than the enacted one: it sits 3.35pp short of one, while the 3 simulated plans that match its seat count come within 0.22pp.",
+    "note": "Seat count is discrete, so plans that differ substantially can share a bin. This measure is continuous and orders them. Simulated draws use ALARM's exact precinct assignment; the enacted plan uses precinct representative-point assignment, bounded at 0.12pp at district level — the separation above is reported so that bound can be checked rather than assumed clear.",
+    "source": "scripts/recompute-ensemble-seats.py"
+  },
   "provenance": {
     "script": "scripts/build-headline-finding.mjs",
     "inputs": [
@@ -40,6 +56,7 @@
     "SL 2025-95 was enacted October 22, 2025 as a mid-decade redraw and applies from the 2026 election; a federal three-judge panel denied preliminary injunctions in November 2025 and litigation continues. It replaced the SL 2023-145 map used in the 2024 election, which had 4 Democratic-leaning districts on the same proxy and sat at the 2.8th percentile of the same ensemble.",
     "Percentile position describes where the plan sits inside a simulated distribution with a documented constraint set. It is not evidence of intent or legal injury, and it cannot show whether deviations were legally required.",
     "Seat counts use the 2020 presidential vote as a partisan-lean proxy, not congressional election results.",
+    "Seat count is discrete, so plans that differ substantially can share a bin. This measure is continuous and orders them. Simulated draws use ALARM's exact precinct assignment; the enacted plan uses precinct representative-point assignment, bounded at 0.12pp at district level — the separation above is reported so that bound can be checked rather than assumed clear.",
     "The underlying ensemble payload is status \"draft\" pending expert review of its consistency checks.",
     "Read /limits before citing this number."
   ]

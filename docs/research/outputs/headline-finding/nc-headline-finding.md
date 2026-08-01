@@ -23,11 +23,32 @@ All numbers recomputed from `public/data/ensembles/nc-congress-2020-alarm.json`
 | Mid-percentile of the enacted plan | 0 |
 | Band (`classifyEnsemblePercentile` thresholds) | low_outlier |
 
+## Continuous tail context
+
+Seat count is discrete: plans that differ substantially can share a bin, which is why the
+enacted map reads as merely "tied" with the ensemble's observed minimum. Measured on a
+continuous axis — Democratic two-party share of the 4th-ranked district — the district that would have to flip to add a Democratic seat — the tie resolves into an ordering.
+Recomputed by `scripts/recompute-ensemble-seats.py` from ALARM's assignment matrices; see
+`docs/research/outputs/alarm-ensemble/nc-ensemble-seat-recompute.md`.
+
+| Quantity | Value |
+| --- | --- |
+| Enacted plan's 4th-ranked district share | 46.65% |
+| Distance to a 4th Democratic-leaning district | 3.35pp |
+| Simulated plans strictly below the enacted plan on this measure | 0 of 5000 |
+| Simulated plans tying the enacted seat count | 3 (all within 0.22pp of another seat) |
+| Separation from the nearest tie plan | 3.13pp |
+| Assignment-shortcut bound it must clear | 0.12pp |
+| Ordering claim permitted | true |
+
+No simulated map is further from a 4th Democratic-leaning district than the enacted one: it sits 3.35pp short of one, while the 3 simulated plans that match its seat count come within 0.22pp.
+
 ## Claim discipline
 
 - SL 2025-95 was enacted October 22, 2025 as a mid-decade redraw and applies from the 2026 election; a federal three-judge panel denied preliminary injunctions in November 2025 and litigation continues. It replaced the SL 2023-145 map used in the 2024 election, which had 4 Democratic-leaning districts on the same proxy and sat at the 2.8th percentile of the same ensemble.
 - Percentile position describes where the plan sits inside a simulated distribution with a documented constraint set. It is not evidence of intent or legal injury, and it cannot show whether deviations were legally required.
 - Seat counts use the 2020 presidential vote as a partisan-lean proxy, not congressional election results.
+- Seat count is discrete, so plans that differ substantially can share a bin. This measure is continuous and orders them. Simulated draws use ALARM's exact precinct assignment; the enacted plan uses precinct representative-point assignment, bounded at 0.12pp at district level — the separation above is reported so that bound can be checked rather than assumed clear.
 - The underlying ensemble payload is status "draft" pending expert review of its consistency checks.
 - Read /limits before citing this number.
 
