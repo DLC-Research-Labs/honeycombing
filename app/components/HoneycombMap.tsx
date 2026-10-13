@@ -39,6 +39,8 @@ import {
   type ResearchLayerId,
   type ViewPresetId,
 } from "@/app/lib/honeycomb-ui-helpers";
+import { describeBasemapStatus, getBasemapConfig } from "@/app/lib/basemap";
+import type { MapChipId, MapLayerDirective } from "@/app/lib/guided-walkthrough";
 
 export type { VoteMetric, PrecinctResult };
 
@@ -365,6 +367,12 @@ interface HoneycombMapProps {
   onSelectionUpdate?: (stats: SelectionStats | null) => void;
   focusBounds?: MapFocusBounds | null;
   activePresetId?: ViewPresetId;
+  /**
+   * Which layers and on-map controls belong on screen. The guided walkthrough and
+   * the expert presets both speak through this one prop, so a mode switch always
+   * lands in a coherent state instead of leaving stray overlays behind.
+   */
+  layerDirective?: MapLayerDirective;
 }
 
 export default function HoneycombMap({
@@ -382,6 +390,7 @@ export default function HoneycombMap({
   onSelectionUpdate,
   focusBounds,
   activePresetId,
+  layerDirective,
 }: HoneycombMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -453,6 +462,13 @@ export default function HoneycombMap({
   const [ensembleH3Measure, setEnsembleH3Measure] = useState<EnsembleUnitMeasure | null>(null);
   const [ensembleH3Error, setEnsembleH3Error] = useState<string | null>(null);
 
+  // Background raster status. Tile transport success is not proof of a usable
+  // basemap (the previous provider returned watermarked 200s), so load and error
+  // events are counted and surfaced instead of assumed.
+  const tileCountsRef = useRef({ loadedTileCount: 0, erroredTileCount: 0 });
+  const tileSyncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [basemapTileCounts, setBasemapTileCounts] = useState({ loadedTileCount: 0, erroredTileCount: 0 });
+
   // Communities (COI) layer
   const [showCois, setShowCois] = useState(false);
   const [coisOpen, setCoisOpen] = useState(false);
@@ -460,34 +476,26 @@ export default function HoneycombMap({
   const [coiSummaries, setCoiSummaries] = useState<Record<string, CoiSummary>>({});
   const [coiError, setCoiError] = useState<string | null>(null);
 
+  // Apply the current layer directive (guided step or expert preset). It only
+  // re-runs when the directive object changes, so manual toggling afterwards is
+  // never fought by this effect.
   useEffect(() => {
-    queueMicrotask(() => {
-      if (activePresetId === "plan-compare") {
-        setPlansOpen(true);
-        setShowDistricts(true);
-        setDistrictHeatFill(false);
-        setActivePlanIds(["nc-2022-court-interim-congressional", "nc-2023-enacted-congressional"]);
-        setShowEnsemble(false);
-        setEnsembleOpen(false);
-        setShowEnsembleH3(false);
-        setShowCois(false);
-        setCoisOpen(false);
-        return;
-      }
+    if (!layerDirective) return;
+    const directive = layerDirective;
 
-      if (activePresetId) {
-        setPlansOpen(false);
-        setShowDistricts(false);
-        setDistrictHeatFill(false);
-        setActivePlanIds([]);
-        setShowEnsemble(false);
-        setEnsembleOpen(false);
-        setShowEnsembleH3(false);
-        setShowCois(false);
-        setCoisOpen(false);
-      }
+    queueMicrotask(() => {
+      setPlansOpen(directive.opensPlansPanel);
+      setShowDistricts(directive.showDistrictOutlines);
+      setDistrictHeatFill(directive.districtHeatFill);
+      setActivePlanIds([...directive.activePlanIds]);
+      setShowEnsemble(directive.showEnsembleBands);
+      // The constraint panel must be on screen before any band renders.
+      setEnsembleOpen(directive.showEnsembleBands && directive.opensEnsembleMethodPanel);
+      setShowEnsembleH3(directive.showEnsembleH3);
+      setShowCois(directive.showCommunities);
+      setCoisOpen(directive.opensCommunitiesPanel);
     });
-  }, [activePresetId]);
+  }, [layerDirective]);
 
   const activeResearchLayers = useMemo<ResearchLayerId[]>(() => {
     const layers: ResearchLayerId[] = [];
@@ -521,6 +529,12 @@ export default function HoneycombMap({
   );
 
   const plansGroup = layerGroups.find((group) => group.group === "Plans");
+  // Guided mode shows only the chips its current step actually uses; expert mode
+  // shows all three. Every capability stays reachable through expert mode.
+  const visibleChips: readonly MapChipId[] = layerDirective?.visibleChips ?? ["plans", "communities", "ensemble"];
+  const showSettingsChrome = layerDirective?.showSettings ?? true;
+  const basemap = getBasemapConfig();
+  const basemapStatus = describeBasemapStatus(basemapTileCounts);
   const planImportSchema = useMemo(() => getPlanImportSchema(), []);
   const activePlanComparisons = useMemo<ActivePlanComparison[]>(() => {
     return activePlanIds.flatMap((planId) => {
@@ -692,6 +706,16 @@ export default function HoneycombMap({
     return comparisonPoints;
   }, [dataKind, unitLabel]);
 
+  // Tile events fire once per tile; mirror the counters into state on a short
+  // debounce so panning does not cause a render per tile.
+  const scheduleTileCountSync = useCallback(() => {
+    if (tileSyncTimerRef.current) return;
+    tileSyncTimerRef.current = setTimeout(() => {
+      tileSyncTimerRef.current = null;
+      setBasemapTileCounts({ ...tileCountsRef.current });
+    }, 400);
+  }, []);
+
   // ── Initialize map ──
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -700,13 +724,27 @@ export default function HoneycombMap({
       center: initialCenterRef.current,
       zoom: initialZoomRef.current,
       zoomControl: false,
+      // Leaflet's own control is off; the provider attribution is rendered as a
+      // pinned element below so it stays legible against the dark UI.
       attributionControl: false,
     });
 
-    L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-      { maxZoom: 19 }
-    ).addTo(map);
+    // Background raster: see app/lib/basemap.ts for the provider, its attribution,
+    // and the usage policy this wiring stays inside.
+    const basemap = getBasemapConfig();
+    const tileLayer = L.tileLayer(basemap.urlTemplate, {
+      maxZoom: basemap.maxZoom,
+      attribution: basemap.attributionHtml,
+    });
+    tileLayer.on("tileload", () => {
+      tileCountsRef.current.loadedTileCount += 1;
+      scheduleTileCountSync();
+    });
+    tileLayer.on("tileerror", () => {
+      tileCountsRef.current.erroredTileCount += 1;
+      scheduleTileCountSync();
+    });
+    tileLayer.addTo(map);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
@@ -767,10 +805,14 @@ export default function HoneycombMap({
     });
 
     return () => {
+      if (tileSyncTimerRef.current) {
+        clearTimeout(tileSyncTimerRef.current);
+        tileSyncTimerRef.current = null;
+      }
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [scheduleTileCountSync]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -1588,6 +1630,7 @@ export default function HoneycombMap({
 
       {/* Plans + communities + ensemble quick panels */}
       <div className="absolute z-[1010] flex items-start gap-2" style={{ top: 'max(12px, env(safe-area-inset-top, 12px))', left: 'max(12px, env(safe-area-inset-left, 12px))' }}>
+        {visibleChips.includes("plans") && (
         <div>
         <button
           type="button"
@@ -1610,8 +1653,9 @@ export default function HoneycombMap({
 
         {plansOpen && plansGroup && (
           <div
-            className="mt-2 w-80 overflow-y-auto border border-white/10 bg-black/90 p-3 shadow-2xl backdrop-blur-xl"
-            style={{ maxHeight: "calc(100dvh - 88px)" }}
+            // Capped short on phones so the panel cannot swallow the map (and, in
+            // guided mode, cannot overflow the shorter map pane).
+            className="mt-2 w-[min(20rem,calc(100vw-40px))] max-h-[42dvh] overflow-y-auto border border-white/10 bg-black/90 p-3 shadow-2xl backdrop-blur-xl sm:max-h-[calc(100dvh-120px)]"
           >
             <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-2">
               <div>
@@ -1855,7 +1899,9 @@ export default function HoneycombMap({
           </div>
         )}
         </div>
+        )}
 
+        {visibleChips.includes("communities") && (
         <div>
         <button
           type="button"
@@ -1876,8 +1922,7 @@ export default function HoneycombMap({
 
         {coisOpen && (
           <div
-            className="mt-2 w-80 overflow-y-auto border border-white/10 bg-black/90 p-3 shadow-2xl backdrop-blur-xl"
-            style={{ maxHeight: "calc(100dvh - 88px)" }}
+            className="mt-2 w-[min(20rem,calc(100vw-40px))] max-h-[42dvh] overflow-y-auto border border-white/10 bg-black/90 p-3 shadow-2xl backdrop-blur-xl sm:max-h-[calc(100dvh-120px)]"
           >
             <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-2">
               <div>
@@ -1996,7 +2041,9 @@ export default function HoneycombMap({
           </div>
         )}
         </div>
+        )}
 
+        {visibleChips.includes("ensemble") && (
         <div>
         <button
           type="button"
@@ -2017,8 +2064,7 @@ export default function HoneycombMap({
 
         {ensembleOpen && (
           <div
-            className="mt-2 w-80 overflow-y-auto border border-white/10 bg-black/90 p-3 shadow-2xl backdrop-blur-xl"
-            style={{ maxHeight: "calc(100dvh - 88px)" }}
+            className="mt-2 w-[min(20rem,calc(100vw-40px))] max-h-[42dvh] overflow-y-auto border border-white/10 bg-black/90 p-3 shadow-2xl backdrop-blur-xl sm:max-h-[calc(100dvh-120px)]"
           >
             <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-2">
               <div>
@@ -2156,9 +2202,11 @@ export default function HoneycombMap({
           </div>
         )}
         </div>
+        )}
       </div>
 
       {/* Gear button — top right, with safe-area inset for iPad */}
+      {showSettingsChrome && (
       <div className="absolute z-[1000]" style={{ top: 'max(12px, env(safe-area-inset-top, 12px))', right: 'max(12px, env(safe-area-inset-right, 12px))' }}>
         <button
           type="button"
@@ -2176,7 +2224,7 @@ export default function HoneycombMap({
 
         {/* Settings panel — scrollable, max-height to stay on screen */}
         {settingsOpen && (
-          <div className="mt-2 w-64 bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-3 space-y-3 overflow-y-auto" style={{ maxHeight: 'calc(100dvh - 100px)' }}>
+          <div className="mt-2 w-64 max-h-[52dvh] bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-3 space-y-3 overflow-y-auto sm:max-h-[calc(100dvh-120px)]">
             {/* Layer A */}
             <div>
               <div className="text-[11px] font-semibold text-zinc-300 mb-1.5">Layer A <span className="text-zinc-500 font-normal">(region)</span></div>
@@ -2428,6 +2476,38 @@ export default function HoneycombMap({
           </div>
         )}
       </div>
+      )}
+
+      {/* Background-map attribution (required by the tile provider) and a truthful
+          tile-status notice. Kept above the map panes and below the panels. */}
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 z-[1005] flex max-w-[min(560px,calc(100%-76px))] flex-col items-start gap-1 px-2 pb-1"
+      >
+        {basemapStatus.message && (
+          <div
+            role="status"
+            className="pointer-events-auto rounded border border-amber-400/30 bg-black/85 px-2 py-1 text-[10px] leading-snug text-amber-200 backdrop-blur-sm"
+          >
+            {basemapStatus.message}{" "}
+            <a
+              href={basemap.policyUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="underline decoration-amber-400/50 hover:text-amber-100"
+            >
+              Tile usage policy
+            </a>
+          </div>
+        )}
+        <a
+          href={basemap.attributionUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="pointer-events-auto rounded bg-black/70 px-1.5 py-0.5 text-[10px] text-zinc-200 underline decoration-zinc-400 underline-offset-2 backdrop-blur-sm transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-400"
+        >
+          {basemap.attributionText}
+        </a>
+      </div>
 
       {/* Empty state */}
       {results.length === 0 && (
@@ -2435,10 +2515,10 @@ export default function HoneycombMap({
           <div className="text-center">
             <Hexagon className="h-16 w-16 mx-auto mb-3 text-cyan-500/20" />
             <h3 className="text-lg font-medium text-zinc-400 mb-1">
-              No voting data loaded
+              {dataKind === "population" ? "No population data loaded" : "No election data loaded"}
             </h3>
             <p className="text-sm text-zinc-600">
-              Load precinct data to see the hex grid overlay
+              The {unitLabel} payload for this layer did not load, so the hex grid is empty.
             </p>
           </div>
         </div>

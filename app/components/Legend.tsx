@@ -66,7 +66,8 @@ export default function Legend({ metric }: LegendProps) {
   const config = LEGEND_CONFIGS[metric];
 
   return (
-    <div className="absolute z-[1000] pointer-events-none" style={{ bottom: 'max(14px, env(safe-area-inset-bottom, 14px))', left: 'max(12px, env(safe-area-inset-left, 12px))' }}>
+    // Raised clear of the basemap attribution strip pinned to the bottom of the map.
+    <div className="absolute z-[1000] pointer-events-none" style={{ bottom: 'calc(30px + env(safe-area-inset-bottom, 0px))', left: 'max(12px, env(safe-area-inset-left, 12px))' }}>
       <div className="px-2.5 py-2 rounded-lg bg-black/60 backdrop-blur-xl border border-white/10">
         <p className="text-[9px] text-zinc-500 mb-1.5 font-medium">
           {config.label}

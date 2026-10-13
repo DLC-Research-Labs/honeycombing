@@ -1,23 +1,49 @@
 # HANDOFF — Honeycombing
 
-Pick-up doc for the next `/honeycombing` session. Full history lives in `ROADMAP.md`
-(the status blocks at the top are newest-first); this file is just "where we are + what's next."
+Pick-up doc for the next session. Full history lives in `ROADMAP.md` (status blocks newest-first);
+this file is "where we are + what's next."
 
-## Live state (2026-07-19)
+## Where things stand
 
-- **Deployed & live.** Canonical demo: **dalovecompany.com/honeycombing** (dalove proxy → `honeycombing.vercel.app`, basePath `/honeycombing`). The proxy auto-picks-up new honeycombing prod deploys, so **no dalove redeploy is needed unless the proxy config changes**.
-- **Repo.** Public `origin` = `DLC-Research-Labs/honeycombing`. Commits author as `errorwasmade`, no Claude trailer (repo convention).
-- **Deploy recipe:** `git push origin main` → `vercel --prod --yes` from the repo. Verify with `curl .../honeycombing/data/ensembles/<file>.json`.
+Three layers, deliberately kept apart:
 
-## Shipped this session (2026-07-19; see ROADMAP for detail)
+1. **Deployed.** The public demo at **dalovecompany.com/honeycombing** serves an earlier build. It has the
+   expert workbench and the ensemble explainer, but **not** the guided walkthrough, and not the background-map
+   fix — its payload also predates the continuous tail statement.
+2. **In the repository, not deployed.** The 2025 unit-measure rekey and continuous-tail work (committed), plus
+   the guided/expert cleanup and the OpenStreetMap basemap repair described below (uncommitted working tree).
+3. **Draft research.** The ALARM ensemble payload is status `draft`, pending expert review of its consistency
+   checks — that review is the promotion gate the payload defines for itself. The only community-of-interest
+   payload is a fictional sample, permanently gate-blocked.
 
-- **2025 rank-matched district unit measure** (`edb3353`): the ALARM payload's `ranked_dem_share_pre20` measure is now keyed to the **2025 enacted plan (SL 2025-95, the map in force)** — `UNIT_REFERENCE_PLAN` in `scripts/build-alarm-ensemble.mjs`. The ensemble panel's district bands render the current map's 14 districts against the neutral rank distributions; the superseded 2023 plan remains in `comparedPlans` only. Stale caveat retired; replaced by a **computed rank-tie disclosure** (adjacent ranks closer than the 0.12pp calibration bound could swap under exact assignment — currently 3706/3710, 3710/3714, 3707/3711).
-- **Methods-audited exact** (independent recompute from the raw ALARM CSV: all quantiles, compared values, mid-rank percentiles, histogram unchanged). **Playwright-verified** at 390/820/1440: 14 bands render, method panel opens first, no 2023 leakage, zero console/network errors.
-- **Tooltip label fix** (`6c8c88f`): district bands now say "District 12", not "District 3712".
+## This pass — guided/expert cleanup (uncommitted, not deployed)
 
-## NEXT OPTIONS (no single queued task)
+- **Guided mode is the default.** Four steps — what changed → how unusual is it under this comparison → where does
+  it show up → what can't we conclude — in `app/lib/guided-walkthrough.ts`. Narrative text and every number are
+  built from `nc-headline-finding.json`; the draft status of the ensemble appears in the default story. Each step
+  resolves a layer directive the map applies, so the story drives real layers (plan boundaries → percentile bands
+  with the method panel first → H3 divergence tails and region zooms → limits).
+- **Expert mode keeps everything**: years, granularity, presets, starter regions, selection, provenance panel,
+  Plans/Communities/Ensemble panels, settings gear. Leaving guided mode carries the current layers over; returning
+  re-applies the step's layers. Guided mode hides the technical switches and the sample-community surface, hides
+  the settings gear, and shows only the chips its step uses.
+- **Background map repaired.** CARTO `dark_all` was returning watermarked "API KEY REQUIRED" images with HTTP 200.
+  Provider is now OpenStreetMap standard raster tiles (`app/lib/basemap.ts`), key-free, with a visible
+  © OpenStreetMap contributors link, no subdomain sharding, and a truthful tile-status notice that scopes a tile
+  outage away from the data layers. Note the tiles are light; the app chrome is dark and tiles are rendered
+  unmodified (no filter, nothing hidden).
+- **Layout**: header wraps instead of scrolling horizontally, guided story sits beside the map (`sm:` and up) or
+  above it on phones, map panels capped so they cannot swallow the map, legend raised clear of the attribution.
+- **Docs reconciled**: README's "no ensemble/COI pipeline" line was stale and is fixed; deployed vs repo vs draft
+  are now distinguished here and in README.
+- **Checks**: 70 tests (51 pre-existing + 19 new), lint, and build all green. **Browser/pixel verification is
+  pending** — no mounted-layer, tile-pixel, or touch-layout check has been run on this change.
 
-1. **Expert-review outreach** — the draft→published promotion gate the ensemble payload defines for itself. Frame: "drift-locked browser explainer on your NC 2020 ensemble, here's the derivation, what did we get wrong?"
-2. **2023/2025 selector for district bands** (the "fuller" option from the rekey decision): emit both unit measures and add a small panel selector; `ensembleReferencePlanId` memo + reference-plan geometry loader in `HoneycombMap.tsx` (~910/949) would follow the selection. Only if wanted — the default now matches the headline map.
-3. **Overlay polish** (optional): "cracking-tail-only" lighter default for the H3 overlay (current default draws both tails, 5,130 cells); ensemble tooltip clamping at viewport edges (Leaflet tooltips clip on left-edge districts at 390px and under the open panel on desktop — QA note 2026-07-19).
-4. Red-team ledger Tier-3 framing items and T2.2 clean close-out (polygon-apportion 2023 CD-1) — non-blocking; see `docs/research/outputs/red-team/objections-ledger.md`.
+## Next
+
+1. **Browser pass**: run the app, confirm OSM tiles actually paint (pixels, not HTTP 200), walk the guided steps at
+   390×844 / 820×1180 / 1440×900, switch modes both ways, and check the ensemble method panel opens before bands.
+2. **Expert-review outreach** for the ensemble draft→published gate (drafts go for approval before anything is sent).
+3. Then deploy: commit, push, deploy honeycombing, verify the payloads over HTTP.
+4. Optional backlog: 2023/2025 selector for the district bands; lighter cracking-tail-only default for the H3 overlay;
+   ensemble tooltip clamping at viewport edges; red-team ledger Tier-3 framing items.

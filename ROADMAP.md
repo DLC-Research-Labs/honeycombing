@@ -1,5 +1,39 @@
 # ROADMAP — Honeycombing
 
+## STATUS 2026-09-22 — guided/expert split, basemap repaired (in repo, NOT deployed, uncommitted)
+
+- **Product simplified, research engine untouched.** The app now opens on a four-step plain-English North Carolina
+  walkthrough — what changed → how unusual is it under this comparison → where does it show up → what can't we
+  conclude — with an explicit **Guided / Expert** switch in the header. New module `app/lib/guided-walkthrough.ts`
+  owns the steps, the narrative builder (every number read from `nc-headline-finding.json`, nothing re-stated as a
+  literal), and `resolveMapLayerDirective`, the single seam both modes use to tell the map which layers belong on
+  screen. No new routing, no global-state rewrite; no dataset, script, or research artifact changed.
+- **Claim discipline held.** Draft ensemble status is stated in the default story; each step carries its own
+  limitation plus a source/method link; the "what we can't conclude" step reproduces every payload caveat verbatim
+  and adds the no-single-score, no-VRA-conclusion, and fictional-sample statements. H3 is described as a
+  visualization grid, alternatives as *sampled under documented constraints* (not certified fair or lawful maps),
+  presidential vote as a proxy. Strictly-greater and at-or-below counts are reported with distinct wording, the
+  mid-rank percentile convention is named, and the ensemble method panel still opens before any band renders.
+- **Expert path keeps every capability**: years, Block/Precinct/County, presets, starter regions, selection +
+  CSV/print/share, provenance panel, Plans/Communities/Ensemble panels, settings gear. Guided mode hides the
+  technical switches and the fictional-sample surface rather than removing them; switching out carries the current
+  layers over, switching back re-applies the step's layers.
+- **Basemap root cause fixed.** CARTO `dark_all` served watermarked "API KEY REQUIRED" images as HTTP 200, so image
+  decode/status was never proof of a usable basemap. Provider wiring moved to `app/lib/basemap.ts` and switched to
+  OpenStreetMap standard raster tiles: key-free, no `{s}` sharding, max zoom 19, visible © OpenStreetMap
+  contributors link, OSMF tile-policy link, default browser Referer/caching, no prefetch or bulk download. Tiles
+  render unmodified (they are light; nothing is filtered or masked), and tile load/error counts drive a truthful
+  notice that names a failure and scopes it away from the Census/plan/ensemble layers.
+- **Layout**: header wraps instead of forcing a horizontal control maze; guided story beside the map from `sm:` up
+  and stacked above it on phones; map quick panels capped (42dvh on phones) so they cannot occlude the whole map;
+  legend raised clear of the attribution strip; mode/step controls are ≥36px with `aria-pressed` / `aria-current`
+  and visible focus rings.
+- **Verified**: test-first (behavioral RED on the new narrative/directive/tile-status helpers, then green) — 70 tests
+  (51 pre-existing + 19 new), `npm run lint` clean, `npm run build` green including TypeScript. **Not verified:**
+  anything in a browser. Mounted layers, actual tile pixels, and touch layout at 390/820/1440 are still pending, as
+  is any methods re-audit of the rephrased copy.
+- **Not deployed, not committed.** The public demo still serves the pre-guided build.
+
 ## STATUS 2026-07-19 — district unit measure rekeyed to SL 2025-95 (ensemble caveat #5 retired)
 
 - **The ensemble's district bands now describe the map in force.** `UNIT_REFERENCE_PLAN` in `scripts/build-alarm-ensemble.mjs` switched from the superseded 2023 plan to `nc-2025-enacted-congressional`; the `ranked_dem_share_pre20` unit measure ranks the 2025 plan's 14 districts against the ensemble's rank-ordered share distributions, matching the headline. The 2023 plan remains in `comparedPlans` only. Seat histogram and compared-plan percentiles unchanged (2025: 3 @ p0; 2023: 4 @ p2.8).

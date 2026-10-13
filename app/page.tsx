@@ -1,14 +1,31 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { Database, MapPinned, MessageCircle, X } from "lucide-react";
+import { Compass, Database, MapPinned, MessageCircle, Sliders, X } from "lucide-react";
 import Legend from "./components/Legend";
 import { copyTextToClipboard } from "@/app/lib/browser-clipboard";
 import type { VoteMetric, PrecinctResult } from "@/app/lib/vote-types";
 import { getDefaultMetricForDatasetKind, getMetricOptionsForDatasetKind } from "@/app/lib/vote-types";
 import type { HexStats, MapFocusBounds, SelectionStats } from "./components/HoneycombMap";
+import {
+  APP_MODES,
+  DEFAULT_APP_MODE,
+  DEFAULT_GUIDED_STEP_ID,
+  GUIDED_DATASET_ID,
+  GUIDED_METRIC,
+  GUIDED_PRESET_ID,
+  GUIDED_STEPS,
+  buildGuidedNarrative,
+  describeActiveMapLayers,
+  getNextGuidedStepId,
+  getPreviousGuidedStepId,
+  resolveMapLayerDirective,
+  type AppModeId,
+  type GuidedStepId,
+  type HeadlineFinding,
+} from "@/app/lib/guided-walkthrough";
 import {
   DATASETS,
   DEFAULT_CASE_STUDY_ID,
@@ -16,8 +33,10 @@ import {
   DEFAULT_VIEW_PRESET_ID,
   DEFAULT_YEAR,
   ELECTION_YEARS,
+  ENSEMBLE_BAND_STYLES,
   VIEW_PRESETS,
   buildDatasetStatus,
+  classifyEnsemblePercentile,
   getCaseStudy,
   getCaseStudyPacketUrl,
   getNamedSelectionsPacketUrl,
@@ -141,42 +160,8 @@ interface NamedSelectionsPacket {
   regions?: NamedSelectionRegion[];
 }
 
-interface HeadlineFinding {
-  headline: string;
-  shortHeadline: string;
-  methodNote: string;
-  mapStatusNote?: string;
-  stat: {
-    planName: string;
-    planSeats: number;
-    districtCount: number;
-    ensembleMedianSeats: number;
-    planCount: number;
-    plansAbove: number;
-    plansAbovePct: number;
-    percentile: number;
-    band: string;
-  };
-  // Continuous companion to the discrete seat count. `statement` is null when the
-  // builder withholds the ordering claim, so the UI must treat it as optional.
-  tailContext?: {
-    measureLabel: string;
-    measureDefinition: string;
-    enactedMarginPp: number;
-    tiePlanCount: number;
-    tiePlanMaxMarginPp: number;
-    plansStrictlyBelow: number;
-    separationPp: number;
-    orderingClaimAllowed: boolean;
-    statement: string | null;
-    note: string;
-  };
-  provenance: {
-    inputs: { description: string; sourceUrl: string; status: string }[];
-    voteProxy: string;
-  };
-  caveats: string[];
-}
+// HeadlineFinding (including its optional, builder-gated `tailContext`) is typed
+// alongside the guided narrative that reads it: app/lib/guided-walkthrough.ts.
 
 function districtLabel(districtId: string): string {
   const district = Number(districtId.slice(2));
@@ -204,6 +189,12 @@ export default function Home() {
   const [caseStudyId] = useState<CaseStudyId>(DEFAULT_CASE_STUDY_ID);
   const [dataset, setDataset] = useState<DatasetId>(DEFAULT_DATASET_ID);
   const [activePresetId, setActivePresetId] = useState<ViewPresetId>(DEFAULT_VIEW_PRESET_ID);
+  const [appMode, setAppMode] = useState<AppModeId>(DEFAULT_APP_MODE);
+  const [guidedStepId, setGuidedStepId] = useState<GuidedStepId>(DEFAULT_GUIDED_STEP_ID);
+  // Set when the visitor steps from Guided into Expert: the layers stay exactly as
+  // they were so the switch adds controls instead of resetting the view. Cleared as
+  // soon as an expert preset or dataset is chosen.
+  const [expertInheritsGuidedLayers, setExpertInheritsGuidedLayers] = useState(false);
   const datasetKind = getDatasetKind(dataset);
   const unitLabel = getDatasetUnitLabel(dataset);
   const recordLabel = dataset === "blocks" ? "block-H3 cells" : unitLabel;
@@ -240,6 +231,32 @@ export default function Home() {
   const starterSelections = caseStudyPacket?.starterSelections ?? [];
   const activeStarter = starterSelections.find((selection) => selection.id === activeStarterId) ?? null;
   const activeCaseStudyRegion = namedSelections?.regions?.find((region) => region.id === activeStarterId) ?? null;
+  const guidedMode = appMode === "guided";
+
+  // One seam tells the map which layers belong on screen. Guided steps own their
+  // layers; expert mode follows its presets, except right after a switch out of
+  // guided mode, where the current view is carried over unchanged.
+  const layerDirective = useMemo(() => {
+    const directive = resolveMapLayerDirective({ mode: appMode, guidedStepId, presetId: activePresetId });
+    if (appMode === "expert" && expertInheritsGuidedLayers) {
+      const carried = resolveMapLayerDirective({ mode: "guided", guidedStepId });
+      return { ...carried, visibleChips: directive.visibleChips, showSettings: directive.showSettings };
+    }
+    return directive;
+  }, [appMode, guidedStepId, activePresetId, expertInheritsGuidedLayers]);
+
+  const guidedNarrative = useMemo(() => (
+    headlineFinding
+      ? buildGuidedNarrative(headlineFinding, {
+        // Band vocabulary comes from the same classifier the map legend uses.
+        percentileBandLabel: ENSEMBLE_BAND_STYLES[classifyEnsemblePercentile(headlineFinding.stat.percentile)].label,
+      })
+      : null
+  ), [headlineFinding]);
+  const guidedStep = guidedNarrative?.steps.find((step) => step.id === guidedStepId) ?? null;
+  const guidedMapLayers = useMemo(() => describeActiveMapLayers(layerDirective), [layerDirective]);
+  const previousGuidedStepId = getPreviousGuidedStepId(guidedStepId);
+  const nextGuidedStepId = getNextGuidedStepId(guidedStepId);
 
   const fetchYear = useCallback((y: number, ds: DatasetId = DEFAULT_DATASET_ID, studyId: CaseStudyId = DEFAULT_CASE_STUDY_ID) => {
     const url = getDatasetUrl(ds, y, studyId);
@@ -340,8 +357,44 @@ export default function Home() {
     fetchYear(displayYear, dataset, caseStudyId);
   };
 
+  const handleModeChange = (mode: AppModeId) => {
+    if (mode === appMode) return;
+
+    if (mode === "expert") {
+      setExpertInheritsGuidedLayers(true);
+      setAppMode("expert");
+      return;
+    }
+
+    // Back to guided: close the expert panels, return to the walkthrough's
+    // substrate, and let the current step re-apply its own layers. Map focus is
+    // deliberately left alone so a region the visitor zoomed to stays put.
+    setExpertInheritsGuidedLayers(false);
+    setAppMode("guided");
+    setSelectionPhase("idle");
+    setDataPanelOpen(false);
+    setStartersOpen(false);
+    setSidekickOpen(false);
+    setFindingOpen(false);
+    setActiveStarterId(null);
+    setActivePresetId(GUIDED_PRESET_ID);
+    setLayerBMetric(GUIDED_METRIC);
+    if (dataset !== GUIDED_DATASET_ID) {
+      const displayYear = getDisplayYear(GUIDED_DATASET_ID, year);
+      setDataset(GUIDED_DATASET_ID);
+      setYear(displayYear);
+      setLoading(true);
+      fetchYear(displayYear, GUIDED_DATASET_ID, caseStudyId);
+    }
+  };
+
+  const handleGuidedRegionFocus = (selection: StarterSelection) => {
+    setMapFocusBounds((current) => ({ ...selection.bounds, nonce: (current?.nonce ?? 0) + 1 }));
+  };
+
   const handleDatasetChange = (ds: DatasetId) => {
     const displayYear = getDisplayYear(ds, year);
+    setExpertInheritsGuidedLayers(false);
     const nextPresetId = ds === "blocks" ? "population-demographics" : "vote-map";
     const transition = getViewPresetTransition(nextPresetId);
     setActivePresetId(nextPresetId);
@@ -359,6 +412,7 @@ export default function Home() {
 
   const handlePresetSelect = (preset: ViewPreset) => {
     const displayYear = getDisplayYear(preset.dataset, year);
+    setExpertInheritsGuidedLayers(false);
     const transition = getViewPresetTransition(preset.id);
     setActivePresetId(preset.id);
     setDataset(preset.dataset);
@@ -427,22 +481,66 @@ export default function Home() {
 
   return (
     <div className="flex flex-col bg-black text-white" style={{ height: '100dvh', overflow: 'hidden' }}>
-      {/* Header */}
-      <header className="flex items-center gap-3 overflow-x-auto px-4 py-2.5 border-b border-white/5 flex-shrink-0" style={{ paddingTop: 'max(10px, env(safe-area-inset-top, 10px))' }}>
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <h1 className="text-base font-semibold tracking-tight text-zinc-100">
-            ⬡ Honeycombing
-          </h1>
-          <span className="text-[10px] text-zinc-600 font-mono">
-            {loading ? `Loading data…` :
-              datasetKind === "population" ? `${results.length.toLocaleString()} ${recordLabel} · ${caseStudy.label} Census ${year}` :
-              dataset === "precincts" ? `${results.length.toLocaleString()} ${unitLabel} · ${caseStudy.label} VEST ${year}` :
-              `${results.length.toLocaleString()} ${unitLabel} · ${year} Presidential`}
-          </span>
-          <span className="hidden 2xl:inline text-[10px] text-zinc-700 font-mono">
-            {caseStudy.fullLabel} study · {getDatasetNote(dataset)}
-          </span>
+      {/* Header — shared by both modes */}
+      <header
+        className="flex flex-shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-white/5 px-3 py-2 sm:px-4"
+        style={{ paddingTop: 'max(10px, env(safe-area-inset-top, 10px))' }}
+      >
+        <h1 className="text-base font-semibold tracking-tight text-zinc-100">⬡ Honeycombing</h1>
+        <span className="hidden text-[11px] text-zinc-500 sm:inline">{caseStudy.fullLabel} case study</span>
+
+        <div
+          role="group"
+          aria-label="View mode"
+          className="flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/[0.03] p-0.5"
+        >
+          {APP_MODES.map((mode) => {
+            const active = appMode === mode.id;
+            const Icon = mode.id === "guided" ? Compass : Sliders;
+            return (
+              <button
+                key={mode.id}
+                type="button"
+                onClick={() => handleModeChange(mode.id)}
+                aria-pressed={active}
+                title={mode.description}
+                className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-md px-3 text-[12px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-cyan-400 ${
+                  active ? "bg-cyan-500/20 text-cyan-200" : "text-zinc-400 hover:text-zinc-200"
+                }`}
+              >
+                <Icon size={13} aria-hidden="true" />
+                {mode.label}
+              </button>
+            );
+          })}
         </div>
+
+        <div className="ml-auto flex items-center gap-2">
+          <Link
+            href="/about"
+            className="rounded px-1.5 py-1 text-[11px] text-zinc-400 transition-colors hover:text-zinc-200"
+          >
+            Method<span className="hidden sm:inline"> &amp; white paper</span>
+          </Link>
+          <Link
+            href="/limits"
+            className="rounded border border-amber-400/25 bg-amber-500/10 px-2 py-1 text-[11px] text-amber-300 transition-colors hover:bg-amber-500/15"
+          >
+            Prototype — not legal evidence
+          </Link>
+        </div>
+      </header>
+
+      {/* Expert controls: years, granularity, provenance, sample regions, selection */}
+      {!guidedMode && (
+      <div className="flex flex-shrink-0 items-center gap-3 overflow-x-auto border-b border-white/5 bg-zinc-950/60 px-4 py-2">
+        <span className="shrink-0 text-[10px] text-zinc-600 font-mono">
+          {loading ? `Loading data…` :
+            datasetKind === "population" ? `${results.length.toLocaleString()} ${recordLabel} · ${caseStudy.label} Census ${year}` :
+            dataset === "precincts" ? `${results.length.toLocaleString()} ${unitLabel} · ${caseStudy.label} VEST ${year}` :
+            `${results.length.toLocaleString()} ${unitLabel} · ${year} Presidential`}
+          <span className="hidden 2xl:inline text-zinc-700"> · {getDatasetNote(dataset)}</span>
+        </span>
 
         <div className="ml-auto flex items-center gap-1 flex-shrink-0">
           {buildDatasetStatus(DATASETS, ELECTION_YEARS, dataset, year).map((status) => (
@@ -479,11 +577,6 @@ export default function Home() {
               </button>
             ))}
           </div>
-
-          {/* About */}
-          <Link href="/about" className="ml-2 px-1.5 py-0.5 text-[11px] font-mono text-zinc-600 hover:text-zinc-400 transition-colors border-l border-white/10 pl-2">
-            White Paper
-          </Link>
 
           <button
             type="button"
@@ -527,8 +620,10 @@ export default function Home() {
             ◎ Select
           </button>
         </div>
-      </header>
+      </div>
+      )}
 
+      {!guidedMode && (
       <div className="flex flex-shrink-0 items-center gap-2 overflow-x-auto border-b border-white/5 bg-zinc-950/80 px-4 py-2">
         <div className="flex items-center gap-1">
           {VIEW_PRESETS.map((preset) => (
@@ -565,21 +660,19 @@ export default function Home() {
           Sidekick
         </button>
       </div>
+      )}
 
+      {!guidedMode && (
       <div className="flex flex-shrink-0 items-center gap-3 border-b border-white/5 bg-black px-4 py-1.5 text-[10px] font-mono">
         <span className="shrink-0 rounded bg-white/[0.04] px-1.5 py-0.5 text-zinc-300">{datasetGuide.label}</span>
         <span className="min-w-0 truncate text-zinc-500">{datasetGuide.primaryQuestion}</span>
         <span className="hidden min-w-0 truncate text-zinc-700 md:block">{datasetGuide.redBlueRule}</span>
-        <Link
-          href="/limits"
-          className="ml-auto shrink-0 rounded border border-amber-400/25 bg-amber-500/10 px-1.5 py-0.5 text-amber-300 transition-colors hover:bg-amber-500/15"
-        >
-          Prototype — not legal evidence
-        </Link>
+        <span className="ml-auto shrink-0 text-zinc-600">{datasetGuide.caveat}</span>
       </div>
+      )}
 
-      {/* Headline finding banner */}
-      {headlineFinding && (
+      {/* Headline finding banner — expert mode; in guided mode the walkthrough carries it */}
+      {!guidedMode && headlineFinding && (
         <div className="flex flex-shrink-0 items-start gap-2 border-b border-cyan-500/15 bg-cyan-500/[0.05] px-4 py-1.5 font-mono text-[11px]">
           <span className="mt-px shrink-0 rounded bg-cyan-500/15 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.16em] text-cyan-300">
             Finding
@@ -610,7 +703,7 @@ export default function Home() {
       )}
 
       {/* Headline finding detail card */}
-      {headlineFinding && findingOpen && (
+      {!guidedMode && headlineFinding && findingOpen && (
         <aside className="fixed left-3 top-32 z-[1250] w-[min(440px,calc(100vw-24px))] max-h-[calc(100dvh-152px)] overflow-auto border border-cyan-500/25 bg-zinc-950/95 shadow-2xl backdrop-blur-xl">
           <div className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3">
             <div>
@@ -721,8 +814,8 @@ export default function Home() {
         </aside>
       )}
 
-      {/* Stats bar / Selection banner */}
-      {selectionPhase === "selecting" ? (
+      {/* Stats bar / Selection banner — expert mode only */}
+      {!guidedMode && (selectionPhase === "selecting" ? (
         <div className="flex items-center gap-4 px-4 py-1.5 border-b border-amber-500/20 bg-amber-500/10 text-[11px] font-mono flex-shrink-0">
           <span className="text-amber-400 font-semibold">◎ Selection Mode</span>
           <span className="text-amber-300/70">{selectionStats?.selectedCount ?? 0} hexes selected</span>
@@ -768,10 +861,10 @@ export default function Home() {
             </>
           )}
         </div>
-      ) : null}
+      ) : null)}
 
       {/* Data provenance panel */}
-      {dataPanelOpen && (
+      {!guidedMode && dataPanelOpen && (
         <aside className="fixed right-3 top-14 z-[1200] w-[min(420px,calc(100vw-24px))] max-h-[calc(100dvh-72px)] overflow-auto border border-white/10 bg-zinc-950/95 shadow-2xl backdrop-blur-xl">
           <div className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3">
             <div>
@@ -869,7 +962,7 @@ export default function Home() {
         </aside>
       )}
 
-      {sidekickOpen && (
+      {!guidedMode && sidekickOpen && (
         <aside className="fixed right-3 bottom-3 z-[1150] w-[min(360px,calc(100vw-24px))] border border-emerald-400/20 bg-zinc-950/95 shadow-2xl backdrop-blur-xl">
           <div className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3">
             <div>
@@ -917,7 +1010,7 @@ export default function Home() {
         </aside>
       )}
 
-      {startersOpen && (
+      {!guidedMode && startersOpen && (
         <aside className="fixed left-3 top-14 z-[1200] w-[min(380px,calc(100vw-24px))] max-h-[calc(100dvh-72px)] overflow-auto border border-white/10 bg-zinc-950/95 shadow-2xl backdrop-blur-xl">
           <div className="flex items-start justify-between gap-3 border-b border-white/10 px-4 py-3">
             <div>
@@ -986,7 +1079,7 @@ export default function Home() {
         </aside>
       )}
 
-      {activeStarter && (
+      {!guidedMode && activeStarter && (
         <aside className="fixed left-3 bottom-3 z-[1000] w-[min(420px,calc(100vw-24px))] max-h-[min(72dvh,560px)] overflow-auto border border-amber-400/20 bg-zinc-950/92 px-4 py-3 shadow-2xl backdrop-blur-xl">
           <div className="flex items-start justify-between gap-3">
             <div>
@@ -1087,30 +1180,187 @@ export default function Home() {
         </aside>
       )}
 
-      {/* Map */}
-      <div className="flex-1 relative">
-        <HoneycombMap
-          key={getHoneycombMapInstanceKey(caseStudyId, dataset)}
-          center={[caseStudy.center[0], caseStudy.center[1]]}
-          initialZoom={caseStudy.zoom}
-          results={results}
-          onStatsChange={setHexStats}
-          onLayerBMetricChange={setLayerBMetric}
-          dataKind={datasetKind}
-          unitLabel={unitLabel}
-          metricOptions={metricOptions}
-          initialMetric={initialMetric}
-          activePresetId={activePresetId}
-          selectionMode={selectionPhase !== "idle"}
-          selectionResetKey={selectionResetKey}
-          onSelectionUpdate={setSelectionStats}
-          focusBounds={mapFocusBounds}
-        />
-        <Legend metric={layerBMetric} />
-      </div>
+      {/* Guided story beside the map (stacked on phones); map keeps its own key so
+          switching modes never remounts it. */}
+      <main className={`flex min-h-0 flex-1 ${guidedMode ? "flex-col sm:flex-row" : ""}`}>
+        {guidedMode && (
+          <section
+            key="guided-story"
+            aria-label="Guided walkthrough"
+            className="flex min-h-0 basis-[46%] flex-col overflow-y-auto border-b border-white/10 bg-zinc-950/70 sm:w-[336px] sm:shrink-0 sm:basis-auto sm:border-b-0 sm:border-r lg:w-[400px]"
+          >
+            {guidedNarrative && guidedStep ? (
+              <>
+                <div className="border-b border-white/10 px-4 py-3">
+                  <h2 className="text-[15px] font-semibold leading-snug text-zinc-100">{guidedNarrative.title}</h2>
+                  <p className="mt-2 rounded border border-amber-400/25 bg-amber-500/[0.07] px-2.5 py-2 text-[12px] leading-relaxed text-amber-200/90">
+                    {guidedNarrative.statusNotice}
+                  </p>
+                </div>
+
+                <nav aria-label="Walkthrough steps" className="flex flex-wrap gap-1.5 border-b border-white/10 px-3 py-2.5">
+                  {GUIDED_STEPS.map((step) => {
+                    const active = step.id === guidedStepId;
+                    return (
+                      <button
+                        key={step.id}
+                        type="button"
+                        onClick={() => setGuidedStepId(step.id)}
+                        aria-current={active ? "step" : undefined}
+                        className={`inline-flex min-h-[36px] items-center gap-1.5 rounded-full border px-3 text-[12px] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-cyan-400 ${
+                          active
+                            ? "border-cyan-400/50 bg-cyan-500/15 text-cyan-100"
+                            : "border-white/10 bg-white/[0.03] text-zinc-400 hover:text-zinc-200"
+                        }`}
+                      >
+                        <span className="font-mono text-[10px] text-zinc-500">{step.ordinal}</span>
+                        {step.navLabel}
+                      </button>
+                    );
+                  })}
+                </nav>
+
+                <div className="flex-1 px-4 py-3">
+                  <h3 className="text-[14px] font-semibold text-cyan-200">{guidedStep.question}</h3>
+                  <p className="mt-2 text-[13px] leading-relaxed text-zinc-200">{guidedStep.answer}</p>
+                  {guidedStep.detail && (
+                    <p className="mt-2 text-[13px] leading-relaxed text-cyan-100/90">{guidedStep.detail}</p>
+                  )}
+
+                  <div className="mt-3 rounded border border-white/10 bg-white/[0.03] px-2.5 py-2">
+                    <div className="font-mono text-[10px] uppercase tracking-wide text-zinc-500">On the map now</div>
+                    <ul className="mt-1 space-y-0.5 text-[12px] leading-snug text-zinc-300">
+                      <li>
+                        {provenance.title}
+                        {provenance.h3Resolution ? ` (H3 r${provenance.h3Resolution})` : ""}
+                        {loading ? " — loading…" : ` — ${results.length.toLocaleString()} ${recordLabel}`}
+                      </li>
+                      {guidedMapLayers.map((layer) => (
+                        <li key={layer}>{layer}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {guidedStepId === "where" && starterSelections.length > 0 && (
+                    <div className="mt-3">
+                      <div className="font-mono text-[10px] uppercase tracking-wide text-zinc-500">Zoom the map to a region</div>
+                      <div className="mt-1.5 flex flex-wrap gap-1.5">
+                        {starterSelections.map((selection) => (
+                          <button
+                            key={selection.id}
+                            type="button"
+                            onClick={() => handleGuidedRegionFocus(selection)}
+                            className="inline-flex min-h-[36px] items-center gap-1.5 rounded border border-white/10 bg-white/[0.03] px-2.5 text-[12px] text-zinc-300 transition-colors hover:bg-white/[0.07] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-cyan-400"
+                          >
+                            {selection.shortName}
+                            <span className="font-mono text-[10px] text-zinc-500">
+                              {selection.population.total.toLocaleString()} people
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                      <p className="mt-1.5 text-[11px] leading-snug text-zinc-500">
+                        Review regions from the North Carolina starter packet, sized by 2020 Census population. They are places to look, not
+                        communities of interest and not districts.
+                      </p>
+                    </div>
+                  )}
+
+                  <ul className="mt-3 space-y-2 text-[12px] leading-relaxed text-zinc-400">
+                    {guidedStep.bullets.map((bullet) => (
+                      <li key={bullet} className="border-l border-white/10 pl-2.5">{bullet}</li>
+                    ))}
+                  </ul>
+
+                  <p className="mt-3 rounded border border-amber-400/20 bg-amber-500/[0.06] px-2.5 py-2 text-[12px] leading-relaxed text-amber-200/90">
+                    <span className="font-mono text-[10px] uppercase tracking-wide text-amber-300/80">Limit · </span>
+                    {guidedStep.limitation}
+                  </p>
+                  <p className="mt-2 text-[11px] leading-relaxed text-zinc-500">
+                    <span className="font-mono uppercase tracking-wide text-zinc-600">Source · </span>
+                    {guidedStep.sourceNote}
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap gap-2 text-[12px]">
+                    <Link
+                      href="/limits"
+                      className="inline-flex min-h-[36px] items-center rounded border border-amber-400/25 bg-amber-500/10 px-2.5 text-amber-300 transition-colors hover:bg-amber-500/15"
+                    >
+                      What not to conclude
+                    </Link>
+                    <Link
+                      href="/about"
+                      className="inline-flex min-h-[36px] items-center rounded border border-white/10 bg-white/[0.03] px-2.5 text-zinc-300 transition-colors hover:bg-white/[0.07]"
+                    >
+                      Method &amp; derivation
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="sticky bottom-0 flex items-center gap-2 border-t border-white/10 bg-zinc-950/95 px-3 py-2.5 backdrop-blur">
+                  <button
+                    type="button"
+                    onClick={() => previousGuidedStepId && setGuidedStepId(previousGuidedStepId)}
+                    disabled={!previousGuidedStepId}
+                    className="inline-flex min-h-[38px] items-center rounded border border-white/10 bg-white/[0.03] px-3 text-[12px] text-zinc-300 transition-colors hover:bg-white/[0.07] disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    ← Back
+                  </button>
+                  {nextGuidedStepId ? (
+                    <button
+                      type="button"
+                      onClick={() => setGuidedStepId(nextGuidedStepId)}
+                      className="ml-auto inline-flex min-h-[38px] items-center rounded border border-cyan-400/40 bg-cyan-500/15 px-3 text-[12px] font-medium text-cyan-100 transition-colors hover:bg-cyan-500/25"
+                    >
+                      Next: {GUIDED_STEPS.find((step) => step.id === nextGuidedStepId)?.navLabel} →
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleModeChange("expert")}
+                      className="ml-auto inline-flex min-h-[38px] items-center rounded border border-cyan-400/40 bg-cyan-500/15 px-3 text-[12px] font-medium text-cyan-100 transition-colors hover:bg-cyan-500/25"
+                    >
+                      Explore it yourself in Expert mode →
+                    </button>
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="px-4 py-4 text-[13px] leading-relaxed text-zinc-400">
+                Loading the North Carolina walkthrough… If it does not appear, the headline finding payload could not be fetched; the map layers and
+                Expert mode still work.
+              </div>
+            )}
+          </section>
+        )}
+
+        <div
+          key="map"
+          className={`relative flex-1 ${guidedMode ? "min-h-[46dvh] sm:min-h-0" : ""}`}
+        >
+          <HoneycombMap
+            key={getHoneycombMapInstanceKey(caseStudyId, dataset)}
+            center={[caseStudy.center[0], caseStudy.center[1]]}
+            initialZoom={caseStudy.zoom}
+            results={results}
+            onStatsChange={setHexStats}
+            onLayerBMetricChange={setLayerBMetric}
+            dataKind={datasetKind}
+            unitLabel={unitLabel}
+            metricOptions={metricOptions}
+            initialMetric={initialMetric}
+            activePresetId={activePresetId}
+            layerDirective={layerDirective}
+            selectionMode={selectionPhase !== "idle"}
+            selectionResetKey={selectionResetKey}
+            onSelectionUpdate={setSelectionStats}
+            focusBounds={mapFocusBounds}
+          />
+          <Legend metric={layerBMetric} />
+        </div>
+      </main>
 
       {/* Selection stats panel */}
-      {selectionPhase === "locked" && selectionStats && (
+      {!guidedMode && selectionPhase === "locked" && selectionStats && (
         <div
           className="fixed bottom-0 left-0 right-0 z-[1100] transition-transform duration-300"
           style={{ paddingBottom: "max(0px, env(safe-area-inset-bottom, 0px))" }}
