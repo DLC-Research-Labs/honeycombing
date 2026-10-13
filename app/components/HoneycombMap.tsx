@@ -7,6 +7,7 @@ import { latLngToCell, cellToBoundary, cellToLatLng } from "h3-js";
 import { Hexagon, Layers, Settings, Users } from "lucide-react";
 import type { DatasetKind, MetricConfig, VoteMetric, PrecinctResult } from "@/app/lib/vote-types";
 import { ELECTION_METRICS } from "@/app/lib/vote-types";
+import { getBasemapConfig } from "@/app/lib/basemap";
 import {
   COI_OVERLAY_COLOR,
   ENSEMBLE_BAND_STYLES,
@@ -703,10 +704,13 @@ export default function HoneycombMap({
       attributionControl: false,
     });
 
-    L.tileLayer(
-      "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-      { maxZoom: 19 }
-    ).addTo(map);
+    // Background raster: key-free OSM tiles (CARTO now serves "API KEY REQUIRED"
+    // watermarks with HTTP 200). Provider + attribution live in app/lib/basemap.ts.
+    const basemap = getBasemapConfig();
+    L.tileLayer(basemap.urlTemplate, {
+      maxZoom: basemap.maxZoom,
+      attribution: basemap.attributionHtml,
+    }).addTo(map);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
@@ -2428,6 +2432,16 @@ export default function HoneycombMap({
           </div>
         )}
       </div>
+
+      {/* Basemap attribution (required by the OSM tile usage policy) */}
+      <a
+        href={getBasemapConfig().attributionUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="absolute bottom-1 right-14 z-[1005] rounded bg-black/70 px-1.5 py-0.5 text-[10px] text-zinc-200 underline decoration-zinc-400 underline-offset-2 backdrop-blur-sm hover:text-white"
+      >
+        {getBasemapConfig().attributionText}
+      </a>
 
       {/* Empty state */}
       {results.length === 0 && (
